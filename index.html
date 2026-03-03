@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Silly's RNG Game</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d1a;
+    --surface: #16162a;
+    --surface2: #1f1f38;
+    --border: #2e2e55;
+    --accent: #ff6bff;
+    --accent2: #6bddff;
+    --accent3: #ffe06b;
+    --text: #f0eeff;
+    --muted: #7a7aaa;
+    --item-w: 75px;
+    --reel-h: 75px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+height: 100%;
+overflow: hidden;
+font-family: 'Fredoka One', cursive;
+background: var(--bg);
+color: var(--text);
+}
+
+body::before {
+content: '';
+position: fixed; inset: 0;
+background-image:
+radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.4) 0%, transparent 100%),
+radial-gradient(1px 1px at 30% 50%, rgba(255,255,255,0.3) 0%, transparent 100%),
+radial-gradient(1px 1px at 50% 10%, rgba(255,255,255,0.5) 0%, transparent 100%),
+radial-gradient(1px 1px at 70% 80%, rgba(255,255,255,0.3) 0%, transparent 100%),
+radial-gradient(1px 1px at 90% 35%, rgba(255,255,255,0.4) 0%, transparent 100%),
+radial-gradient(2px 2px at 20% 70%, rgba(255,180,255,0.3) 0%, transparent 100%),
+radial-gradient(2px 2px at 60% 40%, rgba(100,200,255,0.2) 0%, transparent 100%),
+radial-gradient(1px 1px at 85% 60%, rgba(255,255,255,0.4) 0%, transparent 100%);
+pointer-events: none; z-index: 0;
+}
+
+/* ===== ROOT SHELL ===== */
+.shell {
+position: relative; z-index: 1;
+height: 100vh;
+display: flex; flex-direction: column;
+max-width: 980px; margin: 0 auto;
+padding: 10px 16px 8px;
+gap: 8px;
+}
+
+/* ===== HEADER ROW ===== */
+.header-row {
+flex: 0 0 auto;
+display: flex; align-items: center; gap: 14px;
+flex-wrap: wrap;
+}
+.header-row h1 {
+font-size: 1.9rem;
+background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3));
+-webkit-background-clip: text; -webkit-text-fill-color: transparent;
+background-clip: text;
+filter: drop-shadow(0 0 16px rgba(255,107,255,0.45));
+letter-spacing: 2px; white-space: nowrap;
+}
+.stats-bar {
+display: flex; gap: 7px; flex-wrap: wrap;
+margin-left: auto;
+}
+.stat-chip {
+background: var(--surface2);
+border: 1.5px solid var(--border);
+border-radius: 50px;
+padding: 4px 14px;
+font-size: 0.85rem;
+display: flex; align-items: center; gap: 6px;
+white-space: nowrap;
+}
+.stat-chip .val { color: var(--accent3); }
+
+/* ===== MAIN GRID ===== */
+.grid {
+flex: 1; min-height: 0;
+display: grid;
+grid-template-columns: 1fr 288px;
+gap: 12px;
+}
+@media (max-width: 680px) { .grid { grid-template-columns: 1fr; } }
+
+/* ===== LEFT COL ===== */
+.roll-area {
+display: flex; flex-direction: column;
+gap: 8px; min-height: 0; overflow: hidden;
+}
+
+/* ===== SLOT MACHINE ===== */
+.slot-machine-wrap {
+flex: 0 0 auto;
+background: var(--surface);
+border: 2px solid var(--border);
+border-radius: 18px;
+padding: 10px 14px;
+}
+/* Reels stack vertically (one row per bulk roll) */
+.reels-col { display: flex; flex-direction: column; gap: 6px; }
+
+/* Each reel is a horizontal window showing 7 items */
+.reel-row {
+position: relative;
+width: calc(var(--item-w) * 7);
+height: var(--reel-h);
+overflow: hidden;
+border-radius: 10px;
+background: var(--bg);
+border: 2px solid var(--border);
+transition: border-color 0.5s;
+margin: 0 auto;
+}
+/* Left/right fade */
+.reel-row::before {
+content: ''; position: absolute; inset: 0; z-index: 2; pointer-events: none;
+background: linear-gradient(to right, var(--bg) 0%, transparent 18%, transparent 82%, var(--bg) 100%);
+}
+/* Center slot highlight — item 3 (0-indexed) is center of 7 */
+.reel-row::after {
+content: ''; position: absolute; top: 0; bottom: 0; z-index: 1; pointer-events: none;
+left: calc(var(--item-w) * 3); width: var(--item-w);
+border-left: 1.5px solid rgba(255,255,255,0.13);
+border-right: 1.5px solid rgba(255,255,255,0.13);
+background: rgba(255,255,255,0.03);
+}
+/* Horizontal strip scrolls left */
+.reel-strip {
+display: flex; flex-direction: row;
+height: var(--reel-h);
+will-change: transform; position: relative; z-index: 0;
+}
+.reel-item {
+width: var(--item-w); flex: 0 0 var(--item-w); height: var(--reel-h);
+display: flex; align-items: center; justify-content: center;
+font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.6px;
+white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+padding: 0 4px; text-align: center;
+}
+.reel-item.reel-center { font-size: 0.65rem; letter-spacing: 1px; font-weight: 700; }
+.reel-placeholder {
+height: var(--reel-h);
+display: flex; align-items: center; justify-content: center;
+color: var(--muted); font-size: 0.95rem; letter-spacing: 2px;
+}
+
+/* ===== INFO + BEST ===== */
+.info-row {
+flex: 0 0 auto; display: flex; gap: 8px;
+}
+.result-coins {
+flex: 1; font-size: 0.9rem; color: var(--accent3); text-align: center;
+background: var(--surface2); border-radius: 10px; border: 1px solid var(--border);
+padding: 5px 10px; opacity: 0; transition: opacity 0.4s;
+min-height: 30px; display: flex; align-items: center; justify-content: center;
+}
+.result-coins.show { opacity: 1; }
+.best-roll {
+flex: 1; text-align: center; padding: 5px 10px;
+background: var(--surface2); border-radius: 10px; border: 1px solid var(--border);
+font-size: 0.82rem; display: flex; align-items: center; justify-content: center;
+gap: 4px; white-space: nowrap; overflow: hidden;
+}
+.best-roll span { color: var(--accent); }
+
+/* ===== ROLL BUTTON ===== */
+.roll-btn {
+flex: 0 0 auto; width: 100%; padding: 13px;
+font-family: 'Fredoka One', cursive; font-size: 1.35rem;
+border: none; border-radius: 14px; cursor: pointer;
+background: linear-gradient(135deg, #ff6bff, #a855f7, #6bddff);
+color: white; letter-spacing: 2px; text-transform: uppercase;
+box-shadow: 0 5px 26px rgba(255,107,255,0.35);
+transition: transform 0.1s, box-shadow 0.2s, opacity 0.2s;
+position: relative; overflow: hidden;
+}
+.roll-btn::after {
+content: ''; position: absolute; inset: 0; pointer-events: none;
+background: linear-gradient(135deg, rgba(255,255,255,0.18), transparent);
+}
+.roll-btn:hover  { transform: translateY(-2px); box-shadow: 0 9px 36px rgba(255,107,255,0.5); }
+.roll-btn:active { transform: translateY(1px); }
+.roll-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+/* ===== AUTOROLL ROW ===== */
+.autoroll-row {
+flex: 0 0 auto;
+display: flex; align-items: center; gap: 7px; flex-wrap: wrap;
+}
+.auto-btn {
+font-family: 'Fredoka One', cursive; font-size: 0.82rem;
+padding: 5px 14px; border-radius: 9px; cursor: pointer;
+border: 1.5px solid var(--border); background: var(--surface2); color: var(--muted);
+transition: background 0.15s, border-color 0.15s, color 0.15s;
+white-space: nowrap;
+}
+.auto-btn.active { background: rgba(107,221,255,0.18); border-color: var(--accent2); color: var(--accent2); }
+.auto-btn:hover  { border-color: var(--accent2); color: var(--accent2); }
+.auto-label { font-size: 0.78rem; color: var(--muted); white-space: nowrap; }
+.auto-select {
+font-family: 'Fredoka One', cursive; font-size: 0.78rem;
+background: var(--surface2); border: 1.5px solid var(--border);
+border-radius: 8px; color: var(--text); padding: 4px 8px; cursor: pointer;
+flex: 1; min-width: 90px;
+}
+.auto-select:focus { outline: none; border-color: var(--accent2); }
+.auto-select option { background: var(--surface2); }
+
+/* ===== PENDING ===== */
+.pending-area {
+flex: 1; min-height: 0;
+overflow-y: auto;
+display: flex; flex-direction: column; gap: 6px;
+scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+}
+.pending-row {
+flex: 0 0 auto;
+display: flex; align-items: center; justify-content: space-between;
+background: var(--surface2); border-radius: 11px;
+padding: 7px 12px; border-left: 3px solid; gap: 7px; flex-wrap: wrap;
+animation: slideIn 0.14s ease;
+}
+@keyframes slideIn { from{transform:translateX(-8px);opacity:0} to{transform:translateX(0);opacity:1} }
+.pending-info { display: flex; align-items: center; gap: 5px; flex: 1; flex-wrap: wrap; }
+.pending-rank { font-size: 0.9rem; }
+.pending-val  { font-size: 0.75rem; color: var(--muted); }
+.accept-btn {
+background: rgba(107,221,255,0.15); border: 1.5px solid var(--accent2);
+border-radius: 7px; color: var(--accent2); font-family: 'Fredoka One', cursive;
+font-size: 0.75rem; padding: 3px 10px; cursor: pointer; transition: background 0.15s; white-space: nowrap;
+}
+.accept-btn:hover { background: rgba(107,221,255,0.28); }
+.dismiss-btn {
+background: transparent; border: 1.5px solid var(--border);
+border-radius: 7px; color: var(--muted); font-family: 'Fredoka One', cursive;
+font-size: 0.75rem; padding: 3px 8px; cursor: pointer; transition: background 0.15s; white-space: nowrap;
+}
+.dismiss-btn:hover { background: rgba(255,255,255,0.06); }
+
+/* ===== RIGHT COL ===== */
+.right-col {
+display: flex; flex-direction: column;
+gap: 8px; overflow-y: auto; min-height: 0;
+scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+}
+
+/* ===== PANELS ===== */
+.panel {
+flex: 0 0 auto;
+background: var(--surface); border: 1.5px solid var(--border);
+border-radius: 18px; padding: 14px 16px;
+}
+.panel h2 {
+font-size: 1.15rem; color: var(--accent3);
+margin-bottom: 12px; text-align: center; letter-spacing: 1px;
+}
+.upgrade-btn {
+width: 100%; background: var(--surface2); border: 1.5px solid var(--border);
+border-radius: 12px; padding: 10px 12px; color: var(--text);
+font-family: 'Fredoka One', cursive; cursor: pointer; margin-bottom: 8px;
+text-align: left; transition: border-color 0.2s, background 0.2s, transform 0.1s;
+}
+.upgrade-btn:hover:not(:disabled) {
+border-color: var(--accent2); background: rgba(107,221,255,0.08); transform: translateX(3px);
+}
+.upgrade-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.upgrade-btn.maxed { border-color: var(--accent3) !important; }
+.upgrade-name  { font-size: 0.92rem; color: var(--accent2); }
+.upgrade-desc  { font-size: 0.72rem; color: var(--muted); margin: 2px 0; }
+.upgrade-cost  { font-size: 0.82rem; color: var(--accent3); }
+.upgrade-level { font-size: 0.72rem; color: var(--muted); }
+
+.info-note {
+margin-top: 6px; padding: 8px 10px; background: var(--surface2);
+border-radius: 10px; font-size: 0.73rem; color: var(--muted); line-height: 1.5;
+}
+.info-note .note-title { color: var(--accent3); margin-bottom: 3px; }
+
+/* ===== INDEX ===== */
+.index-btn {
+width: 100%; background: var(--surface2); border: 1.5px solid var(--border);
+border-radius: 9px; color: var(--accent3); font-family: 'Fredoka One', cursive;
+font-size: 0.85rem; padding: 6px 12px; cursor: pointer;
+transition: border-color 0.2s, background 0.2s; margin-top: 8px; display: block;
+}
+.index-btn:hover { border-color: var(--accent3); background: rgba(255,224,107,0.08); }
+.index-panel {
+display: none; margin-top: 6px; border: 1.5px solid var(--border);
+border-radius: 10px; padding: 10px; background: var(--bg);
+max-height: 240px; overflow-y: auto;
+scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+}
+.index-panel.open { display: block; }
+.index-section-title {
+font-size: 0.7rem; color: var(--muted); margin: 6px 0 3px;
+text-transform: uppercase; letter-spacing: 1px;
+}
+.index-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; }
+.index-row {
+display: flex; justify-content: space-between; align-items: center;
+padding: 3px 7px; background: var(--surface2); border-radius: 6px;
+font-size: 0.68rem; border-left: 2px solid;
+}
+.index-name  { font-weight: 600; }
+.index-range { color: var(--muted); font-size: 0.6rem; }
+
+/* ===== INVENTORY ===== */
+.inventory-panel {
+flex: 0 0 auto;
+background: var(--surface); border: 1.5px solid var(--border);
+border-radius: 18px; padding: 14px 16px;
+}
+.inventory-panel h2 {
+font-size: 1.15rem; color: var(--accent);
+margin-bottom: 10px; text-align: center; letter-spacing: 1px;
+}
+.inventory-list {
+max-height: 220px; overflow-y: auto;
+display: flex; flex-direction: column; gap: 5px;
+scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+}
+.inventory-item {
+display: flex; justify-content: space-between; align-items: center;
+padding: 5px 10px; background: var(--surface2); border-radius: 9px;
+font-size: 0.82rem; border-left: 3px solid; gap: 5px; flex-wrap: wrap;
+}
+.inv-left { display: flex; align-items: center; gap: 5px; flex: 1; flex-wrap: wrap; }
+.inv-rank { font-weight: 600; }
+.inv-val  { color: var(--muted); font-size: 0.72rem; }
+.inv-empty { color: var(--muted); font-size: 0.85rem; text-align: center; padding: 12px 0; }
+.inv-delete-btn {
+background: transparent; border: none; color: var(--muted);
+cursor: pointer; font-size: 0.9rem; padding: 0 3px; transition: color 0.15s;
+}
+.inv-delete-btn:hover { color: #ff4466; }
+
+/* ===== VARIANT BADGES ===== */
+.variant-badge {
+display: inline-block; font-size: 0.65rem; padding: 1px 7px;
+border-radius: 20px; margin-left: 4px; vertical-align: middle; font-style: italic;
+}
+.variant-shiny      { background: rgba(255,220,50,0.2);   color: #ffe040; border: 1px solid #ffe04066; }
+.variant-glowy      { background: rgba(100,255,180,0.2);  color: #64ffb4; border: 1px solid #64ffb466; }
+.variant-monochrome { background: rgba(200,200,200,0.15); color: #cccccc; border: 1px solid #cccccc55; }
+
+/* ===== PARTICLES ===== */
+.particle {
+position: fixed; pointer-events: none; font-size: 1.2rem;
+animation: floatUp 1.2s ease forwards; z-index: 100;
+}
+@keyframes floatUp {
+from { opacity:1; transform:translateY(0) scale(1); }
+to   { opacity:0; transform:translateY(-80px) scale(0.5); }
+}
+
+/* ===== SAVE INDICATOR ===== */
+.save-indicator {
+position: fixed; bottom: 12px; right: 14px;
+background: var(--surface2); border: 1px solid var(--border);
+border-radius: 7px; padding: 4px 12px; font-size: 0.75rem; color: var(--muted);
+opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 200;
+}
+.save-indicator.show { opacity: 1; }
+</style>
+
+</head>
+<body>
+<div class="save-indicator" id="save-indicator">💾 Saved</div>
+
+<div class="shell">
+
+  <div class="header-row">
+    <h1>✨ Silly's RNG Game</h1>
+    <div class="stats-bar">
+      <div class="stat-chip">🪙 <span class="val" id="coins">0</span></div>
+      <div class="stat-chip">🍀 <span class="val" id="luck-display">1x</span></div>
+      <div class="stat-chip">🎲 <span class="val" id="bulk-display">1 roll</span></div>
+      <div class="stat-chip">📊 <span class="val" id="total-rolls">0</span> rolls</div>
+    </div>
+  </div>
+
+  <div class="grid">
+
+<div class="roll-area">
+
+  <div class="slot-machine-wrap">
+    <div class="reels-col" id="reels-col">
+      <div class="reel-row">
+        <div class="reel-placeholder">— Roll to Start —</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-row">
+    <div class="result-coins" id="result-coins"></div>
+    <div class="best-roll">🏆 Best: <span id="best-rank">None yet</span></div>
+  </div>
+
+  <button class="roll-btn" id="roll-btn" onclick="doRoll()">🎲 ROLL!</button>
+
+  <div class="autoroll-row">
+    <button class="auto-btn" id="auto-btn" onclick="toggleAutoRoll()">🔄 Auto Roll</button>
+    <span class="auto-label">Auto-accept ≥</span>
+    <select class="auto-select" id="auto-accept-select" onchange="setAutoAccept(this.value)">
+      <option value="none">Off</option>
+    </select>
+  </div>
+
+  <div class="pending-area" id="pending-area"></div>
+
+</div>
+
+<div class="right-col">
+  <div class="panel">
+    <h2>🛒 Upgrades</h2>
+
+    <button class="upgrade-btn" id="luck-btn" onclick="buyUpgrade('luck')">
+      <div class="upgrade-name">⚡ Luck Boost</div>
+      <div class="upgrade-desc">+0.5× luck multiplier</div>
+      <div class="upgrade-cost">Cost: <span id="luck-cost">75</span> 🪙</div>
+      <div class="upgrade-level">Owned: <span id="luck-level">0</span></div>
+    </button>
+
+    <button class="upgrade-btn" id="bulk-btn" onclick="buyUpgrade('bulk')">
+      <div class="upgrade-name">🎰 Bulk Roll</div>
+      <div class="upgrade-desc">+1 extra reel per roll (max +4)</div>
+      <div class="upgrade-cost">Cost: <span id="bulk-cost">1000</span> 🪙</div>
+      <div class="upgrade-level">Owned: <span id="bulk-level">0</span> / 4</div>
+    </button>
+
+    <button class="upgrade-btn" id="rollspeed-btn" onclick="buyUpgrade('rollSpeed')">
+      <div class="upgrade-name">⚡ Roll Speed</div>
+      <div class="upgrade-desc">−0.1s cooldown & animation (max −1s)</div>
+      <div class="upgrade-cost">Cost: <span id="rollspeed-cost">100</span> 🪙</div>
+      <div class="upgrade-level">−<span id="rollspeed-level">0.0</span>s  ·  <span id="rollspeed-ms">1750</span>ms spin</div>
+    </button>
+
+    <button class="upgrade-btn" id="variant-luck-btn" onclick="buyUpgrade('variantLuck')">
+      <div class="upgrade-name">✨ Variant Luck</div>
+      <div class="upgrade-desc">+0.125× variant chance (max +2.5)</div>
+      <div class="upgrade-cost">Cost: <span id="variant-luck-cost">75</span> 🪙</div>
+      <div class="upgrade-level">Bonus: +<span id="variant-luck-level">0.000</span></div>
+    </button>
+
+    <button class="upgrade-btn" id="secret-luck-btn" onclick="buyUpgrade('secretLuck')">
+      <div class="upgrade-name">🔮 Secret Luck</div>
+      <div class="upgrade-desc">+0.05× secret rank chance (max +5)</div>
+      <div class="upgrade-cost">Cost: <span id="secret-luck-cost">25</span> 🪙</div>
+      <div class="upgrade-level">Bonus: +<span id="secret-luck-level">0.00</span></div>
+    </button>
+
+    <div class="info-note">
+      <div class="note-title">ℹ️ How Luck Works</div>
+      Higher luck → bigger values → rarer ranks!<br>
+      Coins = rng^0.5 × (1 + log₁₀(rng))
+    </div>
+
+    <button class="index-btn" onclick="toggleIndex()">📖 Rank Index ▾</button>
+    <div class="index-panel" id="index-panel">
+      <div class="index-grid" id="index-grid"></div>
+      <div class="index-section-title">Variants</div>
+      <div class="index-grid" id="variant-index-grid"></div>
+    </div>
+  </div>
+
+  <div class="inventory-panel">
+    <h2>🎒 Inventory (<span id="inv-count">0</span>)</h2>
+    <div class="inventory-list" id="inventory-list">
+      <div class="inv-empty">No items yet — accept a roll!</div>
+    </div>
+  </div>
+</div>
+
+  </div>
+</div>
+
+<script>
+// ========== RANKS ==========
+const RANKS = [
+  { name: "ordinary",    min: 1,        max: 5        },
+  { name: "bronze",      min: 5,        max: 10       },
+  { name: "decent",      min: 10,       max: 25       },
+  { name: "epic",        min: 25,       max: 50       },
+  { name: "scarce",      min: 50,       max: 75       },
+  { name: "rare",        min: 75,       max: 100      },
+  { name: "gilded",      min: 100,      max: 250      },
+  { name: "light",       min: 250,      max: 750      },
+  { name: "elusive",     min: 750,      max: 2500     },
+  { name: "unordinary",  min: 2500,     max: 5000     },
+  { name: "mega",        min: 5000,     max: 10000    },
+  { name: "obtainable",  min: 10000,    max: 25000    },
+  { name: "insane",      min: 25000,    max: 50000    },
+  { name: "divine",      min: 50000,    max: 100000   },
+  { name: "eternal",     min: 100000,   max: 250000   },
+  { name: "theoretical", min: 250000,   max: 1000000  },
+  { name: "destined",    min: 1000000,  max: 5000000  },
+  { name: "grand",       min: 5000000,  max: 10000000 },
+  { name: "virtual",     min: 10000000, max: 50000000 },
+  { name: "unreal",      min: 50000000, max: 1e8      },
+  { name: "unrivalled",  min: 1e8,      max: 7.5e8    },
+  { name: "spotlight",   min: 7.5e8,    max: 1e9      },
+  { name: "unorthodox",  min: 1e9,      max: 5e9      },
+  { name: "vivid",       min: 5e9,      max: 25e9     },
+  { name: "giant",       min: 25e9,     max: 1e11     },
+  { name: "inimitable",  min: 1e11,     max: 5e11     },
+  { name: "colossal",    min: 5e11,     max: 1e12     },
+  { name: "rngesus",     min: 1e12,     max: 1e13     },
+  { name: "unattainable",min: 1e13,     max: 7.5e13   },
+  { name: "infinity",    min: 7.5e13,   max: 2.5e14   },
+  { name: "zeta",        min: 2.5e14,   max: 1e15     },
+  { name: "impossible",  min: 1e15,     max: 1e17     },
+  { name: "astronomical",min: 1e17,     max: 1e18     },
+  { name: "maximum",     min: 1e18,     max: Infinity },
+];
+
+const RANK_COLORS = [
+  "#aaaaaa","#cd7f32","#77dd77","#a855f7","#ff9966","#ffcc00",
+  "#ffd700","#99eeff","#66ccff","#ff88ff","#ff4488","#44ffaa",
+  "#ff6644","#ccaaff","#ff8811","#55ffdd","#ff55cc","#88ff55",
+  "#55aaff","#ff2255","#ff66ff","#aaffee","#ffaa55","#88aaff",
+  "#ff55aa","#ffdd55","#55ffff","#ff4400","#ff00ff","#00ffff",
+  "#ffff00","#ff77ff","#77ffff","#ffffff"
+];
+
+// ========== VARIANTS ==========
+const VARIANTS = [
+  { name: "shiny",      multi: 50,   chance: 100  },
+  { name: "glowy",      multi: 250,  chance: 500  },
+  { name: "monochrome", multi: 2500, chance: 5000 },
+];
+
+// ========== SECRET RANKS ==========
+const SECRET_RANKS = [
+  { name: "horrid",      rng: 100,  displayrng: 1,     display: false },
+  { name: "neutral",     rng: 500,  displayrng: false, display: false },
+  { name: "why",         rng: 690,  displayrng: 69,    display: false },
+  { name: "possibility", rng: 1000, displayrng: false, display: false },
+];
+const SECRET_RANK_COLOR = "#ff9999";
+
+// ========== STATE ==========
+let coins = 0, luck = 1;
+let bulkLevel = 0, luckLevel = 0;
+let luckCost = 75, bulkCost = 1000;
+let rollSpeedLevel = 0, rollSpeedCost = 100;
+let variantLuckLevel = 0, variantLuckCost = 75;
+let secretLuckLevel = 0, secretLuckCost = 25;
+let totalRolls = 0, bestRankIdx = -1;
+let inventory = [], pendingResults = [];
+let isRolling = false;
+let autoRollEnabled = false;
+let autoAcceptMinRank = 'none'; // 'none' | 'rank:N' | 'secret:N'
+let autoRollTimer = null;
+
+// ========== DERIVED ==========
+function getSpinMs()          { return Math.max(750, 1750 - rollSpeedLevel * 100); }
+function getVariantLuckBonus(){ return variantLuckLevel * 0.125; }
+function getSecretLuckBonus() { return secretLuckLevel * 0.05; }
+
+// ========== SAVE / LOAD ==========
+function saveData() {
+  const d = {
+    coins, luck, bulkLevel, luckLevel, luckCost, bulkCost,
+    rollSpeedLevel, rollSpeedCost,
+    variantLuckLevel, variantLuckCost,
+    secretLuckLevel, secretLuckCost,
+    totalRolls, bestRankIdx, inventory,
+    autoAcceptMinRank
+  };
+  localStorage.setItem('sillys_rng_save', JSON.stringify(d));
+  const ind = document.getElementById('save-indicator');
+  ind.classList.add('show');
+  clearTimeout(ind._t);
+  ind._t = setTimeout(() => ind.classList.remove('show'), 1200);
+}
+
+function loadData() {
+  try {
+    const raw = localStorage.getItem('sillys_rng_save');
+    if (!raw) return;
+    const d = JSON.parse(raw);
+    coins            = d.coins            ?? 0;
+    luck             = d.luck             ?? 1;
+    bulkLevel        = d.bulkLevel        ?? 0;
+    luckLevel        = d.luckLevel        ?? 0;
+    luckCost         = d.luckCost         ?? 75;
+    bulkCost         = d.bulkCost         ?? 1000;
+    rollSpeedLevel   = d.rollSpeedLevel   ?? 0;
+    rollSpeedCost    = d.rollSpeedCost    ?? 100;
+    variantLuckLevel = d.variantLuckLevel ?? 0;
+    variantLuckCost  = d.variantLuckCost  ?? 75;
+    secretLuckLevel  = d.secretLuckLevel  ?? 0;
+    secretLuckCost   = d.secretLuckCost   ?? 25;
+    totalRolls       = d.totalRolls       ?? 0;
+    bestRankIdx      = d.bestRankIdx      ?? -1;
+    inventory        = d.inventory        ?? [];
+    const savedAccept = d.autoAcceptMinRank;
+    autoAcceptMinRank = (savedAccept === undefined || savedAccept === null || savedAccept === -1 || savedAccept === '-1') ? 'none' : String(savedAccept);
+  } catch(e) { console.warn('Save load failed', e); }
+}
+
+// ========== RNG ==========
+function computeRoll() {
+  const r = Math.random();
+  if (r === 0) return { val: Infinity, variantIdx: -1, secretIdx: -1 };
+  const u = 2 + Math.random() * 2498;
+  const logPart = Math.log(u) / Math.log(750);
+  let val = Math.pow(r, -1.5) * luck * Math.pow(logPart, 0.27);
+
+  const vBonus = 1 + getVariantLuckBonus();
+  let variantIdx = -1;
+  for (let i = VARIANTS.length - 1; i >= 0; i--) {
+    if (Math.random() < vBonus / VARIANTS[i].chance) { variantIdx = i; break; }
+  }
+  if (variantIdx !== -1) val *= VARIANTS[variantIdx].multi;
+
+  const sBonus = 1 + getSecretLuckBonus();
+  let secretIdx = -1;
+  for (let i = SECRET_RANKS.length - 1; i >= 0; i--) {
+    if (Math.random() < sBonus / SECRET_RANKS[i].rng) { secretIdx = i; break; }
+  }
+
+  return { val, variantIdx, secretIdx };
+}
+
+function getRank(v) {
+  for (let i = RANKS.length - 1; i >= 0; i--) if (v >= RANKS[i].min) return i;
+  return 0;
+}
+
+function formatValue(v) {
+  if (!isFinite(v)) return "∞";
+  if (v >= 1e18) return (v/1e18).toFixed(2)+" Qn";
+  if (v >= 1e15) return (v/1e15).toFixed(2)+" Qd";
+  if (v >= 1e12) return (v/1e12).toFixed(2)+"T";
+  if (v >= 1e9)  return (v/1e9).toFixed(2)+"B";
+  if (v >= 1e6)  return (v/1e6).toFixed(2)+"M";
+  if (v >= 1e3)  return (v/1e3).toFixed(2)+"K";
+  return v.toFixed(2);
+}
+
+function computeCoins(val) {
+  if (!isFinite(val) || val <= 0) return 0;
+  return Math.floor(Math.pow(val, 0.5) * (1 + Math.log10(val)));
+}
+
+// ========== DISPLAY HELPERS ==========
+function getDisplayName(r)  { return r.secretIdx >= 0 ? SECRET_RANKS[r.secretIdx].name.toUpperCase() : RANKS[r.rankIdx].name.toUpperCase(); }
+function getDisplayColor(r) { return r.secretIdx >= 0 ? SECRET_RANK_COLOR : RANK_COLORS[r.rankIdx]; }
+function getDisplayValue(r) {
+  if (r.secretIdx >= 0 && SECRET_RANKS[r.secretIdx].displayrng !== false) return String(SECRET_RANKS[r.secretIdx].displayrng);
+  return formatValue(r.val);
+}
+function variantBadgeHTML(vi) {
+  if (vi < 0) return '';
+  const v = VARIANTS[vi];
+  return `<span class="variant-badge variant-${v.name}">${v.name}</span>`;
+}
+
+// ========== SLOT MACHINE (HORIZONTAL) ==========
+// 7 items visible; center slot is index 3 (0-based).
+// Strip translateX: item[i] centered = (VISIBLE_HALF - i) * ITEM_W
+// Start: item[VISIBLE_HALF] centered → translateX = 0
+// End:   item[finalIdx] centered   → translateX = (VISIBLE_HALF - finalIdx) * ITEM_W
+const ITEM_W      = 75;   // px, matches CSS --item-w
+const VISIBLE_HALF = 3;   // items on each side of center (7 total)
+const NUM_DECOR   = 26;   // decorative rolls before final
+
+function buildReelDom(n) {
+  const col = document.getElementById('reels-col');
+  col.innerHTML = '';
+  for (let i = 0; i < n; i++) {
+    const row = document.createElement('div');
+    row.className = 'reel-row'; row.id = `reel-${i}`;
+    const strip = document.createElement('div');
+    strip.className = 'reel-strip'; strip.id = `strip-${i}`;
+    row.appendChild(strip); col.appendChild(row);
+  }
+}
+
+function populateStrip(stripEl, finalResult) {
+  const items = [];
+  const push = () => { const r = computeRoll(); r.rankIdx = getRank(r.val); items.push(r); };
+
+  // VISIBLE_HALF left ghosts so the first decorative item starts centered
+  for (let i = 0; i < VISIBLE_HALF; i++) push();  // indices 0..VISIBLE_HALF-1
+  // Decorative items: indices VISIBLE_HALF .. VISIBLE_HALF+NUM_DECOR-1
+  for (let i = 0; i < NUM_DECOR; i++) push();
+  // Final result: index VISIBLE_HALF+NUM_DECOR
+  items.push(finalResult);
+  // VISIBLE_HALF right ghosts
+  for (let i = 0; i < VISIBLE_HALF; i++) push();
+
+  const finalIdx = VISIBLE_HALF + NUM_DECOR;
+
+  stripEl.innerHTML = items.map((item, i) => {
+    const color = getDisplayColor(item);
+    const name  = getDisplayName(item);
+    const isC   = (i === finalIdx);
+    const varL  = (isC && item.variantIdx >= 0) ? ` <span style="font-size:0.56rem;opacity:0.8">[${VARIANTS[item.variantIdx].name}]</span>` : '';
+    return `<div class="reel-item${isC ? ' reel-center' : ''}" style="color:${color};text-shadow:0 0 10px ${color}${isC ? 'bb' : '22'}">${name}${varL}</div>`;
+  }).join('');
+
+  return finalIdx;
+}
+
+function animateReelRow(rowEl, stripEl, finalIdx, delay, spinMs, onDone) {
+  // Start: item[VISIBLE_HALF] centered → translateX = 0
+  // End:   item[finalIdx] centered   → translateX = (VISIBLE_HALF - finalIdx) * ITEM_W
+  const endX = (VISIBLE_HALF - finalIdx) * ITEM_W;
+  stripEl.style.transition = 'none';
+  stripEl.style.transform = 'translateX(0)';
+  void stripEl.offsetHeight;
+  setTimeout(() => {
+    stripEl.style.transition = `transform ${spinMs}ms cubic-bezier(0.06, 0.85, 0.18, 1)`;
+    stripEl.style.transform = `translateX(${endX}px)`;
+    setTimeout(onDone, spinMs);
+  }, delay);
+}
+
+// ========== ROLL ==========
+function doRoll() {
+  if (isRolling) return;
+  isRolling = true;
+  clearTimeout(autoRollTimer);
+  const btn = document.getElementById('roll-btn');
+  btn.disabled = true;
+
+  const spinMs   = getSpinMs();
+  const numRolls = 1 + bulkLevel;
+  const results  = [];
+  for (let i = 0; i < numRolls; i++) {
+    const roll = computeRoll();
+    roll.rankIdx = getRank(roll.val);
+    roll.id = Date.now() + i;
+    results.push(roll);
+  }
+
+  const best = [...results].sort((a, b) => b.rankIdx - a.rankIdx || b.val - a.val)[0];
+
+  let totalCoins = 0;
+  results.forEach(r => { totalCoins += computeCoins(r.val); });
+  coins += totalCoins;
+  totalRolls += numRolls;
+
+  if (best.rankIdx > bestRankIdx) {
+    bestRankIdx = best.rankIdx;
+    const bEl = document.getElementById('best-rank');
+    bEl.textContent = RANKS[bestRankIdx].name.toUpperCase();
+    bEl.style.color = RANK_COLORS[bestRankIdx];
+  }
+
+  document.getElementById('result-coins').classList.remove('show');
+  document.getElementById('result-coins').textContent = '';
+  document.getElementById('pending-area').innerHTML = '';
+
+  buildReelDom(numRolls);
+
+  let doneCount = 0;
+  const STAGGER = 90;
+
+  results.forEach((result, i) => {
+    const rowEl   = document.getElementById(`reel-${i}`);
+    const stripEl = document.getElementById(`strip-${i}`);
+    const finalIdx = populateStrip(stripEl, result);
+
+    animateReelRow(rowEl, stripEl, finalIdx, i * STAGGER, spinMs, () => {
+      rowEl.style.borderColor = getDisplayColor(result) + '99';
+      doneCount++;
+
+      if (doneCount === numRolls) {
+        // Coins
+        const coinsEl = document.getElementById('result-coins');
+        coinsEl.textContent = `+${formatValue(totalCoins)} 🪙`;
+        requestAnimationFrame(() => requestAnimationFrame(() => coinsEl.classList.add('show')));
+
+        // Set pending
+        pendingResults = results.map(r => ({ ...r }));
+
+        // Auto-accept logic
+        if (autoAcceptMinRank !== 'none') {
+          pendingResults = pendingResults.filter(r => {
+            if (shouldAutoAccept(r)) {
+              inventory.unshift({ ...r });
+              return false;
+            }
+            return true;
+          });
+          renderInventory();
+        }
+
+        renderPending();
+        if (best.rankIdx >= 10) spawnParticles(best.rankIdx);
+
+        updateUI();
+        saveData();
+        isRolling = false;
+        btn.disabled = false;
+
+        // Schedule next autoroll if enabled (wait a brief moment after spin)
+        if (autoRollEnabled) {
+          const delay = 200;
+          autoRollTimer = setTimeout(doRoll, delay);
+        }
+      }
+    });
+  });
+}
+
+// ========== AUTOROLL ==========
+function toggleAutoRoll() {
+  autoRollEnabled = !autoRollEnabled;
+  const btn = document.getElementById('auto-btn');
+  btn.classList.toggle('active', autoRollEnabled);
+  btn.textContent = autoRollEnabled ? '🔄 Auto: ON' : '🔄 Auto Roll';
+  if (autoRollEnabled && !isRolling) {
+    autoRollTimer = setTimeout(doRoll, 100);
+  } else {
+    clearTimeout(autoRollTimer);
+  }
+}
+
+function setAutoAccept(val) {
+  autoAcceptMinRank = val;
+  saveData();
+}
+
+// Returns true if a result should be auto-accepted based on autoAcceptMinRank
+function shouldAutoAccept(r) {
+  if (!autoAcceptMinRank || autoAcceptMinRank === 'none' || typeof autoAcceptMinRank !== 'string') return false;
+  const parts = autoAcceptMinRank.split(':');
+  if (parts.length !== 2) return false;
+  const [type, idxStr] = parts;
+  const idx = parseInt(idxStr);
+  if (isNaN(idx)) return false;
+  if (type === 'rank') return r.rankIdx >= idx || r.secretIdx >= 0;
+  if (type === 'secret') return r.secretIdx >= idx;
+  return false;
+}
+
+function buildAutoAcceptSelect() {
+  const sel = document.getElementById('auto-accept-select');
+  sel.innerHTML = '<option value="none">Off</option>';
+
+  // Regular ranks
+  const rankGroup = document.createElement('optgroup');
+  rankGroup.label = '— Ranks —';
+  RANKS.forEach((r, i) => {
+    const opt = document.createElement('option');
+    opt.value = `rank:${i}`;
+    opt.textContent = r.name;
+    if (autoAcceptMinRank === `rank:${i}`) opt.selected = true;
+    rankGroup.appendChild(opt);
+  });
+  sel.appendChild(rankGroup);
+
+  // Secret ranks
+  const secretGroup = document.createElement('optgroup');
+  secretGroup.label = '— Secret —';
+  SECRET_RANKS.forEach((r, i) => {
+    const opt = document.createElement('option');
+    opt.value = `secret:${i}`;
+    opt.textContent = `✦ ${r.name}`;
+    if (autoAcceptMinRank === `secret:${i}`) opt.selected = true;
+    secretGroup.appendChild(opt);
+  });
+  sel.appendChild(secretGroup);
+}
+
+// ========== PENDING / INVENTORY ==========
+function renderPending() {
+  const area = document.getElementById('pending-area');
+  if (pendingResults.length === 0) { area.innerHTML = ''; return; }
+  area.innerHTML = pendingResults.map((r, i) => {
+    const c = getDisplayColor(r);
+    return `<div class="pending-row" style="border-left-color:${c}">
+      <div class="pending-info">
+        <span class="pending-rank" style="color:${c}">${getDisplayName(r)}</span>
+        ${variantBadgeHTML(r.variantIdx)}
+        <span class="pending-val">${getDisplayValue(r)}</span>
+      </div>
+      <button class="accept-btn" onclick="acceptRoll(${i})">✅ Accept</button>
+      <button class="dismiss-btn" onclick="dismissRoll(${i})">✕</button>
+    </div>`;
+  }).join('');
+}
+
+function acceptRoll(idx) {
+  if (idx < 0 || idx >= pendingResults.length) return;
+  inventory.unshift({ ...pendingResults[idx] });
+  pendingResults.splice(idx, 1);
+  renderPending(); renderInventory(); updateUI(); saveData();
+}
+
+function dismissRoll(idx) {
+  if (idx < 0 || idx >= pendingResults.length) return;
+  pendingResults.splice(idx, 1);
+  renderPending();
+}
+
+function deleteInventoryItem(id) {
+  inventory = inventory.filter(item => item.id !== id);
+  renderInventory(); updateUI(); saveData();
+}
+
+function renderInventory() {
+  const list = document.getElementById('inventory-list');
+  if (inventory.length === 0) { list.innerHTML = '<div class="inv-empty">No items yet — accept a roll!</div>'; return; }
+  list.innerHTML = inventory.map(item => {
+    const c = getDisplayColor(item);
+    return `<div class="inventory-item" style="border-left-color:${c}">
+      <div class="inv-left">
+        <span class="inv-rank" style="color:${c}">${getDisplayName(item)}</span>
+        ${variantBadgeHTML(item.variantIdx)}
+        <span class="inv-val">${getDisplayValue(item)}</span>
+      </div>
+      <button class="inv-delete-btn" onclick="deleteInventoryItem(${item.id})" title="Remove">🗑</button>
+    </div>`;
+  }).join('');
+}
+
+function spawnParticles(rankIdx) {
+  const emojis = rankIdx >= 25 ? ['💎','✨','🌟','🎊','👑'] : rankIdx >= 15 ? ['⭐','✨','🎉','💫'] : ['✨','💫','🎊'];
+  for (let i = 0; i < Math.min(5, rankIdx - 8); i++) {
+    const el = document.createElement('div');
+    el.className = 'particle';
+    el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    el.style.left = (20 + Math.random() * 60) + 'vw';
+    el.style.top  = (30 + Math.random() * 30) + 'vh';
+    el.style.animationDelay = (Math.random() * 0.3) + 's';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 1500);
+  }
+}
+
+// ========== UPGRADES ==========
+function buyUpgrade(type) {
+  if (type === 'luck') {
+    if (coins < luckCost) return;
+    coins -= luckCost; luckLevel++; luck += 0.5; luckCost = Math.ceil(luckCost * 1.2);
+
+  } else if (type === 'bulk') {
+    if (bulkLevel >= 4 || coins < bulkCost) return;
+    coins -= bulkCost; bulkLevel++; bulkCost = Math.ceil(bulkCost * 1.5);
+
+  } else if (type === 'rollSpeed') {
+    if (rollSpeedLevel >= 10 || coins < rollSpeedCost) return;
+    coins -= rollSpeedCost; rollSpeedLevel++; rollSpeedCost = Math.ceil(rollSpeedCost * 1.1);
+
+  } else if (type === 'variantLuck') {
+    if (getVariantLuckBonus() >= 2.5 || coins < variantLuckCost) return;
+    coins -= variantLuckCost; variantLuckLevel++; variantLuckCost = Math.ceil(variantLuckCost * 1.25);
+
+  } else if (type === 'secretLuck') {
+    if (getSecretLuckBonus() >= 5 || coins < secretLuckCost) return;
+    coins -= secretLuckCost; secretLuckLevel++; secretLuckCost = Math.ceil(secretLuckCost * 1.25);
+  }
+  updateUI(); saveData();
+}
+
+// ========== INDEX ==========
+function toggleIndex() { document.getElementById('index-panel').classList.toggle('open'); }
+
+function buildIndex() {
+  document.getElementById('index-grid').innerHTML = RANKS.map((r, i) => {
+    const c = RANK_COLORS[i];
+    return `<div class="index-row" style="border-left-color:${c}">
+      <span class="index-name" style="color:${c}">${r.name}</span>
+      <span class="index-range">${formatValue(r.min)} – ${r.max === Infinity ? '∞' : formatValue(r.max)}</span>
+    </div>`;
+  }).join('');
+
+  const vcolors = { shiny: '#ffe040', glowy: '#64ffb4', monochrome: '#cccccc' };
+  document.getElementById('variant-index-grid').innerHTML = VARIANTS.map(v => {
+    const c = vcolors[v.name] || '#fff';
+    return `<div class="index-row" style="border-left-color:${c}">
+      <span class="index-name" style="color:${c}">${v.name} <span style="font-size:0.58rem;color:var(--muted)">1/${v.chance}</span></span>
+      <span class="index-range">×${v.multi}</span>
+    </div>`;
+  }).join('');
+}
+
+// ========== UI ==========
+function updateUI() {
+  document.getElementById('coins').textContent = formatValue(coins);
+  document.getElementById('luck-display').textContent = luck.toFixed(1) + 'x';
+  document.getElementById('bulk-display').textContent = (1 + bulkLevel) + ' roll' + (1 + bulkLevel > 1 ? 's' : '');
+  document.getElementById('total-rolls').textContent = totalRolls;
+
+  // Luck
+  document.getElementById('luck-cost').textContent = formatValue(luckCost);
+  document.getElementById('luck-level').textContent = luckLevel;
+  document.getElementById('luck-btn').disabled = coins < luckCost;
+
+  // Bulk
+  document.getElementById('bulk-cost').textContent = bulkLevel >= 4 ? 'MAXED' : formatValue(bulkCost);
+  document.getElementById('bulk-level').textContent = bulkLevel;
+  const bulkBtn = document.getElementById('bulk-btn');
+  bulkBtn.disabled = bulkLevel >= 4 || coins < bulkCost;
+  if (bulkLevel >= 4) bulkBtn.classList.add('maxed');
+
+  // Roll Speed
+  const rsMaxed = rollSpeedLevel >= 10;
+  document.getElementById('rollspeed-cost').textContent = rsMaxed ? 'MAXED' : formatValue(rollSpeedCost);
+  document.getElementById('rollspeed-level').textContent = (rollSpeedLevel * 0.1).toFixed(1);
+  document.getElementById('rollspeed-ms').textContent = getSpinMs();
+  const rsBtn = document.getElementById('rollspeed-btn');
+  rsBtn.disabled = rsMaxed || coins < rollSpeedCost;
+  if (rsMaxed) rsBtn.classList.add('maxed');
+
+  // Variant Luck
+  const vlBonus = getVariantLuckBonus();
+  const vlMaxed = vlBonus >= 2.5;
+  document.getElementById('variant-luck-cost').textContent = vlMaxed ? 'MAXED' : formatValue(variantLuckCost);
+  document.getElementById('variant-luck-level').textContent = vlBonus.toFixed(3);
+  const vlBtn = document.getElementById('variant-luck-btn');
+  vlBtn.disabled = vlMaxed || coins < variantLuckCost;
+  if (vlMaxed) vlBtn.classList.add('maxed');
+
+  // Secret Luck
+  const slBonus = getSecretLuckBonus();
+  const slMaxed = slBonus >= 5;
+  document.getElementById('secret-luck-cost').textContent = slMaxed ? 'MAXED' : formatValue(secretLuckCost);
+  document.getElementById('secret-luck-level').textContent = slBonus.toFixed(2);
+  const slBtn = document.getElementById('secret-luck-btn');
+  slBtn.disabled = slMaxed || coins < secretLuckCost;
+  if (slMaxed) slBtn.classList.add('maxed');
+
+  // Inventory count
+  document.getElementById('inv-count').textContent = inventory.length;
+
+  // Best rank
+  if (bestRankIdx >= 0) {
+    const bEl = document.getElementById('best-rank');
+    bEl.textContent = RANKS[bestRankIdx].name.toUpperCase();
+    bEl.style.color = RANK_COLORS[bestRankIdx];
+  }
+}
+
+// keyboard shortcut
+document.addEventListener('keydown', e => {
+  if ((e.code === 'Space' || e.code === 'Enter') && !isRolling && !autoRollEnabled) {
+    const btn = document.getElementById('roll-btn');
+    if (!btn.disabled) doRoll();
+  }
+});
+
+// ========== INIT ==========
+loadData();
+buildIndex();
+buildAutoAcceptSelect();
+updateUI();
+renderInventory();
+</script>
+</body>
+</html>
