@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
 <title>Silly's RNG Game</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
 <style>
@@ -21,6 +21,7 @@
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
+
 html, body {
 height: 100%;
 overflow: hidden;
@@ -28,6 +29,7 @@ font-family: 'Fredoka One', cursive;
 background: var(--bg);
 color: var(--text);
 }
+
 
 body::before {
 content: '';
@@ -44,6 +46,7 @@ radial-gradient(1px 1px at 85% 60%, rgba(255,255,255,0.4) 0%, transparent 100%);
 pointer-events: none; z-index: 0;
 }
 
+
 /* ===== ROOT SHELL ===== */
 .shell {
 position: relative; z-index: 1;
@@ -53,6 +56,7 @@ max-width: 980px; margin: 0 auto;
 padding: 10px 16px 8px;
 gap: 8px;
 }
+
 
 /* ===== HEADER ROW ===== */
 .header-row {
@@ -83,6 +87,7 @@ white-space: nowrap;
 }
 .stat-chip .val { color: var(--accent3); }
 
+
 /* ===== MAIN GRID ===== */
 .grid {
 flex: 1; min-height: 0;
@@ -90,13 +95,15 @@ display: grid;
 grid-template-columns: 1fr 288px;
 gap: 12px;
 }
-@media (max-width: 680px) { .grid { grid-template-columns: 1fr; } }
+
 
 /* ===== LEFT COL ===== */
 .roll-area {
 display: flex; flex-direction: column;
-gap: 8px; min-height: 0; overflow: hidden;
+gap: 8px; min-height: 0;
+overflow-y: auto;  /* FIX: allow scrolling on mobile when many reels appear */
 }
+
 
 /* ===== SLOT MACHINE ===== */
 .slot-machine-wrap {
@@ -106,10 +113,9 @@ border: 2px solid var(--border);
 border-radius: 18px;
 padding: 10px 14px;
 }
-/* Reels stack vertically (one row per bulk roll) */
 .reels-col { display: flex; flex-direction: column; gap: 6px; }
 
-/* Each reel is a horizontal window showing 7 items */
+
 .reel-row {
 position: relative;
 width: calc(var(--item-w) * 7);
@@ -121,12 +127,10 @@ border: 2px solid var(--border);
 transition: border-color 0.5s;
 margin: 0 auto;
 }
-/* Left/right fade */
 .reel-row::before {
 content: ''; position: absolute; inset: 0; z-index: 2; pointer-events: none;
 background: linear-gradient(to right, var(--bg) 0%, transparent 18%, transparent 82%, var(--bg) 100%);
 }
-/* Center slot highlight — item 3 (0-indexed) is center of 7 */
 .reel-row::after {
 content: ''; position: absolute; top: 0; bottom: 0; z-index: 1; pointer-events: none;
 left: calc(var(--item-w) * 3); width: var(--item-w);
@@ -134,7 +138,6 @@ border-left: 1.5px solid rgba(255,255,255,0.13);
 border-right: 1.5px solid rgba(255,255,255,0.13);
 background: rgba(255,255,255,0.03);
 }
-/* Horizontal strip scrolls left */
 .reel-strip {
 display: flex; flex-direction: row;
 height: var(--reel-h);
@@ -142,19 +145,31 @@ will-change: transform; position: relative; z-index: 0;
 }
 .reel-item {
 width: var(--item-w); flex: 0 0 var(--item-w); height: var(--reel-h);
-display: flex; align-items: center; justify-content: center;
-font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.6px;
-white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-padding: 0 4px; text-align: center;
+display: flex; flex-direction: column; align-items: center; justify-content: center;
+gap: 1px; padding: 0 3px; text-align: center; overflow: hidden;
 }
-.reel-item.reel-center { font-size: 0.65rem; letter-spacing: 1px; font-weight: 700; }
+.reel-rank-name {
+font-size: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px;
+white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
+}
+.reel-rng-val {
+font-size: 0.42rem; color: var(--muted); white-space: nowrap;
+overflow: hidden; text-overflow: ellipsis; max-width: 100%;
+}
+.reel-variant-mini {
+font-size: 0.38rem; font-style: italic; opacity: 0.85;
+white-space: nowrap; margin-bottom: 1px;
+}
+.reel-item.reel-center .reel-rank-name { font-size: 0.6rem; letter-spacing: 0.8px; font-weight: 700; }
+.reel-item.reel-center .reel-rng-val   { font-size: 0.5rem; color: rgba(240,238,255,0.7); }
+.reel-item.reel-center .reel-variant-mini { font-size: 0.46rem; }
 .reel-placeholder {
 height: var(--reel-h);
 display: flex; align-items: center; justify-content: center;
 color: var(--muted); font-size: 0.95rem; letter-spacing: 2px;
 }
 
-/* ===== INFO + BEST ===== */
+
 .info-row {
 flex: 0 0 auto; display: flex; gap: 8px;
 }
@@ -173,7 +188,7 @@ gap: 4px; white-space: nowrap; overflow: hidden;
 }
 .best-roll span { color: var(--accent); }
 
-/* ===== ROLL BUTTON ===== */
+
 .roll-btn {
 flex: 0 0 auto; width: 100%; padding: 13px;
 font-family: 'Fredoka One', cursive; font-size: 1.35rem;
@@ -192,7 +207,7 @@ background: linear-gradient(135deg, rgba(255,255,255,0.18), transparent);
 .roll-btn:active { transform: translateY(1px); }
 .roll-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
-/* ===== AUTOROLL ROW ===== */
+
 .autoroll-row {
 flex: 0 0 auto;
 display: flex; align-items: center; gap: 7px; flex-wrap: wrap;
@@ -207,16 +222,14 @@ white-space: nowrap;
 .auto-btn.active { background: rgba(107,221,255,0.18); border-color: var(--accent2); color: var(--accent2); }
 .auto-btn:hover  { border-color: var(--accent2); color: var(--accent2); }
 .auto-label { font-size: 0.78rem; color: var(--muted); white-space: nowrap; }
-.auto-select {
-font-family: 'Fredoka One', cursive; font-size: 0.78rem;
+.auto-input {
+font-family: 'Fredoka One', cursive; font-size: 0.8rem;
 background: var(--surface2); border: 1.5px solid var(--border);
-border-radius: 8px; color: var(--text); padding: 4px 8px; cursor: pointer;
-flex: 1; min-width: 90px;
+border-radius: 8px; color: var(--text); padding: 6px 10px; width: 110px;
 }
-.auto-select:focus { outline: none; border-color: var(--accent2); }
-.auto-select option { background: var(--surface2); }
+.auto-input:focus { outline: none; border-color: var(--accent2); }
 
-/* ===== PENDING ===== */
+
 .pending-area {
 flex: 1; min-height: 0;
 overflow-y: auto;
@@ -247,14 +260,14 @@ font-size: 0.75rem; padding: 3px 8px; cursor: pointer; transition: background 0.
 }
 .dismiss-btn:hover { background: rgba(255,255,255,0.06); }
 
-/* ===== RIGHT COL ===== */
+
 .right-col {
 display: flex; flex-direction: column;
 gap: 8px; overflow-y: auto; min-height: 0;
 scrollbar-width: thin; scrollbar-color: var(--border) transparent;
 }
 
-/* ===== PANELS ===== */
+
 .panel {
 flex: 0 0 auto;
 background: var(--surface); border: 1.5px solid var(--border);
@@ -280,13 +293,14 @@ border-color: var(--accent2); background: rgba(107,221,255,0.08); transform: tra
 .upgrade-cost  { font-size: 0.82rem; color: var(--accent3); }
 .upgrade-level { font-size: 0.72rem; color: var(--muted); }
 
+
 .info-note {
 margin-top: 6px; padding: 8px 10px; background: var(--surface2);
 border-radius: 10px; font-size: 0.73rem; color: var(--muted); line-height: 1.5;
 }
 .info-note .note-title { color: var(--accent3); margin-bottom: 3px; }
 
-/* ===== INDEX ===== */
+
 .index-btn {
 width: 100%; background: var(--surface2); border: 1.5px solid var(--border);
 border-radius: 9px; color: var(--accent3); font-family: 'Fredoka One', cursive;
@@ -314,7 +328,7 @@ font-size: 0.68rem; border-left: 2px solid;
 .index-name  { font-weight: 600; }
 .index-range { color: var(--muted); font-size: 0.6rem; }
 
-/* ===== INVENTORY ===== */
+
 .inventory-panel {
 flex: 0 0 auto;
 background: var(--surface); border: 1.5px solid var(--border);
@@ -344,7 +358,7 @@ cursor: pointer; font-size: 0.9rem; padding: 0 3px; transition: color 0.15s;
 }
 .inv-delete-btn:hover { color: #ff4466; }
 
-/* ===== VARIANT BADGES ===== */
+
 .variant-badge {
 display: inline-block; font-size: 0.65rem; padding: 1px 7px;
 border-radius: 20px; margin-left: 4px; vertical-align: middle; font-style: italic;
@@ -353,7 +367,7 @@ border-radius: 20px; margin-left: 4px; vertical-align: middle; font-style: itali
 .variant-glowy      { background: rgba(100,255,180,0.2);  color: #64ffb4; border: 1px solid #64ffb466; }
 .variant-monochrome { background: rgba(200,200,200,0.15); color: #cccccc; border: 1px solid #cccccc55; }
 
-/* ===== PARTICLES ===== */
+
 .particle {
 position: fixed; pointer-events: none; font-size: 1.2rem;
 animation: floatUp 1.2s ease forwards; z-index: 100;
@@ -363,7 +377,7 @@ from { opacity:1; transform:translateY(0) scale(1); }
 to   { opacity:0; transform:translateY(-80px) scale(0.5); }
 }
 
-/* ===== SAVE INDICATOR ===== */
+
 .save-indicator {
 position: fixed; bottom: 12px; right: 14px;
 background: var(--surface2); border: 1px solid var(--border);
@@ -371,14 +385,208 @@ border-radius: 7px; padding: 4px 12px; font-size: 0.75rem; color: var(--muted);
 opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 200;
 }
 .save-indicator.show { opacity: 1; }
-</style>
 
+
+@media (max-width: 900px) {
+.shell { padding: 7px 10px 6px; gap: 6px; }
+.header-row h1 { font-size: 1.4rem; }
+.stat-chip { font-size: 0.75rem; padding: 3px 10px; }
+.grid { grid-template-columns: 1fr 250px; gap: 8px; }
+}
+@media (max-width: 680px) {
+.grid { grid-template-columns: 1fr; }
+.right-col { max-height: 40vh; }
+.header-row h1 { font-size: 1.1rem; }
+.stats-bar { gap: 4px; }
+.stat-chip { font-size: 0.7rem; padding: 2px 8px; }
+.roll-btn { font-size: 1.1rem; padding: 10px; }
+:root { --item-w: 55px; --reel-h: 55px; }
+}
+@media (max-width: 480px) {
+.shell { padding: 5px 7px 4px; gap: 5px; }
+:root { --item-w: 44px; --reel-h: 44px; }
+.header-row { gap: 6px; }
+.header-row h1 { font-size: 1rem; }
+.autoroll-row { gap: 4px; }
+.auto-btn { font-size: 0.72rem; padding: 4px 10px; }
+}
+.crate {
+position: fixed; z-index: 500; cursor: pointer; user-select: none;
+width: 58px; height: 58px;
+display: flex; align-items: center; justify-content: center;
+font-size: 2.4rem; line-height: 1;
+transition: transform 0.08s;
+animation: crateFall var(--dur, 8s) linear forwards;
+}
+.crate:hover { transform: scale(1.28) rotate(-8deg) !important; filter: brightness(1.3); }
+@keyframes crateFall {
+0%   { top: -70px; opacity: 0;  transform: rotate(-6deg); }
+6%   { opacity: 1; }
+30%  { transform: rotate(5deg); }
+55%  { transform: rotate(-4deg); }
+80%  { transform: rotate(3deg); opacity: 1; }
+96%  { opacity: 0.6; }
+100% { top: 93vh; opacity: 0;   transform: rotate(0deg); }
+}
+.crate-notif {
+position: fixed; z-index: 510;
+background: var(--surface2); border: 1.5px solid var(--accent2);
+border-radius: 11px; padding: 7px 14px;
+font-size: 0.82rem; color: var(--accent2);
+pointer-events: none; white-space: nowrap;
+animation: notifPop 2.2s ease forwards;
+}
+@keyframes notifPop {
+0%   { opacity:0; transform:translateY(0) scale(0.8); }
+12%  { opacity:1; transform:translateY(-16px) scale(1); }
+72%  { opacity:1; transform:translateY(-22px); }
+100% { opacity:0; transform:translateY(-36px); }
+}
+
+
+.booster-panel {
+flex: 0 0 auto;
+background: var(--surface); border: 1.5px solid var(--border);
+border-radius: 18px; padding: 12px 14px;
+}
+.booster-panel h2 {
+font-size: 1.05rem; color: var(--accent2);
+margin-bottom: 6px; text-align: center; letter-spacing: 1px;
+}
+.booster-list {
+display: flex; flex-wrap: wrap; gap: 7px;
+max-height: 200px; overflow-y: auto;
+scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+padding: 2px 1px;
+}
+.booster-empty { color: var(--muted); font-size: 0.78rem; text-align: center; padding: 8px; width: 100%; }
+.booster-item {
+position: relative;
+display: flex; flex-direction: column; align-items: center;
+gap: 3px; padding: 8px 6px 5px;
+background: var(--surface2); border-radius: 11px;
+border: 1.5px solid var(--border); width: 56px;
+cursor: default; transition: transform 0.12s;
+}
+.booster-item:hover { transform: translateY(-2px); }
+.booster-item.is-multi  { border-color: #ffe06b66; background: rgba(255,200,50,0.06); }
+.booster-item.is-variant{ border-color: rgba(107,221,255,0.35); }
+.booster-del {
+position: absolute; top: 3px; right: 4px;
+background: none; border: none; cursor: pointer;
+font-size: 0.52rem; color: var(--border); line-height: 1; padding: 0;
+transition: color 0.15s;
+}
+.booster-del:hover { color: #ff4466; }
+.booster-shape {
+width: 34px; height: 34px; flex-shrink: 0;
+background: linear-gradient(to bottom, #ffffff 0%, #2a2a55 100%);
+filter: drop-shadow(0 2px 4px rgba(0,0,0,0.55));
+}
+.booster-shape.multi-shape {
+background: linear-gradient(to bottom, #fff8c0 0%, #6b3a00 100%);
+filter: drop-shadow(0 2px 6px rgba(255,180,0,0.45));
+}
+.booster-shape.circle   { border-radius: 50%; }
+.booster-shape.square   { border-radius: 5px; }
+.booster-shape.triangle { clip-path: polygon(50% 4%, 4% 96%, 96% 96%); border-radius: 0; }
+.booster-shape.hexagon  { clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%); border-radius: 0; }
+.booster-shape.star     { clip-path: polygon(50% 2%, 61% 35%, 97% 35%, 68% 57%, 79% 91%, 50% 71%, 21% 91%, 32% 57%, 3% 35%, 39% 35%); border-radius: 0; }
+.booster-value { font-size: 0.7rem; color: var(--text); font-weight: 700; line-height: 1; }
+.booster-tag   { font-size: 0.48rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.4px; line-height: 1; text-align: center; }
+.booster-tag.multi-tag { color: var(--accent3); }
+.booster-tag.var-tag   { font-style: italic; }
+
+
+.booster-item { cursor: pointer; }
+.booster-item.booster-active {
+border-color: #ffe06b !important;
+box-shadow: 0 0 10px 2px rgba(255,220,80,0.55);
+background: rgba(255,200,50,0.13) !important;
+}
+.booster-item.booster-active .booster-shape {
+filter: drop-shadow(0 0 7px #ffe06b) drop-shadow(0 2px 3px rgba(0,0,0,0.5)) !important;
+}
+
+
+.upgrade-btn.qr-active {
+border-color: #6bffb8 !important;
+background: rgba(107,255,184,0.10) !important;
+}
+
+
+.ench-dots {
+display: flex; gap: 3px; margin-top: 2px; justify-content: center; flex-wrap: wrap;
+}
+.ench-dot {
+width: 9px; height: 9px; border-radius: 50%;
+box-shadow: 0 0 5px currentColor;
+flex-shrink: 0;
+}
+.reel-ench-dots {
+display: flex; gap: 2px; justify-content: center; margin-top: 1px;
+}
+.reel-ench-dot {
+width: 6px; height: 6px; border-radius: 50%;
+box-shadow: 0 0 4px currentColor; flex-shrink: 0;
+}
+
+
+.enchant-panel {
+flex: 0 0 auto;
+background: var(--surface); border: 1.5px solid var(--border);
+border-radius: 18px; padding: 12px 14px;
+}
+.enchant-panel h2 {
+font-size: 1.05rem; color: #bb88ff;
+margin-bottom: 8px; text-align: center; letter-spacing: 1px;
+}
+.equip-slots {
+display: flex; gap: 7px; margin-bottom: 9px; flex-wrap: wrap;
+}
+.equip-slot {
+flex: 1; min-width: 72px;
+background: var(--surface2); border: 1.5px dashed var(--border);
+border-radius: 11px; padding: 7px 6px;
+display: flex; flex-direction: column; align-items: center; gap: 4px;
+font-size: 0.65rem; color: var(--muted); text-align: center; position: relative;
+}
+.equip-slot.filled { border-style: solid; border-color: #bb88ff55; background: rgba(187,136,255,0.07); }
+.equip-slot-name { font-size: 0.6rem; color: var(--text); font-weight: 700; }
+.equip-slot-effs { font-size: 0.52rem; color: var(--muted); line-height: 1.5; }
+.equip-unequip-btn {
+position: absolute; top: 3px; right: 4px;
+background: none; border: none; cursor: pointer;
+font-size: 0.5rem; color: var(--border); padding: 0; transition: color 0.15s;
+}
+.equip-unequip-btn:hover { color: #ff4466; }
+.enchant-stat-bar {
+background: var(--surface2); border-radius: 8px; padding: 6px 9px;
+font-size: 0.68rem; color: var(--muted); line-height: 1.7;
+}
+.enchant-stat-bar .estat { color: var(--text); }
+.inv-equip-btn {
+background: rgba(187,136,255,0.15); border: 1.5px solid #bb88ff66;
+border-radius: 7px; color: #bb88ff; font-family: 'Fredoka One', cursive;
+font-size: 0.68rem; padding: 2px 8px; cursor: pointer; transition: background 0.15s; white-space: nowrap;
+}
+.inv-equip-btn:hover { background: rgba(187,136,255,0.28); }
+.inv-equip-btn.equipped { background: rgba(107,255,184,0.15); border-color: #6bffb866; color: #6bffb8; }
+
+
+.auto-input {
+  width: 100px;
+}
+</style>
 </head>
 <body>
 <div class="save-indicator" id="save-indicator">💾 Saved</div>
 
+
 <div class="shell">
 
+
+  <!-- HEADER -->
   <div class="header-row">
     <h1>✨ Silly's RNG Game</h1>
     <div class="stats-bar">
@@ -389,100 +597,176 @@ opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 200;
     </div>
   </div>
 
+
+  <!-- GRID -->
   <div class="grid">
+    <!-- LEFT: roll area (now scrollable) -->
+    <div class="roll-area">
+      <!-- SLOT MACHINE -->
+      <div class="slot-machine-wrap">
+        <div class="reels-col" id="reels-col">
+          <div class="reel-row">
+            <div class="reel-placeholder">— Roll to Start —</div>
+          </div>
+        </div>
+      </div>
 
-<div class="roll-area">
 
-  <div class="slot-machine-wrap">
-    <div class="reels-col" id="reels-col">
-      <div class="reel-row">
-        <div class="reel-placeholder">— Roll to Start —</div>
+      <!-- COINS + BEST -->
+      <div class="info-row">
+        <div class="result-coins" id="result-coins"></div>
+        <div class="best-roll">🏆 Best: <span id="best-rank">None yet</span></div>
+      </div>
+
+
+      <!-- ROLL BUTTON -->
+      <button class="roll-btn" id="roll-btn" onclick="doRoll()">🎲 ROLL!</button>
+
+
+      <!-- AUTOROLL ROW -->
+      <div class="autoroll-row">
+        <button class="auto-btn" id="auto-btn" onclick="toggleAutoRoll()">🔄 Auto Roll</button>
+        <span class="auto-label">Auto-accept ≥</span>
+        <!-- NEW: text input for numeric threshold -->
+        <input type="number" id="auto-accept-input" class="auto-input" placeholder="value" step="any" onchange="setAutoAccept(this.value)">
+      </div>
+
+
+      <!-- AUTO-DELETE ROW -->
+      <div class="autoroll-row">
+        <span class="auto-label">Auto-delete &lt;</span>
+        <select class="auto-select" id="auto-delete-select" onchange="setAutoDelete(this.value)">
+          <option value="none">Off</option>
+        </select>
+        <span class="auto-label">Secret del &lt;</span>
+        <select class="auto-select" id="auto-delete-secret-select" onchange="setAutoDeleteSecret(this.value)">
+          <option value="none">Off</option>
+        </select>
+      </div>
+
+
+      <!-- PENDING -->
+      <div class="pending-area" id="pending-area"></div>
+    </div>
+
+
+    <!-- RIGHT: upgrades + inventory -->
+    <div class="right-col">
+      <div class="panel">
+        <h2>🛒 Upgrades</h2>
+
+
+        <button class="upgrade-btn" id="luck-btn" onclick="buyUpgrade('luck')">
+          <div class="upgrade-name">⚡ Luck Boost</div>
+          <div class="upgrade-desc">+0.5× luck multiplier</div>
+          <div class="upgrade-cost">Cost: <span id="luck-cost">75</span> 🪙</div>
+          <div class="upgrade-level">Owned: <span id="luck-level">0</span></div>
+        </button>
+
+
+        <button class="upgrade-btn" id="bulk-btn" onclick="buyUpgrade('bulk')">
+          <div class="upgrade-name">🎰 Bulk Roll</div>
+          <div class="upgrade-desc">+1 extra reel per roll (max +4)</div>
+          <div class="upgrade-cost">Cost: <span id="bulk-cost">1000</span> 🪙</div>
+          <div class="upgrade-level">Owned: <span id="bulk-level">0</span> / 4</div>
+        </button>
+
+
+        <button class="upgrade-btn" id="rollspeed-btn" onclick="buyUpgrade('rollSpeed')">
+          <div class="upgrade-name">⏩ Roll Speed</div>
+          <div class="upgrade-desc">−0.1s cooldown & animation (max −1s)</div>
+          <div class="upgrade-cost">Cost: <span id="rollspeed-cost">100</span> 🪙</div>
+          <div class="upgrade-level">−<span id="rollspeed-level">0.0</span>s  ·  <span id="rollspeed-ms">1750</span>ms spin</div>
+        </button>
+
+
+        <button class="upgrade-btn" id="quickroll-btn" onclick="buyOrToggleQuickRoll()">
+          <div class="upgrade-name">⚡ Quick Roll</div>
+          <div class="upgrade-desc">Toggle: animation & cooldown = 0.2s</div>
+          <div class="upgrade-cost">Cost: <span id="quickroll-cost">10,000</span> 🪙</div>
+          <div class="upgrade-level">Status: <span id="quickroll-status">Locked</span></div>
+        </button>
+
+
+        <button class="upgrade-btn" id="variant-luck-btn" onclick="buyUpgrade('variantLuck')">
+          <div class="upgrade-name">✨ Variant Luck</div>
+          <div class="upgrade-desc">+0.125× variant chance (max +2.5)</div>
+          <div class="upgrade-cost">Cost: <span id="variant-luck-cost">75</span> 🪙</div>
+          <div class="upgrade-level">Bonus: +<span id="variant-luck-level">0.000</span></div>
+        </button>
+
+
+        <button class="upgrade-btn" id="secret-luck-btn" onclick="buyUpgrade('secretLuck')">
+          <div class="upgrade-name">🔮 Secret Luck</div>
+          <div class="upgrade-desc">+0.05× secret rank chance (max +5)</div>
+          <div class="upgrade-cost">Cost: <span id="secret-luck-cost">25</span> 🪙</div>
+          <div class="upgrade-level">Bonus: +<span id="secret-luck-level">0.00</span></div>
+        </button>
+
+
+        <button class="upgrade-btn" id="coin-gain-btn" onclick="buyUpgrade('coinGain')">
+          <div class="upgrade-name">💰 Coin Gain</div>
+          <div class="upgrade-desc">+10% coin gain per level (max +1000%)</div>
+          <div class="upgrade-cost">Cost: <span id="coin-gain-cost">5000</span> 🪙</div>
+          <div class="upgrade-level">Bonus: +<span id="coin-gain-level">0</span>%</div>
+        </button>
+
+
+        <!-- NEW: Enchant Luck upgrade -->
+        <button class="upgrade-btn" id="enchant-luck-btn" onclick="buyUpgrade('enchantLuck')">
+          <div class="upgrade-name">🔮 Enchant Luck</div>
+          <div class="upgrade-desc">+5% enchant chance per level (max +75%)</div>
+          <div class="upgrade-cost">Cost: <span id="enchant-luck-cost">500</span> 🪙</div>
+          <div class="upgrade-level">Bonus: +<span id="enchant-luck-level">0</span>%</div>
+        </button>
+
+
+        <div class="info-note">
+          <div class="note-title">ℹ️ How Luck Works</div>
+          Higher luck → bigger values → rarer ranks!<br>
+          Coins = rng^0.5 × (1 + log₁₀(rng))
+        </div>
+
+
+        <button class="index-btn" onclick="toggleIndex()">📖 Rank Index ▾</button>
+        <div class="index-panel" id="index-panel">
+          <div class="index-grid" id="index-grid"></div>
+          <div class="index-section-title">Variants</div>
+          <div class="index-grid" id="variant-index-grid"></div>
+        </div>
+      </div>
+
+
+      <div class="booster-panel">
+        <h2 id="booster-hdr">⚡ Boosters (0)</h2>
+        <div id="booster-luck-preview" style="font-size:0.72rem;color:var(--muted);text-align:center;margin-bottom:8px;">Click a crate to collect!</div>
+        <div class="booster-list" id="booster-list">
+          <div class="booster-empty">No boosters yet</div>
+        </div>
+      </div>
+
+
+      <div class="enchant-panel">
+        <h2>🔮 Enchants (max 1 equipped)</h2>
+        <div class="equip-slots" id="equip-slots">
+          <div class="equip-slot" id="equip-slot-0">Empty</div>
+          <div class="equip-slot" id="equip-slot-1" style="opacity:0.5; filter:grayscale(0.7)"><small>locked</small></div>
+          <div class="equip-slot" id="equip-slot-2" style="opacity:0.5; filter:grayscale(0.7)"><small>locked</small></div>
+        </div>
+        <div class="enchant-stat-bar" id="enchant-stat-bar">No enchants equipped</div>
+      </div>
+
+
+      <div class="inventory-panel">
+        <h2>🎒 Inventory (<span id="inv-count">0</span>)</h2>
+        <div class="inventory-list" id="inventory-list">
+          <div class="inv-empty">No items yet — accept a roll!</div>
+        </div>
       </div>
     </div>
   </div>
-
-  <div class="info-row">
-    <div class="result-coins" id="result-coins"></div>
-    <div class="best-roll">🏆 Best: <span id="best-rank">None yet</span></div>
-  </div>
-
-  <button class="roll-btn" id="roll-btn" onclick="doRoll()">🎲 ROLL!</button>
-
-  <div class="autoroll-row">
-    <button class="auto-btn" id="auto-btn" onclick="toggleAutoRoll()">🔄 Auto Roll</button>
-    <span class="auto-label">Auto-accept ≥</span>
-    <select class="auto-select" id="auto-accept-select" onchange="setAutoAccept(this.value)">
-      <option value="none">Off</option>
-    </select>
-  </div>
-
-  <div class="pending-area" id="pending-area"></div>
-
 </div>
 
-<div class="right-col">
-  <div class="panel">
-    <h2>🛒 Upgrades</h2>
-
-    <button class="upgrade-btn" id="luck-btn" onclick="buyUpgrade('luck')">
-      <div class="upgrade-name">⚡ Luck Boost</div>
-      <div class="upgrade-desc">+0.5× luck multiplier</div>
-      <div class="upgrade-cost">Cost: <span id="luck-cost">75</span> 🪙</div>
-      <div class="upgrade-level">Owned: <span id="luck-level">0</span></div>
-    </button>
-
-    <button class="upgrade-btn" id="bulk-btn" onclick="buyUpgrade('bulk')">
-      <div class="upgrade-name">🎰 Bulk Roll</div>
-      <div class="upgrade-desc">+1 extra reel per roll (max +4)</div>
-      <div class="upgrade-cost">Cost: <span id="bulk-cost">1000</span> 🪙</div>
-      <div class="upgrade-level">Owned: <span id="bulk-level">0</span> / 4</div>
-    </button>
-
-    <button class="upgrade-btn" id="rollspeed-btn" onclick="buyUpgrade('rollSpeed')">
-      <div class="upgrade-name">⚡ Roll Speed</div>
-      <div class="upgrade-desc">−0.1s cooldown & animation (max −1s)</div>
-      <div class="upgrade-cost">Cost: <span id="rollspeed-cost">100</span> 🪙</div>
-      <div class="upgrade-level">−<span id="rollspeed-level">0.0</span>s  ·  <span id="rollspeed-ms">1750</span>ms spin</div>
-    </button>
-
-    <button class="upgrade-btn" id="variant-luck-btn" onclick="buyUpgrade('variantLuck')">
-      <div class="upgrade-name">✨ Variant Luck</div>
-      <div class="upgrade-desc">+0.125× variant chance (max +2.5)</div>
-      <div class="upgrade-cost">Cost: <span id="variant-luck-cost">75</span> 🪙</div>
-      <div class="upgrade-level">Bonus: +<span id="variant-luck-level">0.000</span></div>
-    </button>
-
-    <button class="upgrade-btn" id="secret-luck-btn" onclick="buyUpgrade('secretLuck')">
-      <div class="upgrade-name">🔮 Secret Luck</div>
-      <div class="upgrade-desc">+0.05× secret rank chance (max +5)</div>
-      <div class="upgrade-cost">Cost: <span id="secret-luck-cost">25</span> 🪙</div>
-      <div class="upgrade-level">Bonus: +<span id="secret-luck-level">0.00</span></div>
-    </button>
-
-    <div class="info-note">
-      <div class="note-title">ℹ️ How Luck Works</div>
-      Higher luck → bigger values → rarer ranks!<br>
-      Coins = rng^0.5 × (1 + log₁₀(rng))
-    </div>
-
-    <button class="index-btn" onclick="toggleIndex()">📖 Rank Index ▾</button>
-    <div class="index-panel" id="index-panel">
-      <div class="index-grid" id="index-grid"></div>
-      <div class="index-section-title">Variants</div>
-      <div class="index-grid" id="variant-index-grid"></div>
-    </div>
-  </div>
-
-  <div class="inventory-panel">
-    <h2>🎒 Inventory (<span id="inv-count">0</span>)</h2>
-    <div class="inventory-list" id="inventory-list">
-      <div class="inv-empty">No items yet — accept a roll!</div>
-    </div>
-  </div>
-</div>
-
-  </div>
-</div>
 
 <script>
 // ========== RANKS ==========
@@ -523,6 +807,7 @@ const RANKS = [
   { name: "maximum",     min: 1e18,     max: Infinity },
 ];
 
+
 const RANK_COLORS = [
   "#aaaaaa","#cd7f32","#77dd77","#a855f7","#ff9966","#ffcc00",
   "#ffd700","#99eeff","#66ccff","#ff88ff","#ff4488","#44ffaa",
@@ -532,14 +817,14 @@ const RANK_COLORS = [
   "#ffff00","#ff77ff","#77ffff","#ffffff"
 ];
 
-// ========== VARIANTS ==========
+
 const VARIANTS = [
   { name: "shiny",      multi: 50,   chance: 100  },
   { name: "glowy",      multi: 250,  chance: 500  },
   { name: "monochrome", multi: 2500, chance: 5000 },
 ];
 
-// ========== SECRET RANKS ==========
+
 const SECRET_RANKS = [
   { name: "horrid",      rng: 100,  displayrng: 1,     display: false },
   { name: "neutral",     rng: 500,  displayrng: false, display: false },
@@ -548,6 +833,26 @@ const SECRET_RANKS = [
 ];
 const SECRET_RANK_COLOR = "#ff9999";
 
+
+const ENCHANT_CATS = {
+  luck: [
+    { name:'glimmer 1',  chance:5,    color:'#ffe04b', effect:{luck:2.5}    },
+    { name:'glimmer 2',  chance:25,   color:'#ffbb00', effect:{luck:5}      },
+    { name:'bedazzling', chance:125,  color:'#ff7700', effect:{luck:10}     },
+  ],
+  speed: [
+    { name:'speeder 1',  chance:10,   color:'#44ddff', effect:{speed:0.25}  },
+    { name:'speeder 2',  chance:50,   color:'#0099ff', effect:{speed:0.5}   },
+    { name:'flash',      chance:500,  color:'#ffffff', effect:{flash:true}  },
+  ],
+  variant: [
+    { name:'unique 1',   chance:25,   color:'#bb66ff', effect:{variantLuck:1}    },
+    { name:'unique 2',   chance:75,   color:'#8800ee', effect:{variantLuck:3.33} },
+    { name:'abnormal',   chance:2500, color:'#ff00cc', effect:{variantLuck:10}   },
+  ]
+};
+
+
 // ========== STATE ==========
 let coins = 0, luck = 1;
 let bulkLevel = 0, luckLevel = 0;
@@ -555,17 +860,42 @@ let luckCost = 75, bulkCost = 1000;
 let rollSpeedLevel = 0, rollSpeedCost = 100;
 let variantLuckLevel = 0, variantLuckCost = 75;
 let secretLuckLevel = 0, secretLuckCost = 25;
+let coinGainLevel = 0, coinGainCost = 5000;
+let enchantLuckLevel = 0, enchantLuckCost = 500;   // new upgrade
+let quickRollUnlocked = false, quickRollEnabled = false, quickRollCost = 10000;
 let totalRolls = 0, bestRankIdx = -1;
 let inventory = [], pendingResults = [];
+let boosterInventory = [];
+let equippedOrbs = []; // max 1 now
 let isRolling = false;
 let autoRollEnabled = false;
-let autoAcceptMinRank = 'none'; // 'none' | 'rank:N' | 'secret:N'
+let autoAcceptThreshold = null; // numeric threshold
+let autoDeleteMinRank = 'none';
+let autoDeleteSecret  = 'none';
 let autoRollTimer = null;
+let crateTimer = null;
+
 
 // ========== DERIVED ==========
-function getSpinMs()          { return Math.max(750, 1750 - rollSpeedLevel * 100); }
-function getVariantLuckBonus(){ return variantLuckLevel * 0.125; }
+function getEnchantLuckBonus()    { return equippedOrbs.flatMap(o=>o.enchants).reduce((s,e)=>s+(e.effect.luck||0),0); }
+function getEnchantVariantBonus() { return equippedOrbs.flatMap(o=>o.enchants).reduce((s,e)=>s+(e.effect.variantLuck||0),0); }
+function getEnchantSpeedInfo()    {
+  const flat    = equippedOrbs.flatMap(o=>o.enchants).reduce((s,e)=>s+(e.effect.speed||0),0);
+  const hasFlash= equippedOrbs.flatMap(o=>o.enchants).some(e=>e.effect.flash);
+  return {flat, hasFlash};
+}
+function getSpinMs() {
+  if (quickRollEnabled) return 200;
+  const {flat, hasFlash} = getEnchantSpeedInfo();
+  let ms = Math.max(400, 1750 - rollSpeedLevel * 100 - Math.round(flat * 1000));
+  if (hasFlash) ms = Math.max(200, Math.floor(ms * 0.5));
+  return ms;
+}
+function getVariantLuckBonus(){ return variantLuckLevel * 0.125 + getEnchantVariantBonus(); }
 function getSecretLuckBonus() { return secretLuckLevel * 0.05; }
+function getCoinGainMult()    { return 1 + coinGainLevel * 0.1; }
+function getEnchantLuckMult() { return 1 + enchantLuckLevel * 0.05; } // new
+
 
 // ========== SAVE / LOAD ==========
 function saveData() {
@@ -574,8 +904,11 @@ function saveData() {
     rollSpeedLevel, rollSpeedCost,
     variantLuckLevel, variantLuckCost,
     secretLuckLevel, secretLuckCost,
-    totalRolls, bestRankIdx, inventory,
-    autoAcceptMinRank
+    coinGainLevel, coinGainCost,
+    enchantLuckLevel, enchantLuckCost,
+    quickRollUnlocked, quickRollEnabled, quickRollCost,
+    totalRolls, bestRankIdx, inventory, boosterInventory, equippedOrbs,
+    autoAcceptThreshold, autoDeleteMinRank, autoDeleteSecret
   };
   localStorage.setItem('sillys_rng_save', JSON.stringify(d));
   const ind = document.getElementById('save-indicator');
@@ -583,6 +916,7 @@ function saveData() {
   clearTimeout(ind._t);
   ind._t = setTimeout(() => ind.classList.remove('show'), 1200);
 }
+
 
 function loadData() {
   try {
@@ -601,28 +935,46 @@ function loadData() {
     variantLuckCost  = d.variantLuckCost  ?? 75;
     secretLuckLevel  = d.secretLuckLevel  ?? 0;
     secretLuckCost   = d.secretLuckCost   ?? 25;
+    coinGainLevel    = d.coinGainLevel    ?? 0;
+    coinGainCost     = d.coinGainCost     ?? 5000;
+    enchantLuckLevel = d.enchantLuckLevel ?? 0;
+    enchantLuckCost  = d.enchantLuckCost  ?? 500;
+    quickRollUnlocked= d.quickRollUnlocked?? false;
+    quickRollEnabled = d.quickRollEnabled ?? false;
+    quickRollCost    = d.quickRollCost    ?? 10000;
     totalRolls       = d.totalRolls       ?? 0;
     bestRankIdx      = d.bestRankIdx      ?? -1;
     inventory        = d.inventory        ?? [];
-    const savedAccept = d.autoAcceptMinRank;
-    autoAcceptMinRank = (savedAccept === undefined || savedAccept === null || savedAccept === -1 || savedAccept === '-1') ? 'none' : String(savedAccept);
+    boosterInventory = d.boosterInventory ?? [];
+    equippedOrbs     = d.equippedOrbs     ?? [];
+    // enforce max 1 equipped
+    if (equippedOrbs.length > 1) equippedOrbs = [equippedOrbs[0]];
+    autoAcceptThreshold = d.autoAcceptThreshold !== undefined ? d.autoAcceptThreshold : null;
+    autoDeleteMinRank = d.autoDeleteMinRank ?? 'none';
+    autoDeleteSecret  = d.autoDeleteSecret  ?? 'none';
   } catch(e) { console.warn('Save load failed', e); }
 }
 
+
 // ========== RNG ==========
-function computeRoll() {
+function computeRoll(luckOverride, forcedVariantIdx) {
   const r = Math.random();
-  if (r === 0) return { val: Infinity, variantIdx: -1, secretIdx: -1 };
+  if (r === 0) return { val: Infinity, variantIdx: (forcedVariantIdx ?? -1), secretIdx: -1 };
   const u = 2 + Math.random() * 2498;
   const logPart = Math.log(u) / Math.log(750);
-  let val = Math.pow(r, -1.5) * luck * Math.pow(logPart, 0.27);
+  const activeLuck = (luckOverride !== undefined ? luckOverride : luck) + getEnchantLuckBonus();
+  let val = Math.pow(r, -1.5) * activeLuck * Math.pow(logPart, 0.27);
+
 
   const vBonus = 1 + getVariantLuckBonus();
-  let variantIdx = -1;
-  for (let i = VARIANTS.length - 1; i >= 0; i--) {
-    if (Math.random() < vBonus / VARIANTS[i].chance) { variantIdx = i; break; }
+  let variantIdx = forcedVariantIdx !== undefined ? forcedVariantIdx : -1;
+  if (variantIdx < 0) {
+    for (let i = VARIANTS.length - 1; i >= 0; i--) {
+      if (Math.random() < vBonus / VARIANTS[i].chance) { variantIdx = i; break; }
+    }
   }
   if (variantIdx !== -1) val *= VARIANTS[variantIdx].multi;
+
 
   const sBonus = 1 + getSecretLuckBonus();
   let secretIdx = -1;
@@ -630,13 +982,16 @@ function computeRoll() {
     if (Math.random() < sBonus / SECRET_RANKS[i].rng) { secretIdx = i; break; }
   }
 
+
   return { val, variantIdx, secretIdx };
 }
+
 
 function getRank(v) {
   for (let i = RANKS.length - 1; i >= 0; i--) if (v >= RANKS[i].min) return i;
   return 0;
 }
+
 
 function formatValue(v) {
   if (!isFinite(v)) return "∞";
@@ -649,10 +1004,12 @@ function formatValue(v) {
   return v.toFixed(2);
 }
 
+
 function computeCoins(val) {
   if (!isFinite(val) || val <= 0) return 0;
-  return Math.floor(Math.pow(val, 0.5) * (1 + Math.log10(val)));
+  return Math.floor(Math.pow(val, 0.5) * (1 + Math.log10(val)) * getCoinGainMult());
 }
+
 
 // ========== DISPLAY HELPERS ==========
 function getDisplayName(r)  { return r.secretIdx >= 0 ? SECRET_RANKS[r.secretIdx].name.toUpperCase() : RANKS[r.rankIdx].name.toUpperCase(); }
@@ -667,14 +1024,16 @@ function variantBadgeHTML(vi) {
   return `<span class="variant-badge variant-${v.name}">${v.name}</span>`;
 }
 
-// ========== SLOT MACHINE (HORIZONTAL) ==========
-// 7 items visible; center slot is index 3 (0-based).
-// Strip translateX: item[i] centered = (VISIBLE_HALF - i) * ITEM_W
-// Start: item[VISIBLE_HALF] centered → translateX = 0
-// End:   item[finalIdx] centered   → translateX = (VISIBLE_HALF - finalIdx) * ITEM_W
-const ITEM_W      = 75;   // px, matches CSS --item-w
+
+// ========== SLOT MACHINE ==========
 const VISIBLE_HALF = 3;   // items on each side of center (7 total)
 const NUM_DECOR   = 26;   // decorative rolls before final
+
+
+function getItemW() {
+  return parseInt(getComputedStyle(document.documentElement).getPropertyValue('--item-w')) || 75;
+}
+
 
 function buildReelDom(n) {
   const col = document.getElementById('reels-col');
@@ -688,36 +1047,47 @@ function buildReelDom(n) {
   }
 }
 
+
 function populateStrip(stripEl, finalResult) {
   const items = [];
   const push = () => { const r = computeRoll(); r.rankIdx = getRank(r.val); items.push(r); };
 
-  // VISIBLE_HALF left ghosts so the first decorative item starts centered
-  for (let i = 0; i < VISIBLE_HALF; i++) push();  // indices 0..VISIBLE_HALF-1
-  // Decorative items: indices VISIBLE_HALF .. VISIBLE_HALF+NUM_DECOR-1
-  for (let i = 0; i < NUM_DECOR; i++) push();
-  // Final result: index VISIBLE_HALF+NUM_DECOR
-  items.push(finalResult);
-  // VISIBLE_HALF right ghosts
+
   for (let i = 0; i < VISIBLE_HALF; i++) push();
+  for (let i = 0; i < NUM_DECOR; i++) push();
+  items.push(finalResult);
+  for (let i = 0; i < VISIBLE_HALF; i++) push();
+
 
   const finalIdx = VISIBLE_HALF + NUM_DECOR;
 
+
   stripEl.innerHTML = items.map((item, i) => {
-    const color = getDisplayColor(item);
-    const name  = getDisplayName(item);
-    const isC   = (i === finalIdx);
-    const varL  = (isC && item.variantIdx >= 0) ? ` <span style="font-size:0.56rem;opacity:0.8">[${VARIANTS[item.variantIdx].name}]</span>` : '';
-    return `<div class="reel-item${isC ? ' reel-center' : ''}" style="color:${color};text-shadow:0 0 10px ${color}${isC ? 'bb' : '22'}">${name}${varL}</div>`;
+    const color   = getDisplayColor(item);
+    const name    = getDisplayName(item);
+    const valStr  = getDisplayValue(item);
+    const isC     = (i === finalIdx);
+    const glow    = isC ? 'bb' : '22';
+    const varName = item.variantIdx >= 0 ? VARIANTS[item.variantIdx].name : null;
+    const varHtml = varName ? `<div class="reel-variant-mini" style="color:${color}">${varName}</div>` : '';
+    const enchHtml = (isC && item.enchants && item.enchants.length > 0)
+      ? enchantDotsHTML(item.enchants, 'reel-ench-dot') : '';
+    return `<div class="reel-item${isC ? ' reel-center' : ''}" style="color:${color};text-shadow:0 0 8px ${color}${glow}">
+      ${isC ? varHtml : ''}
+      <div class="reel-rank-name">${name}</div>
+      <div class="reel-rng-val">${valStr}</div>
+      ${enchHtml}
+    </div>`;
   }).join('');
+
 
   return finalIdx;
 }
 
+
 function animateReelRow(rowEl, stripEl, finalIdx, delay, spinMs, onDone) {
-  // Start: item[VISIBLE_HALF] centered → translateX = 0
-  // End:   item[finalIdx] centered   → translateX = (VISIBLE_HALF - finalIdx) * ITEM_W
-  const endX = (VISIBLE_HALF - finalIdx) * ITEM_W;
+  const itemW = getItemW();
+  const endX = (VISIBLE_HALF - finalIdx) * itemW;
   stripEl.style.transition = 'none';
   stripEl.style.transform = 'translateX(0)';
   void stripEl.offsetHeight;
@@ -728,6 +1098,253 @@ function animateReelRow(rowEl, stripEl, finalIdx, delay, spinMs, onDone) {
   }, delay);
 }
 
+
+// ========== BOOSTERS ==========
+const BOOSTER_SHAPES = ['circle','square','triangle','hexagon','star'];
+
+
+function computeBoosterVal() {
+  const r = Math.random();
+  return 5 + Math.floor(r === 0 ? 5e8 : 1 / (2 * r));
+}
+
+
+function computeBooster() {
+  const isMulti   = Math.random() < 1/25;
+  const val       = computeBoosterVal();
+  const shape     = BOOSTER_SHAPES[Math.floor(Math.random() * BOOSTER_SHAPES.length)];
+  const vBonus = 1 + getVariantLuckBonus();
+  let variantIdx = -1;
+  for (let i = VARIANTS.length - 1; i >= 0; i--) {
+    if (Math.random() < vBonus / (VARIANTS[i].chance * 2.5)) { variantIdx = i; break; }
+  }
+  return { val, isMulti, variantIdx, shape };
+}
+
+
+function deleteBooster(idx) {
+  boosterInventory.splice(idx, 1);
+  renderBoosterInventory();
+  saveData();
+}
+
+
+function renderBoosterInventory() {
+  const list = document.getElementById('booster-list');
+  const hdr  = document.getElementById('booster-hdr');
+  if (!list) return;
+  hdr.textContent = `⚡ Boosters (${boosterInventory.length})`;
+
+
+  const actives  = boosterInventory.filter(b => b.active);
+  const additive = actives.filter(b => !b.isMulti);
+  const multis   = actives.filter(b =>  b.isMulti);
+  const addSum   = additive.reduce((s,b) => s + b.val, 0);
+  const multProd = multis.reduce((s,b) => s * b.val, 1);
+  const effMult  = (additive.length > 0 ? addSum : 1) * (multis.length > 0 ? multProd : 1);
+  const prevEl   = document.getElementById('booster-luck-preview');
+  if (actives.length > 0) {
+    prevEl.style.color = 'var(--accent3)';
+    prevEl.textContent = `Active: ×${effMult >= 1000 ? (effMult/1000).toFixed(1)+'K' : effMult} luck boost — click to use on next roll`;
+  } else if (boosterInventory.length > 0) {
+    prevEl.style.color = 'var(--muted)';
+    prevEl.textContent = 'Click a booster to activate it for the next roll';
+  } else {
+    prevEl.style.color = 'var(--muted)';
+    prevEl.textContent = 'Crates fall every 5s — click to collect!';
+  }
+
+
+  if (boosterInventory.length === 0) {
+    list.innerHTML = '<div class="booster-empty">No boosters yet</div>';
+    return;
+  }
+
+
+  const VCOLORS = ['#ffe040','#64ffb4','#cccccc'];
+
+
+  list.innerHTML = boosterInventory.map((b, i) => {
+    const multiCls  = b.isMulti  ? ' is-multi'   : '';
+    const varCls    = b.variantIdx >= 0 ? ' is-variant' : '';
+    const activeCls = b.active   ? ' booster-active' : '';
+    const shapeCls  = b.isMulti  ? 'multi-shape' : '';
+    const varColor  = b.variantIdx >= 0 ? VCOLORS[b.variantIdx] : null;
+    const shapeFilter = varColor
+      ? `filter: drop-shadow(0 0 7px ${varColor}) drop-shadow(0 2px 3px rgba(0,0,0,0.5))`
+      : '';
+    const typeLabel = b.isMulti ? '× MULTI' : '+ ADD';
+    const valFmt    = b.val >= 1000 ? (b.val/1000).toFixed(1)+'K' : b.val;
+    const varLine   = b.variantIdx >= 0
+      ? `<div class="booster-tag var-tag" style="color:${varColor}">✨${VARIANTS[b.variantIdx].name}</div>` : '';
+    return `<div class="booster-item${multiCls}${varCls}${activeCls}" onclick="toggleBoosterActive(${i})"
+        title="${b.active ? 'Active — click to deactivate' : 'Click to activate for next roll'}">
+      <button class="booster-del" onclick="event.stopPropagation();deleteBooster(${i})" title="Discard">✕</button>
+      <div class="booster-shape ${b.shape} ${shapeCls}" style="${shapeFilter}"></div>
+      <div class="booster-value">${b.isMulti ? '×' : '+'}${valFmt}</div>
+      <div class="booster-tag${b.isMulti ? ' multi-tag' : ''}">${typeLabel}</div>
+      ${varLine}
+    </div>`;
+  }).join('');
+}
+
+
+// ========== ENCHANT ENGINE (modified: only highest tier per category) ==========
+function generateEnchants(val) {
+  if (val <= 1000) return [];
+  const result = [];
+  const mult = getEnchantLuckMult(); // new upgrade multiplier
+  for (const [cat, defs] of Object.entries(ENCHANT_CATS)) {
+    // iterate from rarest to common, take the first that triggers
+    for (let i = defs.length - 1; i >= 0; i--) {
+      if (Math.random() < mult / defs[i].chance) {
+        result.push({ cat, name: defs[i].name, color: defs[i].color, effect: defs[i].effect });
+        break; // only one per category
+      }
+    }
+  }
+  return result;
+}
+
+
+function enchantDotsHTML(enchants, cls = 'ench-dot') {
+  if (!enchants || enchants.length === 0) return '';
+  return `<div class="${cls === 'ench-dot' ? 'ench-dots' : 'reel-ench-dots'}">`
+    + enchants.map(e => `<div class="${cls}" style="background:${e.color};color:${e.color}" title="${e.name}"></div>`).join('')
+    + `</div>`;
+}
+
+
+// ========== EQUIP (only one allowed) ==========
+function equipOrb(itemId) {
+  // if already equipped this item -> unequip
+  if (equippedOrbs.find(o => o.itemId === itemId)) {
+    equippedOrbs = [];
+  } else {
+    // equip new one, replacing any existing
+    const item = inventory.find(it => it.id === itemId);
+    if (item && item.enchants && item.enchants.length > 0) {
+      equippedOrbs = [{ itemId, enchants: item.enchants }];
+    }
+  }
+  renderEquippedOrbs();
+  renderInventory();
+  updateUI();
+  saveData();
+}
+
+
+function renderEquippedOrbs() {
+  // only slot 0 is usable; slots 1&2 are dimmed
+  const slot0 = document.getElementById('equip-slot-0');
+  const orb = equippedOrbs[0];
+  if (!orb) {
+    slot0.className = 'equip-slot';
+    slot0.innerHTML = 'Empty';
+  } else {
+    slot0.className = 'equip-slot filled';
+    const effs = orb.enchants.map(e => {
+      if (e.effect.luck)        return `<span style="color:${e.color}">+${e.effect.luck}× luck</span>`;
+      if (e.effect.speed)       return `<span style="color:${e.color}">−${e.effect.speed}s spd</span>`;
+      if (e.effect.flash)       return `<span style="color:${e.color}">½ speed</span>`;
+      if (e.effect.variantLuck) return `<span style="color:${e.color}">+${e.effect.variantLuck}× var</span>`;
+      return '';
+    }).join('<br>');
+    slot0.innerHTML = `<button class="equip-unequip-btn" onclick="equipOrb(${orb.itemId})" title="Unequip">✕</button>
+      ${enchantDotsHTML(orb.enchants,'ench-dot')}
+      <div class="equip-slot-effs">${effs}</div>`;
+  }
+  // slots 1&2 remain locked
+  document.getElementById('equip-slot-1').innerHTML = '<small>locked</small>';
+  document.getElementById('equip-slot-2').innerHTML = '<small>locked</small>';
+
+
+  const bar = document.getElementById('enchant-stat-bar');
+  const lBonus = getEnchantLuckBonus();
+  const vBonus = getEnchantVariantBonus();
+  const {flat, hasFlash} = getEnchantSpeedInfo();
+  if (equippedOrbs.length === 0) {
+    bar.innerHTML = '<span style="color:var(--muted)">No enchants — accept items above 1K to find orbs</span>';
+  } else {
+    const parts = [];
+    if (lBonus > 0)  parts.push(`<span class="estat">+${lBonus}× luck</span>`);
+    if (flat > 0)    parts.push(`<span class="estat">−${flat}s speed</span>`);
+    if (hasFlash)    parts.push(`<span class="estat">½× speed</span>`);
+    if (vBonus > 0)  parts.push(`<span class="estat">+${vBonus.toFixed(2)}× variant</span>`);
+    bar.innerHTML = parts.length ? parts.join('  ·  ') : '<span style="color:var(--muted)">No active effects</span>';
+  }
+}
+
+
+// ========== BOOSTER ACTIVE ==========
+function toggleBoosterActive(idx) {
+  if (idx < 0 || idx >= boosterInventory.length) return;
+  boosterInventory[idx].active = !boosterInventory[idx].active;
+  renderBoosterInventory();
+  saveData();
+}
+
+
+function applyAndConsumeBooster() {
+  const actives = boosterInventory.filter(b => b.active);
+  if (actives.length === 0) return { effectiveLuck: luck, forcedVariantIdx: -1 };
+  const additive = actives.filter(b => !b.isMulti);
+  const multi    = actives.filter(b =>  b.isMulti);
+  const addSum   = additive.reduce((s,b) => s + b.val, 0);
+  const multProd = multi.reduce((s,b) => s * b.val, 1);
+  let forcedVariantIdx = -1;
+  actives.forEach(b => { if (b.variantIdx > forcedVariantIdx) forcedVariantIdx = b.variantIdx; });
+  const effectiveLuck = luck * (additive.length > 0 ? addSum : 1) * (multi.length > 0 ? multProd : 1);
+  boosterInventory = boosterInventory.filter(b => !b.active);
+  return { effectiveLuck, forcedVariantIdx };
+}
+
+
+// ========== CRATES ==========
+function spawnCrate() {
+  const crate = document.createElement('div');
+  crate.className = 'crate';
+  crate.textContent = '📦';
+  crate.style.left = (6 + Math.random() * 82) + 'vw';
+  crate.style.top  = '-70px';
+  const dur = Math.round(6500 + Math.random() * 4000);
+  crate.style.setProperty('--dur', dur + 'ms');
+  document.body.appendChild(crate);
+  const cleanup = setTimeout(() => crate.remove(), dur + 300);
+  crate.addEventListener('click', () => {
+    clearTimeout(cleanup);
+    const b = computeBooster();
+    boosterInventory.push(b);
+    const rect = crate.getBoundingClientRect();
+    const notif = document.createElement('div');
+    notif.className = 'crate-notif';
+    const VCOLORS = ['#ffe040','#64ffb4','#cccccc'];
+    const typeStr = b.isMulti ? `×${b.val >= 1000 ? (b.val/1000).toFixed(1)+'K' : b.val} MULTI` : `+${b.val >= 1000 ? (b.val/1000).toFixed(1)+'K' : b.val} ADD`;
+    const varStr  = b.variantIdx >= 0 ? ` <span style="color:${VCOLORS[b.variantIdx]}">✨${VARIANTS[b.variantIdx].name}</span>` : '';
+    notif.innerHTML = `📦 ${typeStr}${varStr}`;
+    notif.style.left = Math.min(rect.left, window.innerWidth - 200) + 'px';
+    notif.style.top  = (rect.top - 8) + 'px';
+    document.body.appendChild(notif);
+    setTimeout(() => notif.remove(), 2300);
+    crate.style.animation = 'none';
+    crate.style.opacity   = '0';
+    crate.style.transform = 'scale(1.5)';
+    crate.style.transition = 'opacity 0.2s, transform 0.2s';
+    setTimeout(() => crate.remove(), 250);
+    renderBoosterInventory();
+    saveData();
+  });
+}
+
+
+function startCrateTimer() {
+  clearInterval(crateTimer);
+  crateTimer = setInterval(() => {
+    if (Math.random() < 1/5) spawnCrate();
+  }, 5000);
+}
+
+
 // ========== ROLL ==========
 function doRoll() {
   if (isRolling) return;
@@ -736,22 +1353,31 @@ function doRoll() {
   const btn = document.getElementById('roll-btn');
   btn.disabled = true;
 
+
   const spinMs   = getSpinMs();
   const numRolls = 1 + bulkLevel;
   const results  = [];
+  const { effectiveLuck, forcedVariantIdx } = applyAndConsumeBooster();
+  renderBoosterInventory();
   for (let i = 0; i < numRolls; i++) {
-    const roll = computeRoll();
+    const roll = (i === 0)
+      ? computeRoll(effectiveLuck, forcedVariantIdx >= 0 ? forcedVariantIdx : undefined)
+      : computeRoll();
     roll.rankIdx = getRank(roll.val);
+    roll.enchants = generateEnchants(roll.val);
     roll.id = Date.now() + i;
     results.push(roll);
   }
 
+
   const best = [...results].sort((a, b) => b.rankIdx - a.rankIdx || b.val - a.val)[0];
+
 
   let totalCoins = 0;
   results.forEach(r => { totalCoins += computeCoins(r.val); });
   coins += totalCoins;
   totalRolls += numRolls;
+
 
   if (best.rankIdx > bestRankIdx) {
     bestRankIdx = best.rankIdx;
@@ -760,37 +1386,49 @@ function doRoll() {
     bEl.style.color = RANK_COLORS[bestRankIdx];
   }
 
+
   document.getElementById('result-coins').classList.remove('show');
   document.getElementById('result-coins').textContent = '';
   document.getElementById('pending-area').innerHTML = '';
 
+
   buildReelDom(numRolls);
+
 
   let doneCount = 0;
   const STAGGER = 90;
+
 
   results.forEach((result, i) => {
     const rowEl   = document.getElementById(`reel-${i}`);
     const stripEl = document.getElementById(`strip-${i}`);
     const finalIdx = populateStrip(stripEl, result);
 
+
     animateReelRow(rowEl, stripEl, finalIdx, i * STAGGER, spinMs, () => {
       rowEl.style.borderColor = getDisplayColor(result) + '99';
       doneCount++;
 
+
       if (doneCount === numRolls) {
-        // Coins
         const coinsEl = document.getElementById('result-coins');
         coinsEl.textContent = `+${formatValue(totalCoins)} 🪙`;
         requestAnimationFrame(() => requestAnimationFrame(() => coinsEl.classList.add('show')));
 
-        // Set pending
+
         pendingResults = results.map(r => ({ ...r }));
 
-        // Auto-accept logic
-        if (autoAcceptMinRank !== 'none') {
+
+        // auto-delete
+        if (autoDeleteMinRank !== 'none' || autoDeleteSecret !== 'none') {
+          pendingResults = pendingResults.filter(r => !shouldAutoDelete(r));
+        }
+
+
+        // auto-accept based on numeric threshold
+        if (autoAcceptThreshold !== null && !isNaN(autoAcceptThreshold)) {
           pendingResults = pendingResults.filter(r => {
-            if (shouldAutoAccept(r)) {
+            if (r.val >= autoAcceptThreshold) {
               inventory.unshift({ ...r });
               return false;
             }
@@ -799,15 +1437,17 @@ function doRoll() {
           renderInventory();
         }
 
+
         renderPending();
         if (best.rankIdx >= 10) spawnParticles(best.rankIdx);
+
 
         updateUI();
         saveData();
         isRolling = false;
         btn.disabled = false;
 
-        // Schedule next autoroll if enabled (wait a brief moment after spin)
+
         if (autoRollEnabled) {
           const delay = 200;
           autoRollTimer = setTimeout(doRoll, delay);
@@ -816,6 +1456,7 @@ function doRoll() {
     });
   });
 }
+
 
 // ========== AUTOROLL ==========
 function toggleAutoRoll() {
@@ -830,52 +1471,77 @@ function toggleAutoRoll() {
   }
 }
 
+
 function setAutoAccept(val) {
-  autoAcceptMinRank = val;
+  if (val === '' || val === null || isNaN(parseFloat(val))) {
+    autoAcceptThreshold = null;
+  } else {
+    autoAcceptThreshold = parseFloat(val);
+  }
   saveData();
 }
 
-// Returns true if a result should be auto-accepted based on autoAcceptMinRank
-function shouldAutoAccept(r) {
-  if (!autoAcceptMinRank || autoAcceptMinRank === 'none' || typeof autoAcceptMinRank !== 'string') return false;
-  const parts = autoAcceptMinRank.split(':');
-  if (parts.length !== 2) return false;
-  const [type, idxStr] = parts;
-  const idx = parseInt(idxStr);
-  if (isNaN(idx)) return false;
-  if (type === 'rank') return r.rankIdx >= idx || r.secretIdx >= 0;
-  if (type === 'secret') return r.secretIdx >= idx;
+
+function setAutoDelete(val) {
+  autoDeleteMinRank = val;
+  saveData();
+}
+
+
+function setAutoDeleteSecret(val) {
+  autoDeleteSecret = val;
+  saveData();
+}
+
+
+function shouldAutoDelete(r) {
+  if (autoDeleteMinRank !== 'none') {
+    const parts = autoDeleteMinRank.split(':');
+    if (parts.length === 2 && parts[0] === 'rank') {
+      const idx = parseInt(parts[1]);
+      if (!isNaN(idx) && r.secretIdx < 0 && r.rankIdx < idx) return true;
+    }
+  }
+  if (autoDeleteSecret !== 'none') {
+    const parts = autoDeleteSecret.split(':');
+    if (parts.length === 2 && parts[0] === 'secret') {
+      const idx = parseInt(parts[1]);
+      if (!isNaN(idx) && r.secretIdx >= 0 && r.secretIdx < idx) return true;
+    }
+  }
   return false;
 }
 
-function buildAutoAcceptSelect() {
-  const sel = document.getElementById('auto-accept-select');
-  sel.innerHTML = '<option value="none">Off</option>';
 
-  // Regular ranks
-  const rankGroup = document.createElement('optgroup');
-  rankGroup.label = '— Ranks —';
+function buildAutoDeleteSelects() {
+  const dSel = document.getElementById('auto-delete-select');
+  dSel.innerHTML = '<option value="none">Off</option>';
+  const dGroup = document.createElement('optgroup');
+  dGroup.label = '— Ranks —';
   RANKS.forEach((r, i) => {
     const opt = document.createElement('option');
     opt.value = `rank:${i}`;
     opt.textContent = r.name;
-    if (autoAcceptMinRank === `rank:${i}`) opt.selected = true;
-    rankGroup.appendChild(opt);
+    if (autoDeleteMinRank === `rank:${i}`) opt.selected = true;
+    dGroup.appendChild(opt);
   });
-  sel.appendChild(rankGroup);
+  dSel.appendChild(dGroup);
 
-  // Secret ranks
-  const secretGroup = document.createElement('optgroup');
-  secretGroup.label = '— Secret —';
+
+  const sSel = document.getElementById('auto-delete-secret-select');
+  sSel.innerHTML = '<option value="none">Off</option>';
+  const sGroup = document.createElement('optgroup');
+  sGroup.label = '— Secrets —';
   SECRET_RANKS.forEach((r, i) => {
     const opt = document.createElement('option');
     opt.value = `secret:${i}`;
     opt.textContent = `✦ ${r.name}`;
-    if (autoAcceptMinRank === `secret:${i}`) opt.selected = true;
-    secretGroup.appendChild(opt);
+    if (autoDeleteSecret === `secret:${i}`) opt.selected = true;
+    sGroup.appendChild(opt);
   });
-  sel.appendChild(secretGroup);
+  sSel.appendChild(sGroup);
 }
+
 
 // ========== PENDING / INVENTORY ==========
 function renderPending() {
@@ -895,6 +1561,7 @@ function renderPending() {
   }).join('');
 }
 
+
 function acceptRoll(idx) {
   if (idx < 0 || idx >= pendingResults.length) return;
   inventory.unshift({ ...pendingResults[idx] });
@@ -902,32 +1569,49 @@ function acceptRoll(idx) {
   renderPending(); renderInventory(); updateUI(); saveData();
 }
 
+
 function dismissRoll(idx) {
   if (idx < 0 || idx >= pendingResults.length) return;
   pendingResults.splice(idx, 1);
   renderPending();
 }
 
+
 function deleteInventoryItem(id) {
   inventory = inventory.filter(item => item.id !== id);
-  renderInventory(); updateUI(); saveData();
+  equippedOrbs = equippedOrbs.filter(o => o.itemId !== id);
+  renderInventory(); renderEquippedOrbs(); updateUI(); saveData();
 }
+
 
 function renderInventory() {
   const list = document.getElementById('inventory-list');
   if (inventory.length === 0) { list.innerHTML = '<div class="inv-empty">No items yet — accept a roll!</div>'; return; }
   list.innerHTML = inventory.map(item => {
     const c = getDisplayColor(item);
+    const isEquipped = equippedOrbs.some(o => o.itemId === item.id);
+    const hasEnchants = item.enchants && item.enchants.length > 0;
+    const enchHtml = hasEnchants
+      ? `<div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap">
+          ${enchantDotsHTML(item.enchants,'ench-dot')}
+          <button class="inv-equip-btn${isEquipped?' equipped':''}" onclick="equipOrb(${item.id})">
+            ${isEquipped ? '✓ Unequip' : '+ Equip'}
+          </button>
+        </div>` : '';
     return `<div class="inventory-item" style="border-left-color:${c}">
-      <div class="inv-left">
-        <span class="inv-rank" style="color:${c}">${getDisplayName(item)}</span>
-        ${variantBadgeHTML(item.variantIdx)}
-        <span class="inv-val">${getDisplayValue(item)}</span>
+      <div class="inv-left" style="flex-direction:column;align-items:flex-start;gap:3px">
+        <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap">
+          <span class="inv-rank" style="color:${c}">${getDisplayName(item)}</span>
+          ${variantBadgeHTML(item.variantIdx)}
+          <span class="inv-val">${getDisplayValue(item)}</span>
+        </div>
+        ${enchHtml}
       </div>
       <button class="inv-delete-btn" onclick="deleteInventoryItem(${item.id})" title="Remove">🗑</button>
     </div>`;
   }).join('');
 }
+
 
 function spawnParticles(rankIdx) {
   const emojis = rankIdx >= 25 ? ['💎','✨','🌟','🎊','👑'] : rankIdx >= 15 ? ['⭐','✨','🎉','💫'] : ['✨','💫','🎊'];
@@ -943,33 +1627,53 @@ function spawnParticles(rankIdx) {
   }
 }
 
+
 // ========== UPGRADES ==========
 function buyUpgrade(type) {
   if (type === 'luck') {
     if (coins < luckCost) return;
     coins -= luckCost; luckLevel++; luck += 0.5; luckCost = Math.ceil(luckCost * 1.2);
-
   } else if (type === 'bulk') {
     if (bulkLevel >= 4 || coins < bulkCost) return;
     coins -= bulkCost; bulkLevel++; bulkCost = Math.ceil(bulkCost * 1.5);
-
   } else if (type === 'rollSpeed') {
     if (rollSpeedLevel >= 10 || coins < rollSpeedCost) return;
     coins -= rollSpeedCost; rollSpeedLevel++; rollSpeedCost = Math.ceil(rollSpeedCost * 1.1);
-
   } else if (type === 'variantLuck') {
     if (getVariantLuckBonus() >= 2.5 || coins < variantLuckCost) return;
     coins -= variantLuckCost; variantLuckLevel++; variantLuckCost = Math.ceil(variantLuckCost * 1.25);
-
   } else if (type === 'secretLuck') {
     if (getSecretLuckBonus() >= 5 || coins < secretLuckCost) return;
     coins -= secretLuckCost; secretLuckLevel++; secretLuckCost = Math.ceil(secretLuckCost * 1.25);
+  } else if (type === 'coinGain') {
+    if (coinGainLevel >= 100 || coins < coinGainCost) return;
+    coins -= coinGainCost; coinGainLevel++; coinGainCost = Math.ceil(coinGainCost * 1.2);
+  } else if (type === 'enchantLuck') {
+    if (enchantLuckLevel >= 15 || coins < enchantLuckCost) return; // 15 * 5% = 75% cap
+    coins -= enchantLuckCost; enchantLuckLevel++; enchantLuckCost = Math.ceil(enchantLuckCost * 1.25);
   }
   updateUI(); saveData();
 }
 
+
+function buyOrToggleQuickRoll() {
+  if (!quickRollUnlocked) {
+    if (coins < quickRollCost) return;
+    coins -= quickRollCost;
+    quickRollUnlocked = true;
+    quickRollEnabled  = true;
+  } else {
+    quickRollEnabled = !quickRollEnabled;
+  }
+  const btn = document.getElementById('quickroll-btn');
+  btn.classList.toggle('qr-active', quickRollEnabled);
+  updateUI(); saveData();
+}
+
+
 // ========== INDEX ==========
 function toggleIndex() { document.getElementById('index-panel').classList.toggle('open'); }
+
 
 function buildIndex() {
   document.getElementById('index-grid').innerHTML = RANKS.map((r, i) => {
@@ -979,6 +1683,7 @@ function buildIndex() {
       <span class="index-range">${formatValue(r.min)} – ${r.max === Infinity ? '∞' : formatValue(r.max)}</span>
     </div>`;
   }).join('');
+
 
   const vcolors = { shiny: '#ffe040', glowy: '#64ffb4', monochrome: '#cccccc' };
   document.getElementById('variant-index-grid').innerHTML = VARIANTS.map(v => {
@@ -990,6 +1695,7 @@ function buildIndex() {
   }).join('');
 }
 
+
 // ========== UI ==========
 function updateUI() {
   document.getElementById('coins').textContent = formatValue(coins);
@@ -997,19 +1703,19 @@ function updateUI() {
   document.getElementById('bulk-display').textContent = (1 + bulkLevel) + ' roll' + (1 + bulkLevel > 1 ? 's' : '');
   document.getElementById('total-rolls').textContent = totalRolls;
 
-  // Luck
+
   document.getElementById('luck-cost').textContent = formatValue(luckCost);
   document.getElementById('luck-level').textContent = luckLevel;
   document.getElementById('luck-btn').disabled = coins < luckCost;
 
-  // Bulk
+
   document.getElementById('bulk-cost').textContent = bulkLevel >= 4 ? 'MAXED' : formatValue(bulkCost);
   document.getElementById('bulk-level').textContent = bulkLevel;
   const bulkBtn = document.getElementById('bulk-btn');
   bulkBtn.disabled = bulkLevel >= 4 || coins < bulkCost;
   if (bulkLevel >= 4) bulkBtn.classList.add('maxed');
 
-  // Roll Speed
+
   const rsMaxed = rollSpeedLevel >= 10;
   document.getElementById('rollspeed-cost').textContent = rsMaxed ? 'MAXED' : formatValue(rollSpeedCost);
   document.getElementById('rollspeed-level').textContent = (rollSpeedLevel * 0.1).toFixed(1);
@@ -1018,7 +1724,7 @@ function updateUI() {
   rsBtn.disabled = rsMaxed || coins < rollSpeedCost;
   if (rsMaxed) rsBtn.classList.add('maxed');
 
-  // Variant Luck
+
   const vlBonus = getVariantLuckBonus();
   const vlMaxed = vlBonus >= 2.5;
   document.getElementById('variant-luck-cost').textContent = vlMaxed ? 'MAXED' : formatValue(variantLuckCost);
@@ -1027,7 +1733,7 @@ function updateUI() {
   vlBtn.disabled = vlMaxed || coins < variantLuckCost;
   if (vlMaxed) vlBtn.classList.add('maxed');
 
-  // Secret Luck
+
   const slBonus = getSecretLuckBonus();
   const slMaxed = slBonus >= 5;
   document.getElementById('secret-luck-cost').textContent = slMaxed ? 'MAXED' : formatValue(secretLuckCost);
@@ -1036,10 +1742,43 @@ function updateUI() {
   slBtn.disabled = slMaxed || coins < secretLuckCost;
   if (slMaxed) slBtn.classList.add('maxed');
 
-  // Inventory count
+
+  const cgMaxed = coinGainLevel >= 100;
+  document.getElementById('coin-gain-cost').textContent = cgMaxed ? 'MAXED' : formatValue(coinGainCost);
+  document.getElementById('coin-gain-level').textContent = (coinGainLevel * 10);
+  const cgBtn = document.getElementById('coin-gain-btn');
+  cgBtn.disabled = cgMaxed || coins < coinGainCost;
+  if (cgMaxed) cgBtn.classList.add('maxed');
+
+
+  // Enchant Luck
+  const elMaxed = enchantLuckLevel >= 15;
+  document.getElementById('enchant-luck-cost').textContent = elMaxed ? 'MAXED' : formatValue(enchantLuckCost);
+  document.getElementById('enchant-luck-level').textContent = (enchantLuckLevel * 5);
+  const elBtn = document.getElementById('enchant-luck-btn');
+  elBtn.disabled = elMaxed || coins < enchantLuckCost;
+  if (elMaxed) elBtn.classList.add('maxed');
+
+
+  const qrBtn = document.getElementById('quickroll-btn');
+  const qrCostEl = document.getElementById('quickroll-cost');
+  const qrStatusEl = document.getElementById('quickroll-status');
+  if (quickRollUnlocked) {
+    qrCostEl.textContent = 'Unlocked';
+    qrStatusEl.textContent = quickRollEnabled ? 'ON ⚡' : 'OFF';
+    qrBtn.disabled = false;
+    qrBtn.classList.toggle('qr-active', quickRollEnabled);
+  } else {
+    qrCostEl.textContent = formatValue(quickRollCost);
+    qrStatusEl.textContent = 'Locked';
+    qrBtn.disabled = coins < quickRollCost;
+    qrBtn.classList.remove('qr-active');
+  }
+
+
   document.getElementById('inv-count').textContent = inventory.length;
 
-  // Best rank
+
   if (bestRankIdx >= 0) {
     const bEl = document.getElementById('best-rank');
     bEl.textContent = RANKS[bestRankIdx].name.toUpperCase();
@@ -1047,7 +1786,7 @@ function updateUI() {
   }
 }
 
-// keyboard shortcut
+
 document.addEventListener('keydown', e => {
   if ((e.code === 'Space' || e.code === 'Enter') && !isRolling && !autoRollEnabled) {
     const btn = document.getElementById('roll-btn');
@@ -1058,9 +1797,15 @@ document.addEventListener('keydown', e => {
 // ========== INIT ==========
 loadData();
 buildIndex();
-buildAutoAcceptSelect();
+buildAutoDeleteSelects();
+// set auto-accept input initial value
+const accInput = document.getElementById('auto-accept-input');
+if (autoAcceptThreshold !== null) accInput.value = autoAcceptThreshold;
 updateUI();
 renderInventory();
+renderBoosterInventory();
+renderEquippedOrbs();
+startCrateTimer();
 </script>
 </body>
 </html>
