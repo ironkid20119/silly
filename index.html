@@ -233,6 +233,15 @@ body::before{content:'';position:fixed;inset:0;background-image:
 .scheme-swatch{width:36px;height:36px;border-radius:9px;cursor:pointer;border:2px solid transparent;transition:transform .12s,border-color .15s;position:relative;}
 .scheme-swatch:hover{transform:scale(1.12);}
 .scheme-swatch.active-scheme{border-color:#fff;}
+/* new: rank auto config */
+.auto-rank-list{max-height:280px;overflow-y:auto;display:flex;flex-direction:column;gap:3px;padding-right:4px;}
+.auto-rank-row{display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border-radius:8px;padding:3px 8px;font-size:.75rem;border-left:2px solid;}
+.auto-rank-name{font-weight:600;text-transform:uppercase;}
+.auto-rank-btns{display:flex;gap:4px;}
+.auto-rank-btn{width:28px;height:28px;border-radius:6px;border:1.5px solid transparent;background:var(--surface);color:var(--muted);font-size:.7rem;cursor:pointer;transition:all .12s;display:flex;align-items:center;justify-content:center;}
+.auto-rank-btn.active-decline{background:rgba(255,68,68,.25);border-color:#ff4444;color:#ff8888;}
+.auto-rank-btn.active-accept{background:rgba(68,255,136,.25);border-color:#44ff88;color:#aaffaa;}
+.auto-rank-btn.active-neutral{background:rgba(170,170,255,.15);border-color:#aaaaff;color:#ccccff;}
 </style>
 
 </head>
@@ -404,6 +413,9 @@ body::before{content:'';position:fixed;inset:0;background-image:
       <div class="index-grid" id="secret-index-grid"></div>
       <div class="index-section-title">Super Secrets</div>
       <div class="index-grid" id="super-secret-index-grid"></div>
+      <!-- new: exact-value secrets (funni, very evil, supercharged) -->
+      <div class="index-section-title">Exact‑Value Secrets</div>
+      <div class="index-grid" id="exact-secret-index-grid"></div>
       <div class="index-section-title">Booster Types</div>
       <div class="index-grid" id="booster-type-index"></div>
     </div>
@@ -454,6 +466,15 @@ body::before{content:'';position:fixed;inset:0;background-image:
       </div>
       <div style="font-size:.75rem;color:var(--muted);margin-bottom:6px">Color Scheme</div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px" id="scheme-btns"></div>
+      <!-- per‑rank auto config -->
+      <div style="font-size:.75rem;color:var(--muted);margin-bottom:6px">RNG Auto Config (per rank)</div>
+      <div class="auto-rank-list" id="rank-auto-list"></div>
+      <!-- per‑secret auto config -->
+      <div style="font-size:.75rem;color:var(--muted);margin-bottom:6px;margin-top:12px">Secret Auto Config</div>
+      <div class="auto-rank-list" id="secret-auto-list"></div>
+      <!-- per‑super‑secret auto config -->
+      <div style="font-size:.75rem;color:var(--muted);margin-bottom:6px;margin-top:12px">Super Secret Auto Config</div>
+      <div class="auto-rank-list" id="supersecret-auto-list"></div>
       <hr style="border:none;border-top:1px solid var(--border);margin:10px 0">
       <button class="auto-btn" style="width:100%;color:#ff4444;border-color:#ff444466;background:rgba(255,68,68,.06);padding:10px;font-size:.88rem" onclick="confirmWipe()">💀 WIPE SAVE</button>
       <div id="wipe-confirm" style="display:none;margin-top:8px;text-align:center">
@@ -656,6 +677,11 @@ let isRolling=false,autoRollEnabled=false;
 let autoAcceptThreshold=null,autoDeleteMinRank="none",autoDeleteSecret="none";
 let autoRollTimer=null,crateTimer=null,boxerTimer=null,nextItemId=Date.now();
 
+// NEW: per‑rank, per‑secret, per‑super‑secret auto override (-1 decline, 0 neutral, 1 accept)
+let rankAutoOverride = {};
+let secretAutoOverride = {};
+let superSecretAutoOverride = {};
+
 // FPS
 let detectedFPS=60;
 (function(){
@@ -780,7 +806,8 @@ duperUpgradeLevel,duperUpgradeCost,totalRolls,bestRankIdx,inventory,boosterInven
 enchantInventory,autoAcceptThreshold,autoDeleteMinRank,autoDeleteSecret,nextItemId,
 numberFormat,colorScheme,
 discoveredSecrets:[...discoveredSecrets],discoveredSuperSecrets:[...discoveredSuperSecrets],
-blackHoleRng,autoDeclineTierMap,orbAutoDeleteThreshold};
+blackHoleRng,autoDeclineTierMap,orbAutoDeleteThreshold,
+rankAutoOverride, secretAutoOverride, superSecretAutoOverride}; // save per‑rank/secret/super overrides
 localStorage.setItem("sillys_rng_save",JSON.stringify(d));
 const ind=document.getElementById("save-indicator");
 ind.classList.add("show");clearTimeout(ind._t);ind._t=setTimeout(()=>ind.classList.remove("show"),1200);
@@ -838,6 +865,10 @@ item.enchants=[];
 boosterInventory=boosterInventory.map(b=>({val:0,isMulti:false,isPower:false,powerVal:null,isEvil:false,variantIdx:-1,shape:"circle",active:false,...b}));
 // recalculate rankIdx in case new ranks were added (e.g. EON)
 inventory=inventory.map(item=>({superSecretIdx:-1,totallyMaxDisplayVal:null,...item,rankIdx:getRank(item.val)}));
+// load per‑rank/secret/super overrides
+rankAutoOverride = d.rankAutoOverride || {};
+secretAutoOverride = d.secretAutoOverride || {};
+superSecretAutoOverride = d.superSecretAutoOverride || {};
 }catch(e){console.warn("Save load failed",e);}
 }
 
@@ -854,6 +885,9 @@ document.getElementById("optimizer-btn").classList.toggle("opt-active",optimizer
 buildSchemeSwatches();buildIndex();buildAutoDeclineGrid();renderMergeUI();
 const oadi=document.getElementById("orb-auto-delete-input");
 if(oadi)oadi.value=orbAutoDeleteThreshold??"";
+renderRankAutoConfig(); // new
+renderSecretAutoConfig();
+renderSuperSecretAutoConfig();
 }
 function exportData(){
 const raw=localStorage.getItem("sillys_rng_save");
@@ -1242,6 +1276,10 @@ for(let i=defs.length-1;i>=minTier;i--){
 if(Math.random()<mult/defs[i].chance){result.push({cat,name:defs[i].name,color:defs[i].color,effect:defs[i].effect});break;}
 }
 }
+// volley must be alone: if any volley, remove all other enchants
+if(result.some(e=>e.cat==="volley")){
+return result.filter(e=>e.cat==="volley");
+}
 return result;
 }
 function enchantDotsHTML(enchants,cls="ench-dot"){
@@ -1388,24 +1426,30 @@ const [a,b]=mergeSelected.map(id=>enchantInventory.find(o=>o.id===id));
 if(!a||!b)return;
 coins-=MERGE_COST;
 const allEnchants=[...(a.enchants||[]),...(b.enchants||[])];
-// New nut unlock logic: unlocked if contains any walnut OR only chestnuts
-const nutEnchants = allEnchants.filter(e=>e.effect.nut);
-const nutLevels = new Set(nutEnchants.map(e=>e.effect.nut));
-const hasWalnut = nutLevels.has(1);
-const onlyChestnuts = nutLevels.size === 1 && nutLevels.has(4);
-const unlocked = hasWalnut || onlyChestnuts;
-
-// Volley special: if both orbs have volley, count total volley enchants in merged orb
+// count volley enchants
 const volleyCount = allEnchants.filter(e=>e.name==="volley").length;
-const volleyLock = volleyCount > 50; // if >50 volleys, it locks even if otherwise unlocked
+// if volleyCount > 50, orb is locked regardless of nut
+let locked = volleyCount > 50 ? true : false;
+
+// Nut unlock logic (only if not already locked by volley)
+if (!locked) {
+  const nutEnchants = allEnchants.filter(e=>e.effect.nut);
+  const nutLevels = new Set(nutEnchants.map(e=>e.effect.nut));
+  const hasWalnut = nutLevels.has(1);
+  const onlyChestnuts = nutLevels.size === 1 && nutLevels.has(4);
+  const unlocked = hasWalnut || onlyChestnuts;
+  locked = !unlocked;
+} else {
+  // already locked by volley >50
+}
 
 const merged={
 id:newId(),
 enchants:allEnchants,
 fromVal:Math.max(a.fromVal||0,b.fromVal||0),
 fromRankIdx:Math.max(a.fromRankIdx??0,b.fromRankIdx??0),
-locked: volleyLock ? true : !unlocked, // volley overrides
-nutUnlocked: unlocked && !volleyLock
+locked: locked,
+nutUnlocked: !locked && (volleyCount<=50) ? (hasWalnut||onlyChestnuts) : false // only relevant if not locked
 };
 enchantInventory=enchantInventory.filter(o=>!mergeSelected.includes(o.id));
 if(equippedOrbs.some(o=>mergeSelected.includes(o.orbId)))equippedOrbs=[];
@@ -1569,6 +1613,34 @@ bestRankIdx=best.rankIdx;
 const bEl=document.getElementById("best-rank");bEl.textContent=RANKS[bestRankIdx].name.toUpperCase();bEl.style.color=RANK_COLORS[bestRankIdx];
 }
 document.getElementById("result-coins").classList.remove("show");document.getElementById("result-coins").textContent="";
+// process pending with per‑rank/secret/super overrides
+let accepted = [];
+let pending = [];
+allResults.forEach(r => {
+  let override = 0;
+  if (r.superSecretIdx >= 0) {
+    override = superSecretAutoOverride[r.superSecretIdx] || 0;
+  } else if (r.secretIdx >= 0) {
+    override = secretAutoOverride[r.secretIdx] || 0;
+  } else {
+    override = rankAutoOverride[r.rankIdx] || 0;
+  }
+  if (override === -1) return; // discard
+  if (override === 1) {
+    accepted.push(r);
+    return;
+  }
+  // neutral: apply existing auto-delete and auto-accept
+  if (shouldAutoDelete(r)) return;
+  if (autoAcceptThreshold !== null && r.val >= autoAcceptThreshold) {
+    accepted.push(r);
+  } else {
+    pending.push(r);
+  }
+});
+pendingResults = pending;
+inventory.unshift(...accepted.map(r=>({...r})));
+renderInventory();
 document.getElementById("pending-area").innerHTML="";
 buildReelDom(numReels);
 let doneCount=0;
@@ -1582,12 +1654,6 @@ if(doneCount===numReels){
 const coinsEl=document.getElementById("result-coins");
 coinsEl.textContent=`+${formatValue(totalCoins)} 🪙`;
 requestAnimationFrame(()=>requestAnimationFrame(()=>coinsEl.classList.add("show")));
-pendingResults=allResults.map(r=>({...r}));
-if(autoDeleteMinRank!=="none"||autoDeleteSecret!=="none")pendingResults=pendingResults.filter(r=>!shouldAutoDelete(r));
-if(autoAcceptThreshold!==null&&!isNaN(autoAcceptThreshold)){
-pendingResults=pendingResults.filter(r=>{if(r.val>=autoAcceptThreshold){inventory.unshift({...r});return false;}return true;});
-renderInventory();
-}
 renderPending();if(best.rankIdx>=10)spawnParticles(best.rankIdx);
 renderEnchantInventory();updateNavBadges();buildIndex();
 // black hole cutscene
@@ -1866,6 +1932,19 @@ const chanceStr=i===SS_EEON?"1/6.66 (if EON)":i===SS_VERYEVIL?"exact 77777776.00
 const descHtml=`<span style="font-size:.62rem;color:var(--muted);display:block;margin-top:1px">${s.desc}</span>`;
 return`<div class="index-row" style="border-left-color:${borderColor}${i===SS_EEON?";box-shadow:inset 2px 0 0 "+EEON_SOLID:""}"><span class="index-name">${nameHtml}${descHtml}</span><span class="index-range" style="white-space:nowrap">${chanceStr}</span></div>`;
 }).join("");
+// new: exact-value secrets (funni, very evil, supercharged)
+const exactSecrets = SUPER_SECRETS.filter((_,i)=>[SS_VERYEVIL,SS_FUNNI,SS_SUPERCHARGED].includes(i));
+document.getElementById("exact-secret-index-grid").innerHTML = exactSecrets.map(s=>{
+  const disc = discoveredSuperSecrets.has(s.name);
+  const mark = disc ? '<span style="color:#44ff88;margin-left:4px">✓</span>' : '<span style="color:#ff4444;margin-left:4px;opacity:.6">✗</span>';
+  const nameHtml = s.name === "Very Evil Idiot" ? `<span style="color:#ff0066">${s.name}</span>`
+                  : s.name === "funni !!!" ? `<span style="background:linear-gradient(90deg,#ffaa00,#ffff44,#ff6600);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">${s.name}</span>`
+                  : `<span style="color:#ffff44">${s.name}</span>`;
+  const chanceStr = s.name === "Very Evil Idiot" ? "exact 77777776.00"
+                   : s.name === "funni !!!" ? "exact 69420.00"
+                   : "exact 222,222.00";
+  return `<div class="index-row" style="border-left-color:${s.color}"><span class="index-name">${nameHtml}${mark}</span><span class="index-range">${chanceStr}</span></div>`;
+}).join("");
 document.getElementById("booster-type-index").innerHTML=[
 {label:"+ ADD",desc:"Additive luck boost",color:"#aaaaff",chance:"common"},
 {label:"× MULTI",desc:"Multiplicative luck (blue)",color:"#6baaff",chance:"1/25"},
@@ -1934,13 +2013,77 @@ document.getElementById("inv-count").textContent=inventory.length;
 if(bestRankIdx>=0){const bEl=document.getElementById("best-rank");bEl.textContent=RANKS[bestRankIdx].name.toUpperCase();bEl.style.color=RANK_COLORS[bestRankIdx];}
 }
 
+// NEW: render per‑rank auto config
+function renderRankAutoConfig(){
+  const container = document.getElementById("rank-auto-list");
+  if(!container) return;
+  container.innerHTML = RANKS.map((rank,i)=>{
+    const cur = rankAutoOverride[i] || 0;
+    const color = RANK_COLORS[i];
+    return `<div class="auto-rank-row" style="border-left-color:${color}">
+      <span class="auto-rank-name">${rank.name}</span>
+      <div class="auto-rank-btns">
+        <button class="auto-rank-btn ${cur===-1?'active-decline':''}" onclick="setRankOverride(${i},-1)">🔴</button>
+        <button class="auto-rank-btn ${cur===0?'active-neutral':''}"  onclick="setRankOverride(${i},0)">⚪</button>
+        <button class="auto-rank-btn ${cur===1?'active-accept':''}"  onclick="setRankOverride(${i},1)">🟢</button>
+      </div>
+    </div>`;
+  }).join("");
+}
+function setRankOverride(idx,val){
+  rankAutoOverride[idx] = val;
+  renderRankAutoConfig();
+  saveData();
+}
+// NEW: render per‑secret auto config
+function renderSecretAutoConfig(){
+  const container = document.getElementById("secret-auto-list");
+  if(!container) return;
+  container.innerHTML = SECRET_RANKS.map((secret,i)=>{
+    const cur = secretAutoOverride[i] || 0;
+    return `<div class="auto-rank-row" style="border-left-color:${SECRET_RANK_COLOR}">
+      <span class="auto-rank-name">${secret.name}</span>
+      <div class="auto-rank-btns">
+        <button class="auto-rank-btn ${cur===-1?'active-decline':''}" onclick="setSecretOverride(${i},-1)">🔴</button>
+        <button class="auto-rank-btn ${cur===0?'active-neutral':''}"  onclick="setSecretOverride(${i},0)">⚪</button>
+        <button class="auto-rank-btn ${cur===1?'active-accept':''}"  onclick="setSecretOverride(${i},1)">🟢</button>
+      </div>
+    </div>`;
+  }).join("");
+}
+function setSecretOverride(idx,val){
+  secretAutoOverride[idx] = val;
+  renderSecretAutoConfig();
+  saveData();
+}
+// NEW: render per‑super‑secret auto config
+function renderSuperSecretAutoConfig(){
+  const container = document.getElementById("supersecret-auto-list");
+  if(!container) return;
+  container.innerHTML = SUPER_SECRETS.map((ss,i)=>{
+    const cur = superSecretAutoOverride[i] || 0;
+    return `<div class="auto-rank-row" style="border-left-color:${ss.color}">
+      <span class="auto-rank-name">${ss.name}</span>
+      <div class="auto-rank-btns">
+        <button class="auto-rank-btn ${cur===-1?'active-decline':''}" onclick="setSuperSecretOverride(${i},-1)">🔴</button>
+        <button class="auto-rank-btn ${cur===0?'active-neutral':''}"  onclick="setSuperSecretOverride(${i},0)">⚪</button>
+        <button class="auto-rank-btn ${cur===1?'active-accept':''}"  onclick="setSuperSecretOverride(${i},1)">🟢</button>
+      </div>
+    </div>`;
+  }).join("");
+}
+function setSuperSecretOverride(idx,val){
+  superSecretAutoOverride[idx] = val;
+  renderSuperSecretAutoConfig();
+  saveData();
+}
+
 document.addEventListener("keydown",e=>{
 if((e.code==="Space"||e.code==="Enter")&&!isRolling&&!autoRollEnabled){
 const btn=document.getElementById("roll-btn");if(!btn.disabled)doRoll();
 }
 });
 
-// INIT
 loadData();
 fullReloadUI();
 </script>
