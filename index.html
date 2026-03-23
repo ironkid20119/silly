@@ -167,14 +167,13 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 #bh-cutscene{position:fixed;inset:0;z-index:9999;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;transition:opacity .8s;pointer-events:none;}
 #bh-cutscene.bh-show{opacity:1;pointer-events:all;}
 #bh-canvas{border-radius:50%;}
-
-/* rank_XX.err — missing texture */
 .missing-tex{background-color:#440066;background-image:linear-gradient(45deg,#000 25%,transparent 25%,transparent 75%,#000 75%),linear-gradient(45deg,#000 25%,transparent 25%,transparent 75%,#000 75%);background-size:14px 14px;background-position:0 0,7px 7px;}
-/* err cutscene */
 #err-cutscene{position:fixed;inset:0;z-index:10001;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;transition:opacity .8s;pointer-events:none;gap:24px;}
 #err-cutscene.err-show{opacity:1;pointer-events:all;}
-.err-line{font-size:1.1rem;color:#fff;font-family:‘Fredoka One’,cursive;letter-spacing:.08em;opacity:0;transition:opacity 1.2s;text-align:center;-webkit-text-stroke:1px #fff;}
+.err-line{font-size:1.1rem;color:#fff;font-family:'Fredoka One',cursive;letter-spacing:.08em;opacity:0;transition:opacity 1.2s;text-align:center;-webkit-text-stroke:1px #fff;}
 .err-line.err-visible{opacity:1;}
+@keyframes paragonCycle{0%,14.28%{color:#ff5555;text-shadow:0 0 8px #ff5555aa}14.29%,28.57%{color:#ffaa55;text-shadow:0 0 8px #ffaa55aa}28.58%,42.85%{color:#ffff55;text-shadow:0 0 8px #ffff55aa}42.86%,57.14%{color:#55ff55;text-shadow:0 0 8px #55ff55aa}57.15%,71.42%{color:#5577ff;text-shadow:0 0 8px #5577ffaa}71.43%,85.71%{color:#9944ff;text-shadow:0 0 8px #9944ffaa}85.72%,100%{color:#ee55ff;text-shadow:0 0 8px #ee55ffaa}}
+@keyframes aetherialShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 @media(max-width:680px){
 :root{--item-w:52px;--reel-h:52px;}
 .app-wrapper{flex-direction:column;}
@@ -235,72 +234,72 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 </style>
 </head>
 <body>
-<div class="save-indicator" id="save-indicator">💾 Saved</div>
+<div class="save-indicator" id="save-indicator">&#x1F4BE; Saved</div>
 <div id="bh-cutscene"><canvas id="bh-canvas" width="500" height="500"></canvas></div>
 <div id="err-cutscene">
   <div class="err-line" id="err-line-0">...</div>
   <div class="err-line" id="err-line-1">youve really did it...</div>
-  <div class="err-line" id="err-line-2">is this... the ████?</div>
-  <div class="err-line" id="err-line-3">████... i see... its... ████..</div>
+  <div class="err-line" id="err-line-2">is this... the &#x2588;&#x2588;&#x2588;&#x2588;?</div>
+  <div class="err-line" id="err-line-3">&#x2588;&#x2588;&#x2588;&#x2588;... i see... its... &#x2588;&#x2588;&#x2588;&#x2588;..</div>
   <div class="err-line" id="err-line-4">but what for?</div>
 </div>
 <div class="app-wrapper">
   <nav class="nav-sidebar">
-    <div class="nav-logo">✨<br>RNG</div>
-    <button class="nav-btn active" id="nav-rolling" onclick="switchTab('rolling')"><span class="nav-icon">🎲</span>Roll</button>
-    <button class="nav-btn" id="nav-upgrades" onclick="switchTab('upgrades')"><span class="nav-icon">🛒</span>Shop</button>
-    <button class="nav-btn" id="nav-inventory" onclick="switchTab('inventory')"><span class="nav-icon">🎒</span>Items<span class="nav-badge" id="inv-badge" style="display:none">0</span></button>
-    <button class="nav-btn" id="nav-enchants" onclick="switchTab('enchants')"><span class="nav-icon">🔮</span>Orbs<span class="nav-badge" id="ench-badge" style="display:none">0</span></button>
-    <button class="nav-btn" id="nav-indexes" onclick="switchTab('indexes')"><span class="nav-icon">📖</span>Index</button>
-    <button class="nav-btn" id="nav-boosters" onclick="switchTab('boosters')"><span class="nav-icon">⚡</span>Boost<span class="nav-badge" id="booster-badge" style="display:none">0</span></button>
-    <button class="nav-btn" id="nav-extras" onclick="switchTab('extras')"><span class="nav-icon">⚙️</span>Extras</button>
+    <div class="nav-logo">&#x2728;<br>RNG</div>
+    <button class="nav-btn active" id="nav-rolling" onclick="switchTab('rolling')"><span class="nav-icon">&#x1F3B2;</span>Roll</button>
+    <button class="nav-btn" id="nav-upgrades" onclick="switchTab('upgrades')"><span class="nav-icon">&#x1F6D2;</span>Shop</button>
+    <button class="nav-btn" id="nav-inventory" onclick="switchTab('inventory')"><span class="nav-icon">&#x1F392;</span>Items<span class="nav-badge" id="inv-badge" style="display:none">0</span></button>
+    <button class="nav-btn" id="nav-enchants" onclick="switchTab('enchants')"><span class="nav-icon">&#x1F52E;</span>Orbs<span class="nav-badge" id="ench-badge" style="display:none">0</span></button>
+    <button class="nav-btn" id="nav-indexes" onclick="switchTab('indexes')"><span class="nav-icon">&#x1F4D6;</span>Index</button>
+    <button class="nav-btn" id="nav-boosters" onclick="switchTab('boosters')"><span class="nav-icon">&#x26A1;</span>Boost<span class="nav-badge" id="booster-badge" style="display:none">0</span></button>
+    <button class="nav-btn" id="nav-extras" onclick="switchTab('extras')"><span class="nav-icon">&#x2699;&#xFE0F;</span>Extras</button>
   </nav>
   <div class="main-area">
     <div class="header-bar">
-      <h1>✨ Silly's RNG</h1>
+      <h1>&#x2728; Silly's RNG</h1>
       <div class="stats-bar">
-        <div class="stat-chip">🪙 <span class="val" id="coins">0</span></div>
-        <div class="stat-chip">🍀 <span class="val" id="luck-display">1x</span></div>
-        <div class="stat-chip">🎲 <span class="val" id="bulk-display">1 roll</span></div>
-        <div class="stat-chip">📊 <span class="val" id="total-rolls">0</span></div>
+        <div class="stat-chip">&#x1FA99; <span class="val" id="coins">0</span></div>
+        <div class="stat-chip">&#x1F340; <span class="val" id="luck-display">1x</span></div>
+        <div class="stat-chip">&#x1F3B2; <span class="val" id="bulk-display">1 roll</span></div>
+        <div class="stat-chip">&#x1F4CA; <span class="val" id="total-rolls">0</span></div>
       </div>
     </div>
     <div class="tab-container">
   <div class="tab-panel active" id="tab-rolling">
-    <div class="slot-machine-wrap"><div class="reels-col" id="reels-col"><div class="reel-row"><div class="reel-placeholder">— Roll to Start —</div></div></div></div>
-    <div class="info-row"><div class="result-coins" id="result-coins"></div><div class="best-roll">🏆 Best: <span id="best-rank">None yet</span></div></div>
-    <button class="roll-btn" id="roll-btn" onclick="doRoll()">🎲 ROLL!</button>
-    <div class="autoroll-row"><button class="auto-btn" id="auto-btn" onclick="toggleAutoRoll()">🔄 Auto Roll</button><span class="auto-label">Auto-accept ≥</span><input type="number" id="auto-accept-input" class="auto-input" placeholder="value" step="any" onchange="setAutoAccept(this.value)"></div>
+    <div class="slot-machine-wrap"><div class="reels-col" id="reels-col"><div class="reel-row"><div class="reel-placeholder">&#x2014; Roll to Start &#x2014;</div></div></div></div>
+    <div class="info-row"><div class="result-coins" id="result-coins"></div><div class="best-roll">&#x1F3C6; Best: <span id="best-rank">None yet</span></div></div>
+    <button class="roll-btn" id="roll-btn" onclick="doRoll()">&#x1F3B2; ROLL!</button>
+    <div class="autoroll-row"><button class="auto-btn" id="auto-btn" onclick="toggleAutoRoll()">&#x1F504; Auto Roll</button><span class="auto-label">Auto-accept &ge;</span><input type="number" id="auto-accept-input" class="auto-input" placeholder="value" step="any" onchange="setAutoAccept(this.value)"></div>
     <div class="autoroll-row"><span class="auto-label">Auto-delete &lt;</span><select class="auto-select" id="auto-delete-select" onchange="setAutoDelete(this.value)"><option value="none">Off</option></select><span class="auto-label">Secret del &lt;</span><select class="auto-select" id="auto-delete-secret-select" onchange="setAutoDeleteSecret(this.value)"><option value="none">Off</option></select></div>
     <div class="pending-area" id="pending-area"></div>
   </div>
-  <div class="tab-panel" id="tab-upgrades"><div class="panel"><h2>🛒 Upgrades</h2>
-    <button class="upgrade-btn" id="luck-btn" onclick="buyUpgrade('luck')"><div class="upgrade-name">⚡ Luck Boost</div><div class="upgrade-desc">+0.5× luck multiplier</div><div class="upgrade-cost">Cost: <span id="luck-cost">75</span> 🪙</div><div class="upgrade-level">Owned: <span id="luck-level">0</span></div></button>
-    <button class="upgrade-btn" id="bulk-btn" onclick="buyUpgrade('bulk')"><div class="upgrade-name">🎰 Bulk Roll</div><div class="upgrade-desc">+1 extra reel per roll (max +4)</div><div class="upgrade-cost">Cost: <span id="bulk-cost">1000</span> 🪙</div><div class="upgrade-level">Owned: <span id="bulk-level">0</span> / 4</div></button>
-    <button class="upgrade-btn" id="rollspeed-btn" onclick="buyUpgrade('rollSpeed')"><div class="upgrade-name">⏩ Roll Speed</div><div class="upgrade-desc">−0.1s cooldown &amp; animation (max −1s)</div><div class="upgrade-cost">Cost: <span id="rollspeed-cost">100</span> 🪙</div><div class="upgrade-level">−<span id="rollspeed-level">0.0</span>s · <span id="rollspeed-ms">1750</span>ms spin</div></button>
-    <button class="upgrade-btn" id="quickroll-btn" onclick="buyOrToggleQuickRoll()"><div class="upgrade-name">⚡ Quick Roll</div><div class="upgrade-desc">Toggle: animation &amp; cooldown = 0.2s</div><div class="upgrade-cost">Cost: <span id="quickroll-cost">10,000</span> 🪙</div><div class="upgrade-level">Status: <span id="quickroll-status">Locked</span></div></button>
-    <button class="upgrade-btn" id="ultra-fast-roll-btn" onclick="buyOrToggleUltraFastRoll()"><div class="upgrade-name">🚀 Ultra Fast Roll</div><div class="upgrade-desc">Toggle: delay &amp; stagger = 1 frame</div><div class="upgrade-cost">Cost: <span id="ultra-fast-roll-cost">10,000,000</span> 🪙</div><div class="upgrade-level">Status: <span id="ultra-fast-roll-status">Locked</span> · <span id="fps-display">?</span> FPS</div></button>
-    <button class="upgrade-btn" id="variant-luck-btn" onclick="buyUpgrade('variantLuck')"><div class="upgrade-name">✨ Variant Luck</div><div class="upgrade-desc">+0.125× variant chance (max +2.5)</div><div class="upgrade-cost">Cost: <span id="variant-luck-cost">75</span> 🪙</div><div class="upgrade-level">Bonus: +<span id="variant-luck-level">0.000</span></div></button>
-    <button class="upgrade-btn" id="secret-luck-btn" onclick="buyUpgrade('secretLuck')"><div class="upgrade-name">🔮 Secret Luck</div><div class="upgrade-desc">+0.05× secret rank chance (max +5)</div><div class="upgrade-cost">Cost: <span id="secret-luck-cost">25</span> 🪙</div><div class="upgrade-level">Bonus: +<span id="secret-luck-level">0.00</span></div></button>
-    <button class="upgrade-btn" id="coin-gain-btn" onclick="buyUpgrade('coinGain')"><div class="upgrade-name">💰 Coin Gain</div><div class="upgrade-desc">+10% coin gain per level (max +1000%)</div><div class="upgrade-cost">Cost: <span id="coin-gain-cost">5000</span> 🪙</div><div class="upgrade-level">Bonus: +<span id="coin-gain-level">0</span>%</div></button>
-    <button class="upgrade-btn" id="enchant-luck-btn" onclick="buyUpgrade('enchantLuck')"><div class="upgrade-name">🔮 Enchant Luck</div><div class="upgrade-desc">+5% enchant chance per level (max +75%)</div><div class="upgrade-cost">Cost: <span id="enchant-luck-cost">500</span> 🪙</div><div class="upgrade-level">Bonus: +<span id="enchant-luck-level">0</span>%</div></button>
-    <button class="upgrade-btn" id="optimizer-btn" onclick="buyOrToggleOptimizer()"><div class="upgrade-name">🧠 Optimizer</div><div class="upgrade-desc">Toggle: luck ×1.75 BUT coin gain −325%</div><div class="upgrade-cost">Cost: <span id="optimizer-cost">5,000,000</span> 🪙</div><div class="upgrade-level">Status: <span id="optimizer-status">Locked</span></div></button>
-    <button class="upgrade-btn" id="duper-upgrade-btn" onclick="buyUpgrade('duperUpgrade')"><div class="upgrade-name">🎯 Duper</div><div class="upgrade-desc">+1 multi roll per reel (max +2)</div><div class="upgrade-cost">Cost: <span id="duper-upgrade-cost">500,000</span> 🪙</div><div class="upgrade-level">Owned: <span id="duper-upgrade-level">0</span> / 2</div></button>
-    <button class="upgrade-btn" id="coinflip-btn" onclick="buyOrToggleCoinflip()"><div class="upgrade-name">🪙 Coinflip Potency</div><div class="upgrade-desc">Toggle: every 10s, 50/50 chance +0.1× or −0.1× luck (min ×0.1, max ×2.5)</div><div class="upgrade-cost">Cost: <span id="coinflip-cost">100,000,000,000</span> 🪙</div><div class="upgrade-level">Status: <span id="coinflip-status">Locked</span> · Mult: <span id="coinflip-mult">1.0</span>×</div></button>
-    <div class="info-note"><div class="note-title">ℹ️ How Luck Works</div>Higher luck → bigger values → rarer ranks!<br>Coins = rng^0.5 × (1 + log₁₀(rng))</div>
+  <div class="tab-panel" id="tab-upgrades"><div class="panel"><h2>&#x1F6D2; Upgrades</h2>
+    <button class="upgrade-btn" id="luck-btn" onclick="buyUpgrade('luck')"><div class="upgrade-name">&#x26A1; Luck Boost</div><div class="upgrade-desc">+0.5&times; luck multiplier</div><div class="upgrade-cost">Cost: <span id="luck-cost">75</span> &#x1FA99;</div><div class="upgrade-level">Owned: <span id="luck-level">0</span></div></button>
+    <button class="upgrade-btn" id="bulk-btn" onclick="buyUpgrade('bulk')"><div class="upgrade-name">&#x1F3B0; Bulk Roll</div><div class="upgrade-desc">+1 extra reel per roll (max +4)</div><div class="upgrade-cost">Cost: <span id="bulk-cost">1000</span> &#x1FA99;</div><div class="upgrade-level">Owned: <span id="bulk-level">0</span> / 4</div></button>
+    <button class="upgrade-btn" id="rollspeed-btn" onclick="buyUpgrade('rollSpeed')"><div class="upgrade-name">&#x23E9; Roll Speed</div><div class="upgrade-desc">&minus;0.1s cooldown &amp; animation (max &minus;1s)</div><div class="upgrade-cost">Cost: <span id="rollspeed-cost">100</span> &#x1FA99;</div><div class="upgrade-level">&minus;<span id="rollspeed-level">0.0</span>s &middot; <span id="rollspeed-ms">1750</span>ms spin</div></button>
+    <button class="upgrade-btn" id="quickroll-btn" onclick="buyOrToggleQuickRoll()"><div class="upgrade-name">&#x26A1; Quick Roll</div><div class="upgrade-desc">Toggle: animation &amp; cooldown = 0.2s</div><div class="upgrade-cost">Cost: <span id="quickroll-cost">10,000</span> &#x1FA99;</div><div class="upgrade-level">Status: <span id="quickroll-status">Locked</span></div></button>
+    <button class="upgrade-btn" id="ultra-fast-roll-btn" onclick="buyOrToggleUltraFastRoll()"><div class="upgrade-name">&#x1F680; Ultra Fast Roll</div><div class="upgrade-desc">Toggle: delay &amp; stagger = 1 frame</div><div class="upgrade-cost">Cost: <span id="ultra-fast-roll-cost">10,000,000</span> &#x1FA99;</div><div class="upgrade-level">Status: <span id="ultra-fast-roll-status">Locked</span> &middot; <span id="fps-display">?</span> FPS</div></button>
+    <button class="upgrade-btn" id="variant-luck-btn" onclick="buyUpgrade('variantLuck')"><div class="upgrade-name">&#x2728; Variant Luck</div><div class="upgrade-desc">+0.125&times; variant chance (max +2.5)</div><div class="upgrade-cost">Cost: <span id="variant-luck-cost">75</span> &#x1FA99;</div><div class="upgrade-level">Bonus: +<span id="variant-luck-level">0.000</span></div></button>
+    <button class="upgrade-btn" id="secret-luck-btn" onclick="buyUpgrade('secretLuck')"><div class="upgrade-name">&#x1F52E; Secret Luck</div><div class="upgrade-desc">+0.05&times; secret rank chance (max +5)</div><div class="upgrade-cost">Cost: <span id="secret-luck-cost">25</span> &#x1FA99;</div><div class="upgrade-level">Bonus: +<span id="secret-luck-level">0.00</span></div></button>
+    <button class="upgrade-btn" id="coin-gain-btn" onclick="buyUpgrade('coinGain')"><div class="upgrade-name">&#x1F4B0; Coin Gain</div><div class="upgrade-desc">+10% coin gain per level (max +1000%)</div><div class="upgrade-cost">Cost: <span id="coin-gain-cost">5000</span> &#x1FA99;</div><div class="upgrade-level">Bonus: +<span id="coin-gain-level">0</span>%</div></button>
+    <button class="upgrade-btn" id="enchant-luck-btn" onclick="buyUpgrade('enchantLuck')"><div class="upgrade-name">&#x1F52E; Enchant Luck</div><div class="upgrade-desc">+5% enchant chance per level (max +75%)</div><div class="upgrade-cost">Cost: <span id="enchant-luck-cost">500</span> &#x1FA99;</div><div class="upgrade-level">Bonus: +<span id="enchant-luck-level">0</span>%</div></button>
+    <button class="upgrade-btn" id="optimizer-btn" onclick="buyOrToggleOptimizer()"><div class="upgrade-name">&#x1F9E0; Optimizer</div><div class="upgrade-desc">Toggle: luck &times;1.75 BUT coin gain &minus;325%</div><div class="upgrade-cost">Cost: <span id="optimizer-cost">5,000,000</span> &#x1FA99;</div><div class="upgrade-level">Status: <span id="optimizer-status">Locked</span></div></button>
+    <button class="upgrade-btn" id="duper-upgrade-btn" onclick="buyUpgrade('duperUpgrade')"><div class="upgrade-name">&#x1F3AF; Duper</div><div class="upgrade-desc">+1 multi roll per reel (max +2)</div><div class="upgrade-cost">Cost: <span id="duper-upgrade-cost">500,000</span> &#x1FA99;</div><div class="upgrade-level">Owned: <span id="duper-upgrade-level">0</span> / 2</div></button>
+    <button class="upgrade-btn" id="coinflip-btn" onclick="buyOrToggleCoinflip()"><div class="upgrade-name">&#x1FA99; Coinflip Potency</div><div class="upgrade-desc">Toggle: every 10s, 50/50 chance +0.1&times; or &minus;0.1&times; luck (min &times;0.1, max &times;2.5)</div><div class="upgrade-cost">Cost: <span id="coinflip-cost">100,000,000,000</span> &#x1FA99;</div><div class="upgrade-level">Status: <span id="coinflip-status">Locked</span> &middot; Mult: <span id="coinflip-mult">1.0</span>&times;</div></button>
+    <div class="info-note"><div class="note-title">&#x2139;&#xFE0F; How Luck Works</div>Higher luck &rarr; bigger values &rarr; rarer ranks!<br>Coins = rng^0.5 &times; (1 + log&#x2081;&#x2080;(rng))</div>
   </div></div>
-  <div class="tab-panel" id="tab-inventory"><div class="inventory-panel"><h2>🎒 Inventory (<span id="inv-count">0</span>)</h2><div class="inventory-list" id="inventory-list"><div class="inv-empty">No items yet!</div></div></div></div>
+  <div class="tab-panel" id="tab-inventory"><div class="inventory-panel"><h2>&#x1F392; Inventory (<span id="inv-count">0</span>)</h2><div class="inventory-list" id="inventory-list"><div class="inv-empty">No items yet!</div></div></div></div>
   <div class="tab-panel" id="tab-enchants"><div class="enchant-panel">
-    <h2>🔮 Enchant Orbs (<span id="ench-count">0</span>)</h2>
+    <h2>&#x1F52E; Enchant Orbs (<span id="ench-count">0</span>)</h2>
     <div style="font-size:.72rem;color:var(--muted);text-align:center;margin-bottom:8px">Orbs auto-collect when rolls have enchants. Equip one at a time.</div>
-    <div style="margin-bottom:8px;display:flex;flex-direction:column;gap:6px"><button id="merge-toggle-btn" onclick="toggleMergeMode()" style="font-size:.72rem;padding:5px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--accent);cursor:pointer;font-family:inherit;font-weight:700">⚗️ Merge Orbs (100M coins)</button><div id="merge-panel" style="display:none;flex-direction:column;gap:5px;padding:8px 10px;background:var(--surface2);border-radius:9px;border:1px solid #ffdd4455"><div style="font-size:.7rem;color:#ffdd44">Select 2 unlocked orbs to merge. Costs 100,000,000 coins.</div><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span id="merge-cost-display" style="font-size:.7rem;color:var(--muted)">Selected: 0/2 orbs</span><button id="merge-do-btn" onclick="doMergeOrbs()" disabled style="font-size:.7rem;padding:4px 12px;border-radius:7px;border:1px solid #ffdd44;background:rgba(255,221,68,.15);color:#ffdd44;cursor:pointer;font-family:inherit;font-weight:700">❆ Merge!</button></div></div></div>
-    <div style="margin-bottom:10px;padding:8px 10px;background:var(--surface2);border-radius:9px;border:1px solid var(--border)"><div style="font-size:.72rem;color:var(--muted);margin-bottom:5px">🗑 Auto-delete orbs below rarity (1/X):</div><div style="display:flex;align-items:center;gap:7px"><input id="orb-auto-delete-input" type="number" min="0" placeholder="off" oninput="setOrbAutoDelete(this.value)" style="width:110px;padding:4px 8px;border-radius:7px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-size:.75rem"/><span id="orb-auto-delete-label" style="font-size:.65rem;color:var(--muted)">off</span></div></div>
-    <div style="margin-bottom:10px;padding:8px 10px;background:var(--surface2);border-radius:9px;border:1px solid var(--border)"><div style="font-size:.72rem;color:var(--muted);margin-bottom:5px">🚫 Auto-decline enchant categories:</div><div id="auto-decline-grid" style="display:flex;flex-wrap:wrap;gap:5px"></div></div>
+    <div style="margin-bottom:8px;display:flex;flex-direction:column;gap:6px"><button id="merge-toggle-btn" onclick="toggleMergeMode()" style="font-size:.72rem;padding:5px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--accent);cursor:pointer;font-family:inherit;font-weight:700">&#x2697;&#xFE0F; Merge Orbs (100M coins)</button><div id="merge-panel" style="display:none;flex-direction:column;gap:5px;padding:8px 10px;background:var(--surface2);border-radius:9px;border:1px solid #ffdd4455"><div style="font-size:.7rem;color:#ffdd44">Select 2 unlocked orbs to merge. Costs 100,000,000 coins.</div><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span id="merge-cost-display" style="font-size:.7rem;color:var(--muted)">Selected: 0/2 orbs</span><button id="merge-do-btn" onclick="doMergeOrbs()" disabled style="font-size:.7rem;padding:4px 12px;border-radius:7px;border:1px solid #ffdd44;background:rgba(255,221,68,.15);color:#ffdd44;cursor:pointer;font-family:inherit;font-weight:700">&#x2746; Merge!</button></div></div></div>
+    <div style="margin-bottom:10px;padding:8px 10px;background:var(--surface2);border-radius:9px;border:1px solid var(--border)"><div style="font-size:.72rem;color:var(--muted);margin-bottom:5px">&#x1F5D1; Auto-delete orbs below rarity (1/X):</div><div style="display:flex;align-items:center;gap:7px"><input id="orb-auto-delete-input" type="number" min="0" placeholder="off" oninput="setOrbAutoDelete(this.value)" style="width:110px;padding:4px 8px;border-radius:7px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-size:.75rem"/><span id="orb-auto-delete-label" style="font-size:.65rem;color:var(--muted)">off</span></div></div>
+    <div style="margin-bottom:10px;padding:8px 10px;background:var(--surface2);border-radius:9px;border:1px solid var(--border)"><div style="font-size:.72rem;color:var(--muted);margin-bottom:5px">&#x1F6AB; Auto-decline enchant categories:</div><div id="auto-decline-grid" style="display:flex;flex-wrap:wrap;gap:5px"></div></div>
     <div class="equip-slots" id="equip-slots"><div class="equip-slot" id="equip-slot-0">Empty</div><div class="equip-slot" id="equip-slot-1" style="opacity:.5;filter:grayscale(.7)"><small>locked</small></div><div class="equip-slot" id="equip-slot-2" style="opacity:.5;filter:grayscale(.7)"><small>locked</small></div></div>
     <div class="enchant-stat-bar" id="enchant-stat-bar">No enchants equipped</div>
     <div class="inventory-list" id="enchant-inventory-list" style="margin-top:10px;max-height:min(340px,32vh)"><div class="inv-empty">No orbs yet!</div></div>
   </div></div>
-  <div class="tab-panel" id="tab-indexes"><div class="index-full"><h2>📖 Index</h2>
+  <div class="tab-panel" id="tab-indexes"><div class="index-full"><h2>&#x1F4D6; Index</h2>
     <div class="index-section-title">Ranks</div><div class="index-grid" id="index-grid"></div>
     <div class="index-section-title">Variants</div><div class="index-grid" id="variant-index-grid"></div>
     <div id="enchant-index-grid"></div>
@@ -309,17 +308,17 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
     <div class="index-section-title">Exact-Value Secrets</div><div class="index-grid" id="exact-secret-index-grid"></div>
     <div class="index-section-title">Booster Types</div><div class="index-grid" id="booster-type-index"></div>
   </div></div>
-  <div class="tab-panel" id="tab-boosters"><div class="booster-panel"><h2 id="booster-hdr">⚡ Boosters (0)</h2><div class="booster-preview" id="booster-luck-preview">Click a crate to collect!</div><div class="booster-list" id="booster-list"><div class="booster-empty">No boosters yet</div></div></div></div>
-  <div class="tab-panel" id="tab-extras"><div class="panel"><h2>📤 Export / Import</h2>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:8px"><button class="upgrade-btn" style="width:auto;flex:1;min-width:90px;text-align:center;padding:9px 12px;" onclick="exportData()"><div class="upgrade-name" style="color:#6bddff">📁 JSON</div><div class="upgrade-desc">Export as .json file</div></button><button class="upgrade-btn" style="width:auto;flex:1;min-width:90px;text-align:center;padding:9px 12px;" onclick="document.getElementById('import-file-input').click()"><div class="upgrade-name" style="color:#6bffb8">📂 Import JSON</div><div class="upgrade-desc">Load a .json save</div></button><button class="upgrade-btn" style="width:auto;flex:1;min-width:90px;text-align:center;padding:9px 12px;" onclick="exportTxt()"><div class="upgrade-name" style="color:#ffe06b">📋 Copy Code</div><div class="upgrade-desc">Export as text code</div></button></div>
+  <div class="tab-panel" id="tab-boosters"><div class="booster-panel"><h2 id="booster-hdr">&#x26A1; Boosters (0)</h2><div class="booster-preview" id="booster-luck-preview">Click a crate to collect!</div><div class="booster-list" id="booster-list"><div class="booster-empty">No boosters yet</div></div></div></div>
+  <div class="tab-panel" id="tab-extras"><div class="panel"><h2>&#x1F4E4; Export / Import</h2>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:8px"><button class="upgrade-btn" style="width:auto;flex:1;min-width:90px;text-align:center;padding:9px 12px;" onclick="exportData()"><div class="upgrade-name" style="color:#6bddff">&#x1F4C1; JSON</div><div class="upgrade-desc">Export as .json file</div></button><button class="upgrade-btn" style="width:auto;flex:1;min-width:90px;text-align:center;padding:9px 12px;" onclick="document.getElementById('import-file-input').click()"><div class="upgrade-name" style="color:#6bffb8">&#x1F4C2; Import JSON</div><div class="upgrade-desc">Load a .json save</div></button><button class="upgrade-btn" style="width:auto;flex:1;min-width:90px;text-align:center;padding:9px 12px;" onclick="exportTxt()"><div class="upgrade-name" style="color:#ffe06b">&#x1F4CB; Copy Code</div><div class="upgrade-desc">Export as text code</div></button></div>
     <input type="file" id="import-file-input" accept=".json" style="display:none" onchange="importData(this)">
     <div style="font-size:.72rem;color:var(--muted);margin-bottom:5px;text-align:center">Paste save code to import:</div>
     <div style="display:flex;gap:6px"><textarea id="txt-import-box" style="flex:1;background:var(--surface2);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:'Fredoka One',cursive;font-size:.72rem;padding:7px 10px;resize:vertical;min-height:52px" placeholder="Paste save code here..."></textarea><button class="auto-btn" style="align-self:stretch;padding:0 12px" onclick="importTxt()">Import</button></div>
     <div id="import-status" style="font-size:.72rem;color:var(--muted);text-align:center;margin-top:5px;min-height:1em;"></div>
   </div>
-  <div class="panel"><h2>⚙️ Settings</h2>
+  <div class="panel"><h2>&#x2699;&#xFE0F; Settings</h2>
     <div style="font-size:.75rem;color:var(--muted);margin-bottom:6px">Number Format</div>
-    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px"><button class="auto-btn" id="fmt-btn-normal" onclick="setNumFmt('normal')">Normal (1.23Qn)</button><button class="auto-btn" id="fmt-btn-eng" onclick="setNumFmt('eng')">Eng (1.23e18)</button><button class="auto-btn" id="fmt-btn-sci" onclick="setNumFmt('sci')">Sci (1.23×10¹⁸)</button></div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px"><button class="auto-btn" id="fmt-btn-normal" onclick="setNumFmt('normal')">Normal (1.23Qn)</button><button class="auto-btn" id="fmt-btn-eng" onclick="setNumFmt('eng')">Eng (1.23e18)</button><button class="auto-btn" id="fmt-btn-sci" onclick="setNumFmt('sci')">Sci (1.23&times;10&sup1;&sup8;)</button></div>
     <div style="font-size:.75rem;color:var(--muted);margin-bottom:6px">Color Scheme</div>
     <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px" id="scheme-btns"></div>
     <div style="font-size:.75rem;color:var(--muted);margin-bottom:6px">RNG Auto Config (per rank)</div>
@@ -331,8 +330,8 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
     <div style="font-size:.75rem;color:var(--muted);margin-bottom:6px;margin-top:12px">Perfect RNG Auto Config</div>
     <div class="auto-rank-list" id="perfectrng-auto-list"></div>
     <hr style="border:none;border-top:1px solid var(--border);margin:10px 0">
-    <button class="auto-btn" style="width:100%;color:#ff4444;border-color:#ff444466;background:rgba(255,68,68,.06);padding:10px;font-size:.88rem" onclick="confirmWipe()">💀 WIPE SAVE</button>
-    <div id="wipe-confirm" style="display:none;margin-top:8px;text-align:center"><div style="font-size:.75rem;color:#ff6666;margin-bottom:7px">⚠️ This deletes ALL progress forever.</div><div style="display:flex;gap:8px;justify-content:center"><button class="auto-btn" style="color:#ff4444;border-color:#ff444466" onclick="wipeSave()">Yes, wipe it</button><button class="auto-btn" onclick="document.getElementById('wipe-confirm').style.display='none'">Cancel</button></div></div>
+    <button class="auto-btn" style="width:100%;color:#ff4444;border-color:#ff444466;background:rgba(255,68,68,.06);padding:10px;font-size:.88rem" onclick="confirmWipe()">&#x1F480; WIPE SAVE</button>
+    <div id="wipe-confirm" style="display:none;margin-top:8px;text-align:center"><div style="font-size:.75rem;color:#ff6666;margin-bottom:7px">&#x26A0;&#xFE0F; This deletes ALL progress forever.</div><div style="display:flex;gap:8px;justify-content:center"><button class="auto-btn" style="color:#ff4444;border-color:#ff444466" onclick="wipeSave()">Yes, wipe it</button><button class="auto-btn" onclick="document.getElementById('wipe-confirm').style.display='none'">Cancel</button></div></div>
   </div></div>
 </div></div></div>
 <script>
@@ -351,13 +350,27 @@ const RANKS=[
   {name:"rngesus",min:1e12,max:1e13},{name:"unattainable",min:1e13,max:7.5e13},
   {name:"infinity",min:7.5e13,max:2.5e14},{name:"zeta",min:2.5e14,max:1e15},
   {name:"impossible",min:1e15,max:1e17},{name:"astronomical",min:1e17,max:1e18},
-  {name:"maximum",min:1e18,max:1e30},{name:"End of all Numbers",min:1e30,max:Infinity}
+  {name:"maximum",min:1e18,max:1e30},
+  {name:"Voidtouched",min:1e30,max:1e50},
+  {name:"Omniversal",min:1e50,max:1e100},
+  {name:"Paragon",min:1e100,max:1e175},
+  {name:"Aetherial",min:1e175,max:1e250},
+  {name:"End of all Numbers",min:1e250,max:Infinity}
 ];
-const RANK_COLORS=["#aaaaaa","#cd7f32","#77dd77","#a855f7","#ff9966","#ffcc00","#ffd700","#99eeff","#66ccff","#ff88ff","#ff4488","#44ffaa","#ff6644","#ccaaff","#ff8811","#55ffdd","#ff55cc","#88ff55","#55aaff","#ff2255","#ff66ff","#aaffee","#ffaa55","#88aaff","#ff55aa","#ffdd55","#55ffff","#ff4400","#ff00ff","#00ffff","#ffff00","#ff77ff","#77ffff","#ffffff","eon"];
+const RANK_COLORS=["#aaaaaa","#cd7f32","#77dd77","#a855f7","#ff9966","#ffcc00","#ffd700","#99eeff","#66ccff","#ff88ff","#ff4488","#44ffaa","#ff6644","#ccaaff","#ff8811","#55ffdd","#ff55cc","#88ff55","#55aaff","#ff2255","#ff66ff","#aaffee","#ffaa55","#88aaff","#ff55aa","#ffdd55","#55ffff","#ff4400","#ff00ff","#00ffff","#ffff00","#ff77ff","#77ffff","#ffffff","#7722aa","#aaffdd","#ff5555","#88ffee","eon"];
 const EON_RANK_IDX=RANKS.length-1,EON_SOLID="#3300aa",EON_OUTLINE="#110022";
 const EON_GRADIENT="linear-gradient(135deg,#9944ff,#44aaff,#00ffee,#aabbcc,#8833ff)";
 const EEON_GRADIENT="linear-gradient(135deg,#ff2200,#aa0000,#660000,#440000,#cc2211)";
 const EEON_SOLID="#880000",EEON_OUTLINE="#220000";
+const VOIDTOUCHED_RANK_IDX=RANKS.length-5,OMNIVERSAL_RANK_IDX=RANKS.length-4,PARAGON_RANK_IDX=RANKS.length-3,AETHERIAL_RANK_IDX=RANKS.length-2;
+const VOIDTOUCHED_GRADIENT="radial-gradient(circle,#8833cc 0%,#000000 55%,#888888 100%)";
+const VOIDTOUCHED_SOLID="#7722aa",VOIDTOUCHED_OUTLINE="#220033";
+const OMNIVERSAL_GRADIENT="linear-gradient(135deg,#aaffee,#aaffaa,#ffffaa)";
+const OMNIVERSAL_SOLID="#99ffcc",OMNIVERSAL_OUTLINE="#336655";
+const PARAGON_COLORS=["#ff5555","#ffaa55","#ffff55","#55ff55","#5577ff","#9944ff","#ee55ff"];
+const PARAGON_SOLID="#ff5555";
+const AETHERIAL_GRADIENT="linear-gradient(135deg,#00ffcc,#ffcc44,#cc44ff,#00ffcc)";
+const AETHERIAL_SOLID="#88ffee",AETHERIAL_OUTLINE="#226644";
 const VARIANTS=[
   {name:"shiny",      multi:50,    chance:100,   color:"#ffe040"},
   {name:"glowy",      multi:250,   chance:500,   color:"#64ffb4"},
@@ -377,20 +390,20 @@ const SECRET_RANKS=[
   {name:"neverending...",rng:1e9,displayrng:1,display:false},{name:"use this to autodecline clover lmao",rng:1e999,displayrng:1,display:false},
 ];
 const SECRET_RANK_COLOR="#ff9999";
-const SS_ABYSSAL=0,SS_EEON=1,SS_TOTALLYMAX=2,SS_VERYEVIL=3,SS_BLACKHOLE=4,SS_FUNNI=5,SS_SINGULARITY=6,SS_SUPERCHARGED=7,SS_ERR=8;
+const SS_ABYSSAL=0,SS_EEON=1,SS_TOTALLYMAX=2,SS_VERYEVIL=3,SS_BLACKHOLE=4,SS_FUNNI=5,SS_SINGULARITY=6,SS_SUPERCHARGED=7,SS_ERR=8,SS_NAN=9;
 const BH_BASE_RNG=3.9e15;
 const SUPER_SECRETS=[
   {name:"abyssal",color:"#5500cc",rng:10000000,displayrng:-1,hideUntilRolled:false,desc:"Only secret luck applies."},
   {name:"Evil End of all Numbers",color:EEON_SOLID,rng:null,displayrng:null,hideUntilRolled:false,desc:"Replaces EON. 1/6.66. x666666."},
-  {name:"totally maximum !!!",color:"#ffffaa",rng:69420,displayrng:null,hideUntilRolled:true,desc:"Disguises as maximum. It's fake."},
+  {name:"totally maximum !!!",color:"#ffffaa",rng:69420,displayrng:null,hideUntilRolled:true,desc:"Disguises as maximum."},
   {name:"Very Evil Idiot",color:"#ff0066",rng:null,displayrng:"the silly",hideUntilRolled:false,desc:"Roll exactly 77777776.00."},
   {name:"Black Hole",color:"#222244",rng:BH_BASE_RNG,displayrng:-618,hideUntilRolled:false,desc:"1/3.9Qd base. Decays. Requires Singularity."},
   {name:"funni !!!",color:"#ffaa00",rng:null,displayrng:69420,hideUntilRolled:false,desc:"Roll exactly 69420.00."},
   {name:"singularity",color:"#aaffff",rng:39000000,displayrng:-6.18,hideUntilRolled:false,desc:"1/39M. Allows Black Hole."},
   {name:"supercharged",color:"#ffff44",rng:null,displayrng:222222,hideUntilRolled:false,desc:"Roll exactly 222,222.00."},
   {name:'rank_\u2588\u2588.err("\u2588\u2588\u2588" [at line "\u2588\u2588\u2588"])',color:"#000000",rng:null,displayrng:"\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588",hideUntilRolled:false,desc:"Script error: \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588."},
+  {name:"NaN",color:"#ffaa88",rng:null,displayrng:"???",hideUntilRolled:false,desc:"The number that isn't a number. Appears when numbers break."}
 ];
-// Super Secret index display data — {name, rng (display string or null for dynamic), hidden, color (flat hex or CSS gradient for text)}
 const SS_INDEX=[
   {name:"abyssal",                rng:"1/10,000,000",       hidden:false, color:"#5500cc"},
   {name:"Evil End of all Numbers",rng:"1/6.66 (if EON)",    hidden:false, color:EEON_GRADIENT},
@@ -401,9 +414,8 @@ const SS_INDEX=[
   {name:"singularity",            rng:"1/39,000,000",        hidden:false, color:"linear-gradient(90deg,#aaffff,#ffffff,#44ffff,#aaffff)"},
   {name:"supercharged",           rng:"exact 222,222.00",    hidden:false, color:"linear-gradient(90deg,#ffff44,#ffffaa,#ffff00,#ffff44)"},
   {name:SUPER_SECRETS[SS_ERR].name, rng:null,               hidden:false, color:"#000000"},
+  {name:"NaN",                    rng:"???",                 hidden:false, color:"#ffaa88"}
 ];
-// Exact-value secret index — {name, perfectrng, color (flat hex or CSS gradient), ssIdx? (links to SUPER_SECRETS for legacy entries)}
-// Adding an entry here automatically makes it rollable and shows it in the index.
 const PERFECT_RNG_INDEX=[
   {name:"Very Evil Idiot", perfectrng:77777776, color:"#ff0066",                                                          ssIdx:SS_VERYEVIL},
   {name:"funni !!!",       perfectrng:69420,    color:"linear-gradient(90deg,#ffaa00,#ffff44,#ff6600,#ffaa00)",            ssIdx:SS_FUNNI},
@@ -414,16 +426,22 @@ const PERFECT_RNG_INDEX=[
   {name:"odd",             perfectrng:5,        color:"linear-gradient(to left,#232526,#414345)"},
   {name:"bootleg idiot evil",perfectrng:7776,   color:"linear-gradient(45deg,#11998e,#38ef7d)"},
   {name:"improbable",      perfectrng:449,      color:"linear-gradient(25deg,#004c4c,#008080,#40e0d0,#004c4c)"},
-{name: "BURGER PATTY", perfectrng: 1895, color:"linear-gradient(175deg, #8B5A2B, #8F5E2B, #93622B, #97662B, #9B6A2B, #976A2F, #936A33, #8F6A37, #8B6A3B, #876E3F)"}
+  {name:"BURGER PATTY",    perfectrng:1895,     color:"linear-gradient(175deg,#8B5A2B,#8F5E2B,#93622B,#97662B,#9B6A2B,#976A2F,#936A33,#8F6A37,#8B6A3B,#876E3F)"},
+  {name:"goinky",          perfectrng:2763,     color:"linear-gradient(90deg,#9B59B6,#76D72F,#F1C40F,#1B4F72,#ECF0F1,#95A5A6,#E67E22)"}
 ];
-// ENCHANT CATEGORIES — buffed volley, nerfed nuts, combination reduced
 const ENCHANT_CATS={
-  luck:[{name:"glimmer 1",chance:5,color:"#ffe04b",effect:{luck:2.5}},{name:"glimmer 2",chance:25,color:"#ffbb00",effect:{luck:5}},{name:"bedazzling",chance:125,color:"#ff7700",effect:{luck:10}}],
-  speed:[{name:"speeder 1",chance:10,color:"#44ddff",effect:{speed:0.25}},{name:"speeder 2",chance:50,color:"#0099ff",effect:{speed:0.5}},{name:"flash",chance:500,color:"#ffffff",effect:{flash:true}}],
-  variant:[{name:"unique 1",chance:25,color:"#bb66ff",effect:{variantLuck:1}},{name:"unique 2",chance:75,color:"#8800ee",effect:{variantLuck:3.33}},{name:"abnormal",chance:2500,color:"#ff00cc",effect:{variantLuck:10}}],
-  duper:[{name:"duper 1",chance:75,color:"#ff9955",effect:{multiRoll:1}},{name:"duper 2",chance:250,color:"#ff6600",effect:{multiRoll:2}},{name:"cloner",chance:75000,color:"#ff2200",effect:{multiRoll:4}}],
-  boxer:[{name:"boxer 1",chance:100,color:"#44ff88",effect:{crateInterval:2,crateChance:0.4}},{name:"boxer 2",chance:1000,color:"#00dd66",effect:{crateInterval:1.5,crateChance:0.5}},{name:"factory",chance:17500,color:"#00ffcc",effect:{crateInterval:1,crateChance:0.6}},{name:"productionist",chance:250000000,color:"#00ffaa",effect:{crateInterval:0.02,crateChance:0.004}}],
-  sparkles:[{name:"sparkles 1",chance:250,color:"#ffdd00",effect:{enchantLuckBonus:0.50}},{name:"sparkles 2",chance:7500,color:"#ffaa00",effect:{enchantLuckBonus:1.25}},{name:"unidentified",chance:62500000,color:"#ff6600",effect:{enchantLuckBonus:7.50}}],
+  luck:[{name:"glimmer 1",chance:5,color:"#ffe04b",effect:{luck:2.5}},{name:"glimmer 2",chance:25,color:"#ffbb00",effect:{luck:5}},{name:"bedazzling",chance:125,color:"#ff7700",effect:{luck:10}},
+{name: "insane luck idiot G&274 !!!", chance: 1e303, color: "#fff", effect:{luck:1e303}}],
+  speed:[{name:"speeder 1",chance:10,color:"#44ddff",effect:{speed:0.25}},{name:"speeder 2",chance:50,color:"#0099ff",effect:{speed:0.5}},{name:"flash",chance:500,color:"#ffffff",effect:{flash:true}},
+{name: "lightspeed", chance:1e303, color:"#000",effect:{flash:true, speed:1e303, flash:true, flash:true}}],
+  variant:[{name:"unique 1",chance:25,color:"#bb66ff",effect:{variantLuck:1}},{name:"unique 2",chance:75,color:"#8800ee",effect:{variantLuck:3.33}},{name:"abnormal",chance:2500,color:"#ff00cc",effect:{variantLuck:10}},
+{name: "WEIRD", chance: 1e303, color: "#fff", effect:{variantLuck:10000}}],
+  duper:[{name:"duper 1",chance:75,color:"#ff9955",effect:{multiRoll:1}},{name:"duper 2",chance:250,color:"#ff6600",effect:{multiRoll:2}},{name:"cloner",chance:75000,color:"#ff2200",effect:{multiRoll:4}},
+{name: "ultra impossible supreme gigantic colossal roller", chance: 1e303, color: "#fff", effect:{multiRoll:1e100}}],
+  boxer:[{name:"boxer 1",chance:100,color:"#44ff88",effect:{crateInterval:2,crateChance:0.4}},{name:"boxer 2",chance:1000,color:"#00dd66",effect:{crateInterval:1.5,crateChance:0.5}},{name:"factory",chance:17500,color:"#00ffcc",effect:{crateInterval:1,crateChance:0.6}},{name:"productionist",chance:250000000,color:"#00ffaa",effect:{crateInterval:0.02,crateChance:0.004}},
+{name: "BOX GOD", chance: 1e303, color: "#fff", effect: {crateInterval: 1e-16, crateChance: 1}}],
+  sparkles:[{name:"sparkles 1",chance:250,color:"#ffdd00",effect:{enchantLuckBonus:0.50}},{name:"sparkles 2",chance:7500,color:"#ffaa00",effect:{enchantLuckBonus:1.25}},{name:"unidentified",chance:62500000,color:"#ff6600",effect:{enchantLuckBonus:7.50}},
+{name: "ultra orb man !!!", chance: 1e303, color: "#fff", effect: {enchantLuckBonus:1.78e308}}],
   combination:[{name:"combination 1",chance:100000,color:"#88ffff",effect:{combination:1}},{name:"combination 2",chance:10000000,color:"#44ddff",effect:{combination:2}},{name:"genesis",chance:1e11,color:"#ffffff",effect:{combination:3}}],
   insane:[{name:"insane 1",chance:3841.39,color:"#ff44bb",effect:{luckBonus:0,secretLuckBonus:5,variantLuck:1,coinPenalty:2.5,speedPenalty:0}},{name:"insane 2",chance:28372.47,color:"#ff0088",effect:{luckBonus:7.5,secretLuckBonus:0,variantLuck:5,coinPenalty:5,speedPenalty:0}},{name:"lunatic",chance:2493749293.19,color:"#cc0066",effect:{luckBonus:275,secretLuckBonus:20,variantLuck:20,coinPenalty:100,speedPenalty:25}}],
   nuts:[
@@ -432,7 +450,7 @@ const ENCHANT_CATS={
     {name:"almond nut",chance:50000000,color:"#eebb66",effect:{luckBonus:0,variantLuck:0,secretLuckBonus:0,nut:3}},
     {name:"chestnut",chance:500000000,color:"#ffcc77",effect:{luckBonus:0,variantLuck:0,secretLuckBonus:0,nut:4}}
   ],
-  volley:[{name:"volley",chance:250625,color:"#aa88ff",effect:{luck:0.1,secretLuckBonus:0.15,variantLuck:4,enchantLuckBonus:0.05}}]
+  volley:[{name:"volley",chance:250625,color:"#aa88ff",effect:{luck:0.1,secretLuckBonus:0.15,variantLuck:0.33,enchantLuckBonus:0.05}}]
 };
 let coins=0,luck=1,bulkLevel=0,luckLevel=0,luckCost=75,bulkCost=1000;
 let rollSpeedLevel=0,rollSpeedCost=100,variantLuckLevel=0,variantLuckCost=75;
@@ -450,14 +468,13 @@ let autoDeclineTierMap={},orbAutoDeleteThreshold=null,mergeMode=false,mergeSelec
 let isRolling=false,autoRollEnabled=false;
 let autoAcceptThreshold=null,autoDeleteMinRank="none",autoDeleteSecret="none";
 let autoRollTimer=null,crateTimer=null,boxerTimer=null,nextItemId=Date.now();
-let rankAutoOverride={},secretAutoOverride={},superSecretAutoOverride={},perfectRngAutoOverride={};
+let rankAutoOverride={},secretAutoOverride={},superSecretAutoOverride={},perfectRngAutoOverride={},enchantAutoOverride={};
 let discoveredSecrets=new Set(),discoveredSuperSecrets=new Set(),discoveredPerfectRng=new Set(),blackHoleRng=BH_BASE_RNG;
 let detectedFPS=60;
 (function(){let last=performance.now(),frames=[];function tick(now){frames.push(now-last);last=now;if(frames.length>60)frames.shift();if(frames.length>=10){const avg=frames.reduce((a,b)=>a+b,0)/frames.length;detectedFPS=Math.max(30,Math.min(300,Math.round(1000/avg)));const el=document.getElementById("fps-display");if(el)el.textContent=detectedFPS;}requestAnimationFrame(tick);}requestAnimationFrame(tick);})();
 function newId(){return nextItemId++;}
 function getNonNutEnchants(){return getActiveEnchantEffects().filter(e=>!e.effect.nut);}
 function getNutEnchants(){return getActiveEnchantEffects().filter(e=>e.effect.nut);}
-// NERFED NUTS: walnut +0.1x base, cascades, cap 5 each
 function getNutContributions(){
   const ne=getNutEnchants();if(!ne.length)return{luckBonus:0,variantLuck:0,secretLuckBonus:0};
   let w=0,p=0,a=0,c=0;
@@ -466,7 +483,6 @@ function getNutContributions(){
   const total=w*0.1*(1+1.25*p)*(1+0.25*a)*(1+0.1*c);
   return{luckBonus:total,variantLuck:total,secretLuckBonus:total};
 }
-// COMBINATION: only luck/speed/variant/duper/sparkles
 function getActiveEnchantEffects(){
   const effects=[];
   equippedOrbs.flatMap(o=>o.enchants).forEach(e=>{
@@ -487,7 +503,6 @@ function getEnchantSpeedInfo(){const effs=getActiveEnchantEffects();return{flat:
 function getEnchantLuckBonusFromOrbs(){return getActiveEnchantEffects().reduce((s,e)=>s+(e.effect.enchantLuckBonus||0),0);}
 function getMultiRollBonus(){return getEnchantMultiRollBonus()+duperUpgradeLevel;}
 function getEffectiveLuck(){return luck*(optimizerEnabled?1.75:1)*(coinflipEnabled?coinflipMult:1);}
-// SPEED PENALTY BYPASSES ALL UPGRADES — added after the capped base
 function getSpinMs(){
   const pen=Math.round(getEnchantSpeedPenalty()*1000);
   if(ultraFastRollEnabled)return Math.max(16,Math.floor(1000/detectedFPS))+pen;
@@ -504,8 +519,12 @@ function getSecretLuckBonus(){return secretLuckLevel*0.05+getEnchantSecretLuckBo
 function getCoinGainMult(){const b=1+coinGainLevel*0.1;const ao=optimizerEnabled?Math.max(0.01,b-3.25):b;return Math.max(0.001,ao-getEnchantCoinPenalty());}
 function getEnchantLuckMult(){return(1+enchantLuckLevel*0.05)*(1+getEnchantLuckBonusFromOrbs());}
 function hasSingularity(){return inventory.some(i=>i.superSecretIdx===SS_SINGULARITY)||pendingResults.some(i=>i.superSecretIdx===SS_SINGULARITY);}
-function isEon(r){return r.rankIdx===EON_RANK_IDX&&r.superSecretIdx!==SS_EEON;}
+function isEon(r){return r.rankIdx===EON_RANK_IDX&&r.superSecretIdx!==SS_EEON&&r.superSecretIdx!==SS_NAN;}
 function isEEon(r){return r.superSecretIdx===SS_EEON;}
+function isVoidtouched(r){return r.rankIdx===VOIDTOUCHED_RANK_IDX&&r.superSecretIdx<0&&r.secretIdx<0&&r.perfectRngIdx<0;}
+function isOmniversal(r){return r.rankIdx===OMNIVERSAL_RANK_IDX&&r.superSecretIdx<0&&r.secretIdx<0&&r.perfectRngIdx<0;}
+function isParagon(r){return r.rankIdx===PARAGON_RANK_IDX&&r.superSecretIdx<0&&r.secretIdx<0&&r.perfectRngIdx<0;}
+function isAetherial(r){return r.rankIdx===AETHERIAL_RANK_IDX&&r.superSecretIdx<0&&r.secretIdx<0&&r.perfectRngIdx<0;}
 function getDisplayColor(r){
   if(r.perfectRngIdx>=0)return getPerfectRngColor(PERFECT_RNG_INDEX[r.perfectRngIdx]);
   if(r.superSecretIdx===SS_ERR)return"#000";
@@ -517,17 +536,26 @@ function getDisplayColor(r){
   if(r.superSecretIdx===SS_FUNNI)return"#ffaa00";
   if(r.superSecretIdx===SS_SINGULARITY)return"#aaffff";
   if(r.superSecretIdx===SS_SUPERCHARGED)return"#ffff44";
+  if(r.superSecretIdx===SS_NAN)return"#ffaa88";
   if(isEon(r))return EON_SOLID;
+  if(isVoidtouched(r))return VOIDTOUCHED_SOLID;
+  if(isOmniversal(r))return OMNIVERSAL_SOLID;
+  if(isParagon(r))return PARAGON_COLORS[Math.floor(Date.now()/1000)%7];
+  if(isAetherial(r))return AETHERIAL_SOLID;
   return r.secretIdx>=0?SECRET_RANK_COLOR:RANK_COLORS[r.rankIdx];
 }
 function eonNameHTML(n){return`<span style="background:${EON_GRADIENT};-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 6px #9944ff88)">${n}</span>`;}
+function voidtouchedNameHTML(n){return`<span style="background:${VOIDTOUCHED_GRADIENT};-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 7px #7722aaaa)">${n}</span>`;}
+function omniversalNameHTML(n){return`<span style="background:${OMNIVERSAL_GRADIENT};-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 6px #aaffcc66)">${n}</span>`;}
+function paragonNameHTML(n){return`<span style="animation:paragonCycle 7s steps(1) infinite;font-weight:inherit">${n}</span>`;}
+function aetherialNameHTML(n){return`<span style="background:${AETHERIAL_GRADIENT};background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:aetherialShift 4s ease infinite;filter:drop-shadow(0 0 8px #88ffeeaa)">${n}</span>`;}
+function specialBaseRankNameHTML(r,n){if(isVoidtouched(r))return voidtouchedNameHTML(n);if(isOmniversal(r))return omniversalNameHTML(n);if(isParagon(r))return paragonNameHTML(n);if(isAetherial(r))return aetherialNameHTML(n);return null;}
 function eeonNameHTML(n){return`<span style="background:${EEON_GRADIENT};-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 8px #ff220088)">${n}</span>`;}
 function bhNameHTML(n){return`<span style="background:radial-gradient(ellipse at 30% 40%,#8844ff,#220033,#000);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 8px #8844ff99)">${n}</span>`;}
 function errNameHTML(n){return`<span style="color:#fff;-webkit-text-stroke:1px #fff">${n}</span>`;}
 function getPerfectRngColor(entry){
   const c=entry.color;
   if(c.startsWith("linear-gradient")||c.startsWith("radial-gradient")){
-    // extract first hex from gradient as flat fallback
     const m=c.match(/#[0-9a-fA-F]{3,6}/);return m?m[0]:"#aaaaaa";
   }
   return c;
@@ -549,6 +577,7 @@ function superSecretNameHTML(r,n){
   if(r.superSecretIdx===SS_FUNNI)return`<span style="background:linear-gradient(90deg,#ffaa00,#ffff44,#ff6600,#ffaa00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:funniPulse 1.8s infinite">${n}</span>`;
   if(r.superSecretIdx===SS_SINGULARITY)return`<span style="background:linear-gradient(90deg,#aaffff,#ffffff,#44ffff,#aaffff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 6px #aaffff88)">${n}</span>`;
   if(r.superSecretIdx===SS_SUPERCHARGED)return`<span style="background:linear-gradient(90deg,#ffff44,#ffffaa,#ffff00,#ffff44);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 8px #ffff44cc)">${n}</span>`;
+  if(r.superSecretIdx===SS_NAN)return`<span style="background:radial-gradient(circle at 30% 40%, #ffaa88, #ff8844, #ffaa44);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:funniPulse 0.8s infinite">${n}</span>`;
   return n;
 }
 let colorScheme="default";
@@ -571,7 +600,7 @@ function setNumFmt(fmt){numberFormat=fmt;['normal','eng','sci'].forEach(f=>docum
 function computeCoins(val){if(!isFinite(val)||val<=0)return 0;return Math.floor(Math.pow(val,0.5)*(1+Math.log10(val))*getCoinGainMult());}
 function getRank(v){for(let i=RANKS.length-1;i>=0;i--)if(v>=RANKS[i].min)return i;return 0;}
 function saveData(toastMsg){
-  const d={coins,luck,bulkLevel,luckLevel,luckCost,bulkCost,rollSpeedLevel,rollSpeedCost,variantLuckLevel,variantLuckCost,secretLuckLevel,secretLuckCost,coinGainLevel,coinGainCost,enchantLuckLevel,enchantLuckCost,quickRollUnlocked,quickRollEnabled,quickRollCost,ultraFastRollUnlocked,ultraFastRollEnabled,ultraFastRollCost,optimizerUnlocked,optimizerEnabled,optimizerCost,duperUpgradeLevel,duperUpgradeCost,coinflipUnlocked,coinflipEnabled,coinflipMult,coinflipCost,totalRolls,bestRankIdx,inventory,boosterInventory,equippedOrbs,enchantInventory,autoAcceptThreshold,autoDeleteMinRank,autoDeleteSecret,nextItemId,numberFormat,colorScheme,discoveredSecrets:[...discoveredSecrets],discoveredSuperSecrets:[...discoveredSuperSecrets],discoveredPerfectRng:[...discoveredPerfectRng],blackHoleRng,autoDeclineTierMap,orbAutoDeleteThreshold,rankAutoOverride,secretAutoOverride,superSecretAutoOverride,perfectRngAutoOverride};
+  const d={coins,luck,bulkLevel,luckLevel,luckCost,bulkCost,rollSpeedLevel,rollSpeedCost,variantLuckLevel,variantLuckCost,secretLuckLevel,secretLuckCost,coinGainLevel,coinGainCost,enchantLuckLevel,enchantLuckCost,quickRollUnlocked,quickRollEnabled,quickRollCost,ultraFastRollUnlocked,ultraFastRollEnabled,ultraFastRollCost,optimizerUnlocked,optimizerEnabled,optimizerCost,duperUpgradeLevel,duperUpgradeCost,coinflipUnlocked,coinflipEnabled,coinflipMult,coinflipCost,totalRolls,bestRankIdx,inventory,boosterInventory,equippedOrbs,enchantInventory,autoAcceptThreshold,autoDeleteMinRank,autoDeleteSecret,nextItemId,numberFormat,colorScheme,discoveredSecrets:[...discoveredSecrets],discoveredSuperSecrets:[...discoveredSuperSecrets],discoveredPerfectRng:[...discoveredPerfectRng],blackHoleRng,autoDeclineTierMap,orbAutoDeleteThreshold,rankAutoOverride,secretAutoOverride,superSecretAutoOverride,perfectRngAutoOverride,enchantAutoOverride};
   localStorage.setItem("sillys_rng_save",JSON.stringify(d));
   const ind=document.getElementById("save-indicator");
   ind.textContent=toastMsg||"\ud83d\udcbe Saved";
@@ -593,9 +622,8 @@ function loadData(){
     inventory.forEach(item=>{if(item.enchants&&item.enchants.length>0){item.enchants.forEach(e=>{enchantInventory.push({id:newId(),cat:e.cat,name:e.name,color:e.color,effect:e.effect,fromVal:item.val,fromRankIdx:item.rankIdx});});item.enchants=[];}});
     boosterInventory=boosterInventory.map(b=>({val:0,isMulti:false,isPower:false,powerVal:null,isEvil:false,variantIdx:-1,shape:"circle",active:false,...b}));
     inventory=inventory.map(item=>({superSecretIdx:-1,perfectRngIdx:-1,totallyMaxDisplayVal:null,...item,rankIdx:getRank(item.val)}));
-    rankAutoOverride=d.rankAutoOverride||{};secretAutoOverride=d.secretAutoOverride||{};superSecretAutoOverride=d.superSecretAutoOverride||{};perfectRngAutoOverride=d.perfectRngAutoOverride||{};
+    rankAutoOverride=d.rankAutoOverride||{};secretAutoOverride=d.secretAutoOverride||{};superSecretAutoOverride=d.superSecretAutoOverride||{};perfectRngAutoOverride=d.perfectRngAutoOverride||{};enchantAutoOverride=d.enchantAutoOverride||{};
     discoveredPerfectRng=new Set(d.discoveredPerfectRng??[]);
-    // migrate old inventory items: back-fill perfectRngIdx from val matching PERFECT_RNG_INDEX
     inventory=inventory.map(item=>{
       if(item.perfectRngIdx===undefined){
         const pi=PERFECT_RNG_INDEX.findIndex(e=>e.perfectrng===item.val&&e.ssIdx===undefined);
@@ -632,7 +660,7 @@ function getDisplayName(r,forReel=false){
   if(r.perfectRngIdx>=0)return PERFECT_RNG_INDEX[r.perfectRngIdx].name.toUpperCase();
   if(r.superSecretIdx===SS_TOTALLYMAX&&forReel)return RANKS[RANKS.length-2].name.toUpperCase();if(r.superSecretIdx!==undefined&&r.superSecretIdx>=0)return SUPER_SECRETS[r.superSecretIdx].name.toUpperCase();const ri=r.baseRankIdx!==undefined?r.baseRankIdx:r.rankIdx;return r.secretIdx>=0?SECRET_RANKS[r.secretIdx].name.toUpperCase():RANKS[ri].name.toUpperCase();}
 function getDisplayValue(r,forReel=false){
-  if(r.perfectRngIdx>=0)return String(PERFECT_RNG_INDEX[r.perfectRngIdx].perfectrng);
+  if(r.perfectRngIdx>=0){const base=PERFECT_RNG_INDEX[r.perfectRngIdx].perfectrng;return r.variantIdx>=0?String(base*VARIANTS[r.variantIdx].multi):String(base);}
   if(r.superSecretIdx===SS_ERR)return SUPER_SECRETS[SS_ERR].displayrng;
   if(r.superSecretIdx===SS_TOTALLYMAX){if(forReel)return formatValue(r.val);return formatValue(r.totallyMaxDisplayVal||r.val);}
   if(r.superSecretIdx===SS_VERYEVIL)return String(SUPER_SECRETS[SS_VERYEVIL].displayrng);
@@ -642,6 +670,7 @@ function getDisplayValue(r,forReel=false){
   if(r.superSecretIdx===SS_ABYSSAL)return String(SUPER_SECRETS[SS_ABYSSAL].displayrng);
   if(r.superSecretIdx===SS_BLACKHOLE){if(!forReel&&r.blackHoleRolledRng!=null)return`-618 (was 1/${formatValue(r.blackHoleRolledRng)})`;return"-618";}
   if(r.superSecretIdx===SS_EEON)return formatValue(r.val);
+  if(r.superSecretIdx===SS_NAN)return "NaN";
   if(r.secretIdx>=0&&SECRET_RANKS[r.secretIdx].displayrng!==false)return String(SECRET_RANKS[r.secretIdx].displayrng);
   return formatValue(r.val);
 }
@@ -667,7 +696,7 @@ function populateStrip(stripEl,finalResult){
     const varName=item.variantIdx>=0?VARIANTS[item.variantIdx].name:null;
     const varHtml=varName?`<div class="reel-variant-mini" style="color:${eon?"#9944ff":eeon?"#ff2200":color}">${varName}</div>`:"";
     const enchHtml=(isC&&item.enchants&&item.enchants.length>0)?enchantDotsHTML(item.enchants,"reel-ench-dot"):"";
-    let nameHtml;if(eeon)nameHtml=eeonNameHTML(name);else if(eon)nameHtml=eonNameHTML(name);else if(ss)nameHtml=superSecretNameHTML(item,name);else{const vn=variantNameHTML(name,item.variantIdx,color);nameHtml=vn?vn:`<span>${name}</span>`;}
+    let nameHtml;if(eeon)nameHtml=eeonNameHTML(name);else if(eon)nameHtml=eonNameHTML(name);else if(ss)nameHtml=superSecretNameHTML(item,name);else{const spr=specialBaseRankNameHTML(item,name);const vn=variantNameHTML(name,item.variantIdx,color);nameHtml=spr||vn||`<span>${name}</span>`;}
     const ws=(eon||eeon)?`text-shadow:1px 1px 0 ${eeon?EEON_OUTLINE:EON_OUTLINE},-1px -1px 0 ${eeon?EEON_OUTLINE:EON_OUTLINE};border:1px solid ${eeon?EEON_SOLID:EON_SOLID}44;border-radius:4px;padding:0 2px;`:`color:${color};text-shadow:0 0 8px ${color}${glow};`;
     return`<div class="reel-item${isC?" reel-center":""}" style="${ws}">${isC?varHtml:""}<div class="reel-rank-name">${nameHtml}</div><div class="reel-rng-val" style="${(eon||eeon)?"color:#aabbcc":""}">${valStr}</div>${enchHtml}</div>`;
   }).join("");
@@ -675,18 +704,28 @@ function populateStrip(stripEl,finalResult){
 }
 function animateReelRow(rowEl,stripEl,finalIdx,delay,spinMs,onDone){const itemW=getItemW(),endX=(VISIBLE_HALF-finalIdx)*itemW;stripEl.style.transition="none";stripEl.style.transform="translateX(0)";void stripEl.offsetHeight;setTimeout(()=>{stripEl.style.transition=`transform ${spinMs}ms cubic-bezier(0.06,0.85,0.18,1)`;stripEl.style.transform=`translateX(${endX}px)`;setTimeout(onDone,spinMs);},delay);}
 function computeRoll(luckOverride,forcedVariantIdx,boosterAttrs){
-  const r=Math.random();const attrs=boosterAttrs||{};
-  if(r===0)return{val:Infinity,baseVal:Infinity,variantIdx:(forcedVariantIdx??-1),secretIdx:-1,superSecretIdx:-1};
-  // rank_##.err — TRUE RNG, completely unaffected by luck
-  if(Math.random()<1/4040000000){return{val:1,baseVal:1,variantIdx:-1,secretIdx:-1,superSecretIdx:SS_ERR,totallyMaxDisplayVal:null,blackHoleRolledRng:null};}
-  const u=2+Math.random()*2498,logPart=Math.log(u)/Math.log(750);
+  const attrs=boosterAttrs||{};
+  if(Math.random()<1/4040000000){
+    return{val:1,baseVal:1,variantIdx:-1,secretIdx:-1,superSecretIdx:SS_ERR,totallyMaxDisplayVal:null,blackHoleRolledRng:null};
+  }
   const activeLuck=(luckOverride!==undefined?luckOverride:getEffectiveLuck())+getEnchantLuckBonus();
-  let val=Math.pow(r,-1.5)*activeLuck*Math.pow(logPart,0.27);
+  let selectedRankIdx=0;
+  for(let i=RANKS.length-1;i>=1;i--){
+    if(Math.random()<Math.min(1,(activeLuck*2.5/(0.2+Math.random()*24.8))/RANKS[i].min)){selectedRankIdx=i;break;}
+  }
+  const rank=RANKS[selectedRankIdx];
+  const luckExp=1/Math.max(1,1+activeLuck*1);
+  let val;
+  if(rank.max===Infinity){
+    let rawVal=rank.min/Math.pow(Math.random(),Math.max(1,1+activeLuck*0.08));
+    val=Math.min(rawVal,1e308);
+  }else{
+    val=rank.min+Math.pow(Math.random(),luckExp)*(rank.max-rank.min);
+  }
   const gammaSecretBonus=attrs.isGamma?Math.min(100,1+activeLuck/100):0;
   const vBonus=(1+getVariantLuckBonus())*(attrs.isRandom&&forcedVariantIdx===undefined?(forcedVariantIdx>=0?1+(VARIANTS[forcedVariantIdx].multi/10):50):1);
   const baseVal=val;let variantIdx=forcedVariantIdx!==undefined?forcedVariantIdx:-1;
   if(variantIdx<0){for(let i=VARIANTS.length-1;i>=0;i--){if(Math.random()<vBonus/VARIANTS[i].chance){variantIdx=i;break;}}}
-  // random attr: 1/10 of variant multi
   let extraVBonus=1;
   if(attrs.isRandom){extraVBonus=variantIdx>=0?(1+(VARIANTS[variantIdx].multi/10)):50;}
   if(variantIdx<0&&attrs.isRandom){for(let i=VARIANTS.length-1;i>=0;i--){if(Math.random()<(extraVBonus*(1+getVariantLuckBonus()))/VARIANTS[i].chance){variantIdx=i;break;}}}
@@ -697,22 +736,22 @@ function computeRoll(luckOverride,forcedVariantIdx,boosterAttrs){
   let secretIdx=-1;for(let i=SECRET_RANKS.length-1;i>=0;i--){if(Math.random()<sBonus/SECRET_RANKS[i].rng){secretIdx=i;break;}}
   blackHoleRng*=(1-0.00000618);if(blackHoleRng<1)blackHoleRng=1;
   let superSecretIdx=-1,perfectRngIdx=-1,totallyMaxDisplayVal=null,blackHoleRolledRng=null;
-  // exact-value secrets — driven by PERFECT_RNG_INDEX
   for(let pi=0;pi<PERFECT_RNG_INDEX.length;pi++){
     const e=PERFECT_RNG_INDEX[pi];
-    if(val===e.perfectrng){
-      secretIdx=-1;
-      if(e.ssIdx!==undefined)superSecretIdx=e.ssIdx;
-      else perfectRngIdx=pi;
-      break;
-    }
+    if(val===e.perfectrng){secretIdx=-1;if(e.ssIdx!==undefined)superSecretIdx=e.ssIdx;else perfectRngIdx=pi;break;}
+    for(let vi=0;vi<VARIANTS.length;vi++){if(val===e.perfectrng*VARIANTS[vi].multi){secretIdx=-1;if(e.ssIdx!==undefined)superSecretIdx=e.ssIdx;else perfectRngIdx=pi;variantIdx=vi;break;}}
+    if(perfectRngIdx>=0||superSecretIdx>=0)break;
   }
   if(perfectRngIdx<0&&superSecretIdx<0){
     if(Math.random()<sBonus/10000000){superSecretIdx=SS_ABYSSAL;secretIdx=-1;}
     else if(Math.random()<1/69420){superSecretIdx=SS_TOTALLYMAX;secretIdx=-1;totallyMaxDisplayVal=Math.round(1e18*Math.pow(Math.random(),-1.5)*100)/100;val=Math.max(1e18,Math.min(val,1e29));}
     else if(hasSingularity()&&Math.random()<1/blackHoleRng){superSecretIdx=SS_BLACKHOLE;secretIdx=-1;blackHoleRolledRng=blackHoleRng;blackHoleRng=BH_BASE_RNG;}
     else if(Math.random()<1/39000000){superSecretIdx=SS_SINGULARITY;secretIdx=-1;}
-    else if(val>=1e30&&Math.random()<1/6.66){superSecretIdx=SS_EEON;secretIdx=-1;val=Math.round(val*666666*100)/100;}
+    else if(val>=1e250&&Math.random()<1/6.66){superSecretIdx=SS_EEON;secretIdx=-1;val=Math.round(val*666666*100)/100;}
+  }
+  // Catch NaN/Infinity and convert to NaN secret
+  if(!isFinite(val)||isNaN(val)){
+    return{val:NaN,baseVal:NaN,variantIdx:-1,secretIdx:-1,superSecretIdx:SS_NAN,totallyMaxDisplayVal:null,blackHoleRolledRng:null};
   }
   return{val,baseVal:baseValR,variantIdx,secretIdx,superSecretIdx,perfectRngIdx,totallyMaxDisplayVal,blackHoleRolledRng};
 }
@@ -725,7 +764,7 @@ function renderBoosterInventory(){
   if(!list)return;hdr.textContent=`\u26a1 Boosters (${boosterInventory.length})`;
   badge.textContent=boosterInventory.length>99?"99+":boosterInventory.length;badge.style.display=boosterInventory.length>0?"":"none";
   const actives=boosterInventory.filter(b=>b.active),prev=document.getElementById("booster-luck-preview");
-  if(actives.length>0){const parts=[];const add=actives.filter(b=>!b.isMulti&&!b.isPower&&!b.isEvil),mul=actives.filter(b=>b.isMulti&&!b.isEvil),pow=actives.filter(b=>b.isPower&&!b.isEvil),evil=actives.filter(b=>b.isEvil);if(add.length){const s=add.reduce((a,b)=>a+b.val,0);parts.push(`+${s>=1000?(s/1000).toFixed(1)+"K":s}`);}if(mul.length){const p=mul.reduce((a,b)=>a*b.val,1);parts.push(`\u00d7${p>=1000?(p/1000).toFixed(1)+"K":p}`);}if(pow.length){const e=1+pow.reduce((a,b)=>a+(b.powerVal-1),0);parts.push(`^${e.toFixed(2)}`);}if(evil.length)parts.push(`😈\u00d7${evil.length}`);prev.style.color="var(--accent3)";prev.textContent=`Active: ${parts.join(" ")} \u2014 applies next roll`;}
+  if(actives.length>0){const parts=[];const add=actives.filter(b=>!b.isMulti&&!b.isPower&&!b.isEvil),mul=actives.filter(b=>b.isMulti&&!b.isEvil),pow=actives.filter(b=>b.isPower&&!b.isEvil),evil=actives.filter(b=>b.isEvil);if(add.length){const s=add.reduce((a,b)=>a+b.val,0);parts.push(`+${s>=1000?(s/1000).toFixed(1)+"K":s}`);}if(mul.length){const p=mul.reduce((a,b)=>a*b.val,1);parts.push(`\u00d7${p>=1000?(p/1000).toFixed(1)+"K":p}`);}if(pow.length){const e=1+pow.reduce((a,b)=>a+(b.powerVal-1),0);parts.push(`^${e.toFixed(2)}`);}if(evil.length)parts.push(`\ud83d\ude08\u00d7${evil.length}`);prev.style.color="var(--accent3)";prev.textContent=`Active: ${parts.join(" ")} \u2014 applies next roll`;}
   else if(boosterInventory.length){prev.style.color="var(--muted)";prev.textContent="Click a booster to activate it for the next roll";}
   else{prev.style.color="var(--muted)";prev.textContent="Crates fall every 5s \u2014 click to collect!";}
   if(!boosterInventory.length){list.innerHTML='<div class="booster-empty">No boosters yet</div>';return;}
@@ -739,13 +778,13 @@ function renderBoosterInventory(){
     const ac=b.active?" booster-active":"",vc=b.variantIdx>=0?VC[b.variantIdx]:null;
     const sf=(vc&&!b.isEvil&&!b.isPower&&!b.isMulti)?`filter:drop-shadow(0 0 7px ${vc}) drop-shadow(0 2px 3px rgba(0,0,0,.5))`:"";
     const vl=(b.variantIdx>=0&&!b.isEvil)?`<div class="booster-tag var-tag" style="color:${vc}">\u2728${VARIANTS[b.variantIdx].name}</div>`:"";
-    const al=[b.isRounded?"🔵rnd":null,b.isRandom?"🟡rng":null,b.isGamma?"🟣\u03b3":null].filter(Boolean).join(" ");
+    const al=[b.isRounded?"\ud83d\udd35rnd":null,b.isRandom?"\ud83d\udfe1rng":null,b.isGamma?"\ud83d\udfe3\u03b3":null].filter(Boolean).join(" ");
     return`<div class="booster-item${tc}${ac}" onclick="toggleBoosterActive(${i})"><button class="booster-del" onclick="event.stopPropagation();deleteBooster(${i})">\u2715</button><div class="booster-shape ${b.shape} ${sx}" style="${sf}"></div><div class="booster-value">${vs}</div><div class="booster-tag${gc}">${tl}</div>${vl}${al?`<div style="font-size:.4rem;color:#aaaaff">${al}</div>`:""}</div>`;
   }).join("");
 }
 function generateEnchants(val){
   if(val<=1000)return[];const result=[],mult=getEnchantLuckMult();
-  for(const[cat,defs]of Object.entries(ENCHANT_CATS)){if(result.length>=5)break;const mt=autoDeclineTierMap[cat]??0;if(mt>=defs.length)continue;for(let i=defs.length-1;i>=mt;i--){if(Math.random()<mult/defs[i].chance){result.push({cat,name:defs[i].name,color:defs[i].color,effect:defs[i].effect});break;}}}
+  for(const[cat,defs]of Object.entries(ENCHANT_CATS)){if(result.length>=5)break;const mt=autoDeclineTierMap[cat]??0;if(mt>=defs.length)continue;for(let i=defs.length-1;i>=mt;i--){const ov=enchantAutoOverride[`${cat}:${i}`]??0;if(ov===-1)continue;if(Math.random()<mult/defs[i].chance){result.push({cat,name:defs[i].name,color:defs[i].color,effect:defs[i].effect});break;}}}
   if(result.some(e=>e.cat==="volley"))return result.filter(e=>e.cat==="volley");
   return result;
 }
@@ -758,13 +797,13 @@ function renderEnchantInventory(){
   if(!enchantInventory.length){list.innerHTML='<div class="inv-empty">No orbs yet!</div>';return;}
   list.innerHTML=enchantInventory.map(orb=>{
     const isEq=equippedOrbs.some(o=>o.orbId===orb.id),isSel=mergeSelected.includes(orb.id),isLocked=!!orb.locked,ench=orb.enchants||[];
-    const effsHTML=ench.map(e=>{const effs=[];if(e.effect.luck)effs.push(`+${e.effect.luck}\u00d7 luck`);if(e.effect.luckBonus)effs.push(`+${e.effect.luckBonus}\u00d7 luck`);if(e.effect.speed)effs.push(`\u2212${e.effect.speed}s spd`);if(e.effect.flash)effs.push("\u00bd speed");if(e.effect.variantLuck)effs.push(`+${e.effect.variantLuck}\u00d7 var`);if(e.effect.secretLuckBonus)effs.push(`+${e.effect.secretLuckBonus}\u00d7 sec luck`);if(e.effect.coinPenalty)effs.push(`<span style="color:#ff6666">\u2212${e.effect.coinPenalty}\u00d7 coins</span>`);if(e.effect.speedPenalty)effs.push(`<span style="color:#ff6666">+${e.effect.speedPenalty}s delay (bypasses upgrades)</span>`);if(e.effect.multiRoll)effs.push(`+${e.effect.multiRoll} multi`);if(e.effect.crateInterval)effs.push(e.effect.crateInterval<1?`📦 ${Math.round(1/e.effect.crateInterval)}/s`:`📦/${e.effect.crateInterval}s`);if(e.effect.enchantLuckBonus)effs.push(`+${e.effect.enchantLuckBonus*100}% ench luck`);if(e.effect.combination)effs.push(`all tier-${e.effect.combination} (luck/speed/var/duper/sparkles)`);if(e.effect.nut)effs.push(`nut lvl ${e.effect.nut}`);return`<span style="color:${e.color};margin-right:6px">\u25c6 ${e.name}</span><span style="color:var(--muted);font-size:.62rem">${effs.join(', ')}</span>`;}).join('<br>');
+    const effsHTML=ench.map(e=>{const effs=[];if(e.effect.luck)effs.push(`+${e.effect.luck}\u00d7 luck`);if(e.effect.luckBonus)effs.push(`+${e.effect.luckBonus}\u00d7 luck`);if(e.effect.speed)effs.push(`\u2212${e.effect.speed}s spd`);if(e.effect.flash)effs.push("\u00bd speed");if(e.effect.variantLuck)effs.push(`+${e.effect.variantLuck}\u00d7 var`);if(e.effect.secretLuckBonus)effs.push(`+${e.effect.secretLuckBonus}\u00d7 sec luck`);if(e.effect.coinPenalty)effs.push(`<span style="color:#ff6666">\u2212${e.effect.coinPenalty}\u00d7 coins</span>`);if(e.effect.speedPenalty)effs.push(`<span style="color:#ff6666">+${e.effect.speedPenalty}s delay (bypasses upgrades)</span>`);if(e.effect.multiRoll)effs.push(`+${e.effect.multiRoll} multi`);if(e.effect.crateInterval)effs.push(e.effect.crateInterval<1?`\ud83d\udce6 ${Math.round(1/e.effect.crateInterval)}/s`:`\ud83d\udce6/${e.effect.crateInterval}s`);if(e.effect.enchantLuckBonus)effs.push(`+${e.effect.enchantLuckBonus*100}% ench luck`);if(e.effect.combination)effs.push(`all tier-${e.effect.combination} (luck/speed/var/duper/sparkles)`);if(e.effect.nut)effs.push(`nut lvl ${e.effect.nut}`);return`<span style="color:${e.color};margin-right:6px">\u25c6 ${e.name}</span><span style="color:var(--muted);font-size:.62rem">${effs.join(', ')}</span>`;}).join('<br>');
     const frc=orb.fromRankIdx!==undefined?RANK_COLORS[Math.min(orb.fromRankIdx,RANK_COLORS.length-2)]:"#888";
     const dots=ench.map(e=>`<div class="ench-dot" style="background:${e.color};color:${e.color}" title="${e.name}"></div>`).join('');
     const mh=isSel?'box-shadow:0 0 0 2px #ffdd00;':'';
-    const lb=orb.nutUnlocked?'<span style="font-size:.6rem;background:#332200;color:#ffcc77;padding:1px 5px;border-radius:4px;margin-left:4px">🥜 nut-unlocked</span>':isLocked?'<span style="font-size:.6rem;background:#554400;color:#ffdd44;padding:1px 5px;border-radius:4px;margin-left:4px">🔒 merged</span>':'';
+    const lb=orb.nutUnlocked?'<span style="font-size:.6rem;background:#332200;color:#ffcc77;padding:1px 5px;border-radius:4px;margin-left:4px">\ud83e\udd5c nut-unlocked</span>':isLocked?'<span style="font-size:.6rem;background:#554400;color:#ffdd44;padding:1px 5px;border-radius:4px;margin-left:4px">\ud83d\udd12 merged</span>':'';
     const mb=mergeMode&&!isLocked?`<button onclick="toggleMergeSelect(${orb.id})" style="font-size:.63rem;padding:2px 7px;border-radius:5px;border:1px solid ${isSel?'#ffdd00':'var(--border)'};background:${isSel?'rgba(255,221,0,.2)':'var(--surface)'};color:${isSel?'#ffdd00':'var(--muted)'};cursor:pointer;margin-top:2px;font-family:inherit">${isSel?'\u2605 selected':'\u2606 select'}</button>`:'';
-    return`<div class="inventory-item" style="border-left-color:${ench[0]?.color||'#888'};${mh}"><div class="inv-left" style="flex-direction:column;align-items:flex-start;gap:3px"><div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap"><div style="display:flex;gap:2px">${dots}</div>${lb}<span style="font-size:.65rem;color:var(--muted)">from <span style="color:${frc}">${orb.fromRankIdx!==undefined?RANKS[Math.min(orb.fromRankIdx,RANKS.length-1)].name:''}</span> (${formatValue(orb.fromVal||0)})</span></div><div style="font-size:.68rem;line-height:1.5">${effsHTML||'<span style="color:var(--muted)">No enchants</span>'}</div><button class="inv-equip-btn${isEq?" equipped":""}" onclick="equipOrb(${orb.id})">${isEq?"\u2713 Unequip":"+ Equip"}</button>${mb}</div><button class="inv-delete-btn" onclick="deleteEnchantOrb(${orb.id})" title="Remove">🗑</button></div>`;
+    return`<div class="inventory-item" style="border-left-color:${ench[0]?.color||'#888'};${mh}"><div class="inv-left" style="flex-direction:column;align-items:flex-start;gap:3px"><div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap"><div style="display:flex;gap:2px">${dots}</div>${lb}<span style="font-size:.65rem;color:var(--muted)">from <span style="color:${frc}">${orb.fromRankIdx!==undefined?RANKS[Math.min(orb.fromRankIdx,RANKS.length-1)].name:''}</span> (${formatValue(orb.fromVal||0)})</span></div><div style="font-size:.68rem;line-height:1.5">${effsHTML||'<span style="color:var(--muted)">No enchants</span>'}</div><button class="inv-equip-btn${isEq?" equipped":""}" onclick="equipOrb(${orb.id})">${isEq?"\u2713 Unequip":"+ Equip"}</button>${mb}</div><button class="inv-delete-btn" onclick="deleteEnchantOrb(${orb.id})" title="Remove">\ud83d\uddd1</button></div>`;
   }).join("");
 }
 function setOrbAutoDelete(val){orbAutoDeleteThreshold=(val===""||val===null||isNaN(parseFloat(val)))?null:parseFloat(val);const lbl=document.getElementById("orb-auto-delete-label");if(lbl)lbl.textContent=orbAutoDeleteThreshold?`1/${formatValue(orbAutoDeleteThreshold)}`:"off";saveData();}
@@ -777,21 +816,21 @@ const MERGE_COST=100000000;
 function toggleMergeMode(){mergeMode=!mergeMode;mergeSelected=[];renderMergeUI();renderEnchantInventory();}
 function toggleMergeSelect(orbId){if(mergeSelected.includes(orbId))mergeSelected=mergeSelected.filter(x=>x!==orbId);else if(mergeSelected.length<2)mergeSelected.push(orbId);renderMergeUI();renderEnchantInventory();}
 function renderMergeUI(){const btn=document.getElementById("merge-toggle-btn"),panel=document.getElementById("merge-panel"),costEl=document.getElementById("merge-cost-display");if(btn)btn.textContent=mergeMode?"\u2715 Cancel Merge":"\u2697\ufe0f Merge Orbs (100M coins)";if(panel)panel.style.display=mergeMode?"flex":"none";if(costEl)costEl.textContent=`Selected: ${mergeSelected.length}/2 orbs`;const db=document.getElementById("merge-do-btn");if(db){const ca=coins>=MERGE_COST,rdy=mergeSelected.length===2&&ca;db.disabled=!rdy;}}
-function doMergeOrbs(){if(mergeSelected.length!==2||coins<MERGE_COST)return;const [a,b]=mergeSelected.map(id=>enchantInventory.find(o=>o.id===id));if(!a||!b)return;coins-=MERGE_COST;const allE=[...(a.enchants||[]),...(b.enchants||[])];const vc=allE.filter(e=>e.name==="volley").length;let locked=vc>50;if(!locked){const nl=new Set(allE.filter(e=>e.effect.nut).map(e=>e.effect.nut));locked=!(nl.has(1)||( nl.size===1&&nl.has(4)));} const merged={id:newId(),enchants:allE,fromVal:Math.max(a.fromVal||0,b.fromVal||0),fromRankIdx:Math.max(a.fromRankIdx??0,b.fromRankIdx??0),locked,nutUnlocked:!locked&&vc<=50};enchantInventory=enchantInventory.filter(o=>!mergeSelected.includes(o.id));if(equippedOrbs.some(o=>mergeSelected.includes(o.orbId)))equippedOrbs=[];enchantInventory.unshift(merged);mergeMode=false;mergeSelected=[];updateBoxerTimer();renderMergeUI();renderEquippedOrbs();renderEnchantInventory();updateNavBadges();updateUI();saveData();}
+function doMergeOrbs(){if(mergeSelected.length!==2||coins<MERGE_COST)return;const [a,b]=mergeSelected.map(id=>enchantInventory.find(o=>o.id===id));if(!a||!b)return;coins-=MERGE_COST;const allE=[...(a.enchants||[]),...(b.enchants||[])];const vc=allE.filter(e=>e.name==="volley").length;let locked=vc>50;if(!locked){const nl=new Set(allE.filter(e=>e.effect.nut).map(e=>e.effect.nut));locked=!(nl.has(1)||(nl.size===1&&nl.has(4)));} const merged={id:newId(),enchants:allE,fromVal:Math.max(a.fromVal||0,b.fromVal||0),fromRankIdx:Math.max(a.fromRankIdx??0,b.fromRankIdx??0),locked,nutUnlocked:!locked&&vc<=50};enchantInventory=enchantInventory.filter(o=>!mergeSelected.includes(o.id));if(equippedOrbs.some(o=>mergeSelected.includes(o.orbId)))equippedOrbs=[];enchantInventory.unshift(merged);mergeMode=false;mergeSelected=[];updateBoxerTimer();renderMergeUI();renderEquippedOrbs();renderEnchantInventory();updateNavBadges();updateUI();saveData();}
 function updateNavBadges(){const ib=document.getElementById("inv-badge");if(ib){ib.textContent=inventory.length>99?"99+":inventory.length;ib.style.display=inventory.length>0?"":"none";}const eb=document.getElementById("ench-badge");if(eb){eb.textContent=enchantInventory.length>99?"99+":enchantInventory.length;eb.style.display=enchantInventory.length>0?"":"none";}}
 function renderEquippedOrbs(){
   const slot0=document.getElementById("equip-slot-0"),orb=equippedOrbs[0];
   if(!orb){slot0.className="equip-slot";slot0.innerHTML="Empty";}
-  else{slot0.className="equip-slot filled";const effs=orb.enchants.map(e=>{const l=[];if(e.effect.luck||e.effect.luckBonus)l.push(`<span style="color:${e.color}">+${(e.effect.luck||0)+(e.effect.luckBonus||0)}\u00d7 luck</span>`);if(e.effect.speed)l.push(`<span style="color:${e.color}">\u2212${e.effect.speed}s spd</span>`);if(e.effect.flash)l.push(`<span style="color:${e.color}">\u00bd speed</span>`);if(e.effect.variantLuck)l.push(`<span style="color:${e.color}">+${e.effect.variantLuck}\u00d7 var</span>`);if(e.effect.secretLuckBonus)l.push(`<span style="color:${e.color}">+${e.effect.secretLuckBonus}\u00d7 sec</span>`);if(e.effect.coinPenalty)l.push(`<span style="color:#ff6666">\u2212${e.effect.coinPenalty}\u00d7 coins</span>`);if(e.effect.speedPenalty)l.push(`<span style="color:#ff6666">+${e.effect.speedPenalty}s delay</span>`);if(e.effect.multiRoll)l.push(`<span style="color:${e.color}">+${e.effect.multiRoll} multi</span>`);if(e.effect.crateInterval)l.push(`<span style="color:${e.color}">${e.effect.crateInterval<1?`📦 ${Math.round(1/e.effect.crateInterval)}/s`:`📦/${e.effect.crateInterval}s`}</span>`);return l.join('<br>');}).join("<br>");slot0.innerHTML=`<button class="equip-unequip-btn" onclick="equipOrb(${orb.orbId})" title="Unequip">\u2715</button>${enchantDotsHTML(orb.enchants,"ench-dot")}<div class="equip-slot-effs">${effs}</div>`;}
+  else{slot0.className="equip-slot filled";const effs=orb.enchants.map(e=>{const l=[];if(e.effect.luck||e.effect.luckBonus)l.push(`<span style="color:${e.color}">+${(e.effect.luck||0)+(e.effect.luckBonus||0)}\u00d7 luck</span>`);if(e.effect.speed)l.push(`<span style="color:${e.color}">\u2212${e.effect.speed}s spd</span>`);if(e.effect.flash)l.push(`<span style="color:${e.color}">\u00bd speed</span>`);if(e.effect.variantLuck)l.push(`<span style="color:${e.color}">+${e.effect.variantLuck}\u00d7 var</span>`);if(e.effect.secretLuckBonus)l.push(`<span style="color:${e.color}">+${e.effect.secretLuckBonus}\u00d7 sec</span>`);if(e.effect.coinPenalty)l.push(`<span style="color:#ff6666">\u2212${e.effect.coinPenalty}\u00d7 coins</span>`);if(e.effect.speedPenalty)l.push(`<span style="color:#ff6666">+${e.effect.speedPenalty}s delay</span>`);if(e.effect.multiRoll)l.push(`<span style="color:${e.color}">+${e.effect.multiRoll} multi</span>`);if(e.effect.crateInterval)l.push(`<span style="color:${e.color}">${e.effect.crateInterval<1?`\ud83d\udce6 ${Math.round(1/e.effect.crateInterval)}/s`:`\ud83d\udce6/${e.effect.crateInterval}s`}</span>`);return l.join('<br>');}).join("<br>");slot0.innerHTML=`<button class="equip-unequip-btn" onclick="equipOrb(${orb.orbId})" title="Unequip">\u2715</button>${enchantDotsHTML(orb.enchants,"ench-dot")}<div class="equip-slot-effs">${effs}</div>`;}
   document.getElementById("equip-slot-1").innerHTML="<small>locked</small>";document.getElementById("equip-slot-2").innerHTML="<small>locked</small>";
   const bar=document.getElementById("enchant-stat-bar");const lB=getEnchantLuckBonus(),vB=getEnchantVariantAdd(),mrB=getEnchantMultiRollBonus(),sB=getEnchantSecretLuckBonus(),cP=getEnchantCoinPenalty(),spP=getEnchantSpeedPenalty();const{flat,hasFlash}=getEnchantSpeedInfo();const bE=equippedOrbs.flatMap(o=>o.enchants).find(e=>e.effect.crateInterval!==undefined);
   if(!equippedOrbs.length){bar.innerHTML='<span style="color:var(--muted)">No enchants equipped</span>';return;}
-  const parts=[];if(lB>0)parts.push(`<span class="estat">+${lB.toFixed(2)}\u00d7 luck</span>`);if(sB>0)parts.push(`<span class="estat">+${sB.toFixed(2)}\u00d7 sec luck</span>`);if(flat>0)parts.push(`<span class="estat">\u2212${flat}s speed</span>`);if(hasFlash)parts.push(`<span class="estat">\u00bd\u00d7 speed</span>`);if(vB>0)parts.push(`<span class="estat">+${vB.toFixed(2)}\u00d7 var</span>`);if(mrB>0)parts.push(`<span class="estat">+${mrB} multi</span>`);if(bE)parts.push(`<span class="estat">${bE.effect.crateInterval<1?`📦 ${Math.round(1/bE.effect.crateInterval)}/s`:`📦/${bE.effect.crateInterval}s`}</span>`);if(cP>0)parts.push(`<span class="estat" style="color:#ff6666">\u2212${cP}\u00d7 coins</span>`);if(spP>0)parts.push(`<span class="estat" style="color:#ff6666">+${spP}s delay (bypasses upgrades)</span>`);
+  const parts=[];if(lB>0)parts.push(`<span class="estat">+${lB.toFixed(2)}\u00d7 luck</span>`);if(sB>0)parts.push(`<span class="estat">+${sB.toFixed(2)}\u00d7 sec luck</span>`);if(flat>0)parts.push(`<span class="estat">\u2212${flat}s speed</span>`);if(hasFlash)parts.push(`<span class="estat">\u00bd\u00d7 speed</span>`);if(vB>0)parts.push(`<span class="estat">+${vB.toFixed(2)}\u00d7 var</span>`);if(mrB>0)parts.push(`<span class="estat">+${mrB} multi</span>`);if(bE)parts.push(`<span class="estat">${bE.effect.crateInterval<1?`\ud83d\udce6 ${Math.round(1/bE.effect.crateInterval)}/s`:`\ud83d\udce6/${bE.effect.crateInterval}s`}</span>`);if(cP>0)parts.push(`<span class="estat" style="color:#ff6666">\u2212${cP}\u00d7 coins</span>`);if(spP>0)parts.push(`<span class="estat" style="color:#ff6666">+${spP}s delay (bypasses upgrades)</span>`);
   bar.innerHTML=parts.length?parts.join("  \u00b7  "):'<span style="color:var(--muted)">No active effects</span>';
 }
 function toggleBoosterActive(idx){if(idx<0||idx>=boosterInventory.length)return;boosterInventory[idx].active=!boosterInventory[idx].active;renderBoosterInventory();saveData();}
 function applyAndConsumeBooster(){const actives=boosterInventory.filter(b=>b.active);if(!actives.length)return{effectiveLuck:getEffectiveLuck(),forcedVariantIdx:-1,boosterAttrs:{}};const add=actives.filter(b=>!b.isMulti&&!b.isPower&&!b.isEvil),mul=actives.filter(b=>b.isMulti&&!b.isEvil),pow=actives.filter(b=>b.isPower&&!b.isEvil),evl=actives.filter(b=>b.isEvil),evlm=evl.filter(b=>b.isMulti);const addS=add.reduce((s,b)=>s+b.val,0)+evl.filter(b=>!b.isMulti&&!b.isPower).reduce((s,b)=>s+b.val,0);const mulP=mul.reduce((s,b)=>s*b.val,1);const cp=pow.length?parseFloat((1+pow.reduce((s,b)=>s+(b.powerVal-1),0)).toFixed(4)):1;let fvi=-1;actives.forEach(b=>{if(b.variantIdx>fvi)fvi=b.variantIdx;});let eff=getEffectiveLuck();if(add.length||evl.filter(b=>!b.isMulti&&!b.isPower).length)eff*=(addS>0?addS:1);if(mul.length)eff*=mulP;if(evlm.length)eff*=0;if(cp!==1)eff=Math.pow(Math.max(0,eff),cp);const ba={isRounded:actives.some(b=>b.isRounded),isRandom:actives.some(b=>b.isRandom),isGamma:actives.some(b=>b.isGamma)};boosterInventory=boosterInventory.filter(b=>!b.active);return{effectiveLuck:eff,forcedVariantIdx:fvi,boosterAttrs:ba};}
-function spawnCrate(){const crate=document.createElement("div");crate.className="crate";crate.textContent="📦";crate.style.left=(6+Math.random()*82)+"vw";crate.style.top="-70px";const dur=Math.round(6500+Math.random()*4000);crate.style.setProperty("--dur",dur+"ms");document.body.appendChild(crate);const cl=setTimeout(()=>crate.remove(),dur+300);crate.addEventListener("click",()=>{clearTimeout(cl);const b=computeBooster();boosterInventory.push(b);const rect=crate.getBoundingClientRect();const n=document.createElement("div");n.className="crate-notif";const VC=VARIANTS.map(v=>v.color);let ts;if(b.isEvil)ts=`<span style="color:#ff4444">EVIL</span>`;else if(b.isPower)ts=`<span style="color:#cc55ff">^${b.powerVal.toFixed(2)} PWR</span>`;else if(b.isMulti)ts=`\u00d7${b.val>=1000?(b.val/1000).toFixed(1)+"K":b.val} MULTI`;else ts=`+${b.val>=1000?(b.val/1000).toFixed(1)+"K":b.val} ADD`;const vs=(b.variantIdx>=0&&!b.isEvil)?` <span style="color:${VC[b.variantIdx]}">\u2728${VARIANTS[b.variantIdx].name}</span>`:"";n.innerHTML=`📦 ${ts}${vs}`;n.style.left=Math.min(rect.left,window.innerWidth-200)+"px";n.style.top=(rect.top-8)+"px";document.body.appendChild(n);setTimeout(()=>n.remove(),2300);crate.style.animation="none";crate.style.opacity="0";crate.style.transform="scale(1.5)";crate.style.transition="opacity .2s,transform .2s";setTimeout(()=>crate.remove(),250);renderBoosterInventory();saveData();});}
+function spawnCrate(){const crate=document.createElement("div");crate.className="crate";crate.textContent="\ud83d\udce6";crate.style.left=(6+Math.random()*82)+"vw";crate.style.top="-70px";const dur=Math.round(6500+Math.random()*4000);crate.style.setProperty("--dur",dur+"ms");document.body.appendChild(crate);const cl=setTimeout(()=>crate.remove(),dur+300);crate.addEventListener("click",()=>{clearTimeout(cl);const b=computeBooster();boosterInventory.push(b);const rect=crate.getBoundingClientRect();const n=document.createElement("div");n.className="crate-notif";const VC=VARIANTS.map(v=>v.color);let ts;if(b.isEvil)ts=`<span style="color:#ff4444">EVIL</span>`;else if(b.isPower)ts=`<span style="color:#cc55ff">^${b.powerVal.toFixed(2)} PWR</span>`;else if(b.isMulti)ts=`\u00d7${b.val>=1000?(b.val/1000).toFixed(1)+"K":b.val} MULTI`;else ts=`+${b.val>=1000?(b.val/1000).toFixed(1)+"K":b.val} ADD`;const vs=(b.variantIdx>=0&&!b.isEvil)?` <span style="color:${VC[b.variantIdx]}">\u2728${VARIANTS[b.variantIdx].name}</span>`:"";n.innerHTML=`\ud83d\udce6 ${ts}${vs}`;n.style.left=Math.min(rect.left,window.innerWidth-200)+"px";n.style.top=(rect.top-8)+"px";document.body.appendChild(n);setTimeout(()=>n.remove(),2300);crate.style.animation="none";crate.style.opacity="0";crate.style.transform="scale(1.5)";crate.style.transition="opacity .2s,transform .2s";setTimeout(()=>crate.remove(),250);renderBoosterInventory();saveData();});}
 function startCrateTimer(){clearInterval(crateTimer);crateTimer=setInterval(()=>{if(Math.random()<1/5)spawnCrate();},5000);}
 const ALL_TABS=["rolling","upgrades","inventory","enchants","indexes","boosters","extras"];
 function switchTab(name){ALL_TABS.forEach(t=>{document.getElementById("tab-"+t).classList.toggle("active",t===name);document.getElementById("nav-"+t).classList.toggle("active",t===name);});}
@@ -836,11 +875,11 @@ function doRoll(){
       if(mr.superSecretIdx===SS_ERR)rowEl.style.borderColor="#44006699";else rowEl.style.borderColor=getDisplayColor(mr)+"99";
       doneCount++;
       if(doneCount===numReels){
-        if(!hasErr){const ce=document.getElementById("result-coins");ce.textContent=`+${formatValue(totalCoins)} 🪙`;requestAnimationFrame(()=>requestAnimationFrame(()=>ce.classList.add("show")));}
+        if(!hasErr){const ce=document.getElementById("result-coins");ce.textContent=`+${formatValue(totalCoins)} \ud83e\ude99`;requestAnimationFrame(()=>requestAnimationFrame(()=>ce.classList.add("show")));}
         renderPending();if(best.rankIdx>=10&&!hasErr)spawnParticles(best.rankIdx);
         renderEnchantInventory();updateNavBadges();buildIndex();
         if(allResults.some(r=>r.superSecretIdx===SS_BLACKHOLE))setTimeout(playBlackHoleCutscene,400);
-        if(hasErr){coins=-404;if(autoRollEnabled){autoRollEnabled=false;clearTimeout(autoRollTimer);document.getElementById("auto-btn").classList.remove("active");document.getElementById("auto-btn").textContent="🔄 Auto Roll";}setTimeout(playErrCutscene,400);}
+        if(hasErr){coins=-404;if(autoRollEnabled){autoRollEnabled=false;clearTimeout(autoRollTimer);document.getElementById("auto-btn").classList.remove("active");document.getElementById("auto-btn").textContent="\ud83d\udd04 Auto Roll";}setTimeout(playErrCutscene,400);}
         updateUI();saveData();isRolling=false;btn.disabled=false;
         if(autoRollEnabled)autoRollTimer=setTimeout(doRoll,getAutoRollDelay());
       }
@@ -853,18 +892,18 @@ function playErrCutscene(){
   lines.forEach((line,i)=>setTimeout(()=>line.classList.add("err-visible"),i*5000));
   setTimeout(()=>{el.style.transition="opacity 1.2s";el.style.opacity="0";setTimeout(()=>{el.classList.remove("err-show");el.style.opacity="";el.style.transition="";updateUI();saveData("... was it worth it?");},1300);},lines.length*5000);
 }
-function toggleAutoRoll(){autoRollEnabled=!autoRollEnabled;const btn=document.getElementById("auto-btn");btn.classList.toggle("active",autoRollEnabled);btn.textContent=autoRollEnabled?"🔄 Auto: ON":"🔄 Auto Roll";if(autoRollEnabled&&!isRolling)autoRollTimer=setTimeout(doRoll,100);else clearTimeout(autoRollTimer);}
+function toggleAutoRoll(){autoRollEnabled=!autoRollEnabled;const btn=document.getElementById("auto-btn");btn.classList.toggle("active",autoRollEnabled);btn.textContent=autoRollEnabled?"\ud83d\udd04 Auto: ON":"\ud83d\udd04 Auto Roll";if(autoRollEnabled&&!isRolling)autoRollTimer=setTimeout(doRoll,100);else clearTimeout(autoRollTimer);}
 function setAutoAccept(val){autoAcceptThreshold=(val===""||val===null||isNaN(parseFloat(val)))?null:parseFloat(val);saveData();}
 function setAutoDelete(val){autoDeleteMinRank=val;saveData();}
 function setAutoDeleteSecret(val){autoDeleteSecret=val;saveData();}
 function shouldAutoDelete(r){if(autoDeleteMinRank!=="none"){const p=autoDeleteMinRank.split(":");if(p.length===2&&p[0]==="rank"){const idx=parseInt(p[1]);if(!isNaN(idx)&&r.secretIdx<0&&r.rankIdx<idx)return true;}}if(autoDeleteSecret!=="none"){const p=autoDeleteSecret.split(":");if(p.length===2&&p[0]==="secret"){const idx=parseInt(p[1]);if(!isNaN(idx)&&r.secretIdx>=0&&r.secretIdx<idx)return true;}}return false;}
 function buildAutoDeleteSelects(){const dS=document.getElementById("auto-delete-select");dS.innerHTML='<option value="none">Off</option>';const dG=document.createElement("optgroup");dG.label="\u2014 Ranks \u2014";RANKS.forEach((r,i)=>{const o=document.createElement("option");o.value=`rank:${i}`;o.textContent=r.name;if(autoDeleteMinRank===`rank:${i}`)o.selected=true;dG.appendChild(o);});dS.appendChild(dG);const sS=document.getElementById("auto-delete-secret-select");sS.innerHTML='<option value="none">Off</option>';const sG=document.createElement("optgroup");sG.label="\u2014 Secrets \u2014";SECRET_RANKS.forEach((r,i)=>{const o=document.createElement("option");o.value=`secret:${i}`;o.textContent=`\u2746 ${r.name}`;if(autoDeleteSecret===`secret:${i}`)o.selected=true;sG.appendChild(o);});sS.appendChild(sG);}
-function renderPending(){const area=document.getElementById("pending-area");if(!pendingResults.length){area.innerHTML="";return;}area.innerHTML=pendingResults.map((r,i)=>{const c=getDisplayColor(r),eon=isEon(r)&&r.secretIdx<0,eeon=isEEon(r),ss=r.superSecretIdx>=0||r.perfectRngIdx>=0;const bc=eeon?EEON_OUTLINE:eon?EON_OUTLINE:c;const bsh=eeon?`box-shadow:inset 3px 0 0 ${EEON_SOLID};`:eon?`box-shadow:inset 3px 0 0 ${EON_SOLID};`:"";const ns=getDisplayName(r,false);const vn=(!ss&&!eon)?variantNameHTML(ns,r.variantIdx,c):null;const nh=ss?superSecretNameHTML(r,ns):eon?eonNameHTML(ns):vn?`<span class="pending-rank">${vn}</span>`:`<span style="color:${c}">${ns}</span>`;const ft=r.superSecretIdx===SS_TOTALLYMAX?`<span style="font-size:.6rem;color:#ff9966;margin-left:3px;font-style:italic">(fake!)</span>`:"";const et=r.isExtra?`<span style="font-size:.62rem;color:var(--muted);margin-left:3px">[+multi]</span>`:"";return`<div class="pending-row" style="border-left-color:${bc};${bsh}"><div class="pending-info"><span class="pending-rank">${nh}</span>${ft}${variantBadgeHTML(r.variantIdx)}<span class="pending-val">${getDisplayValue(r,false)}</span>${et}</div><button class="accept-btn" onclick="acceptRoll(${i})">\u2705 Accept</button><button class="dismiss-btn" onclick="dismissRoll(${i})">\u2715</button></div>`;}).join("");}
+function renderPending(){const area=document.getElementById("pending-area");if(!pendingResults.length){area.innerHTML="";return;}area.innerHTML=pendingResults.map((r,i)=>{const c=getDisplayColor(r),eon=isEon(r)&&r.secretIdx<0,eeon=isEEon(r),ss=r.superSecretIdx>=0||r.perfectRngIdx>=0;const bc=eeon?EEON_OUTLINE:eon?EON_OUTLINE:c;const bsh=eeon?`box-shadow:inset 3px 0 0 ${EEON_SOLID};`:eon?`box-shadow:inset 3px 0 0 ${EON_SOLID};`:"";const ns=getDisplayName(r,false);const vn=(!ss&&!eon)?variantNameHTML(ns,r.variantIdx,c):null;const spr=(!ss&&!eon)?specialBaseRankNameHTML(r,ns):null;const nh=ss?superSecretNameHTML(r,ns):eon?eonNameHTML(ns):spr||vn?`<span class="pending-rank">${spr||vn}</span>`:`<span style="color:${c}">${ns}</span>`;const ft=r.superSecretIdx===SS_TOTALLYMAX?`<span style="font-size:.6rem;color:#ff9966;margin-left:3px;font-style:italic">(fake!)</span>`:"";const et=r.isExtra?`<span style="font-size:.62rem;color:var(--muted);margin-left:3px">[+multi]</span>`:"";return`<div class="pending-row" style="border-left-color:${bc};${bsh}"><div class="pending-info"><span class="pending-rank">${nh}</span>${ft}${variantBadgeHTML(r.variantIdx)}<span class="pending-val">${getDisplayValue(r,false)}</span>${et}</div><button class="accept-btn" onclick="acceptRoll(${i})">\u2705 Accept</button><button class="dismiss-btn" onclick="dismissRoll(${i})">\u2715</button></div>`;}).join("");}
 function acceptRoll(idx){if(idx<0||idx>=pendingResults.length)return;inventory.unshift({...pendingResults[idx]});pendingResults.splice(idx,1);renderPending();renderInventory();updateUI();updateNavBadges();saveData();}
 function dismissRoll(idx){if(idx<0||idx>=pendingResults.length)return;pendingResults.splice(idx,1);renderPending();}
 function deleteInventoryItem(id){inventory=inventory.filter(item=>item.id!==id);updateNavBadges();renderInventory();updateUI();saveData();}
-function renderInventory(){const list=document.getElementById("inventory-list");if(!list)return;if(!inventory.length){list.innerHTML='<div class="inv-empty">No items yet!</div>';return;}list.innerHTML=inventory.map(item=>{const c=getDisplayColor(item),eon=isEon(item)&&item.secretIdx<0,eeon=isEEon(item),ss=item.superSecretIdx>=0||item.perfectRngIdx>=0;const bc=eeon?EEON_OUTLINE:eon?EON_OUTLINE:c;const bsh=eeon?`box-shadow:inset 3px 0 0 ${EEON_SOLID};`:eon?`box-shadow:inset 3px 0 0 ${EON_SOLID};`:"";const ns=getDisplayName(item,false);const vn=(!ss&&!eon)?variantNameHTML(ns,item.variantIdx,c):null;const rh=ss?superSecretNameHTML(item,ns):eon?eonNameHTML(ns):vn?`<span class="inv-rank">${vn}</span>`:`<span class="inv-rank" style="color:${c}">${ns}</span>`;const ft=item.superSecretIdx===SS_TOTALLYMAX?`<span style="font-size:.6rem;color:#ff9966;margin-left:3px;font-style:italic">(it's fake...)</span>`:"";return`<div class="inventory-item" style="border-left-color:${bc};${bsh}"><div class="inv-left"><div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap">${rh}${ft}${variantBadgeHTML(item.variantIdx)}<span class="inv-val">${getDisplayValue(item,false)}</span></div></div><button class="inv-delete-btn" onclick="deleteInventoryItem(${item.id})" title="Remove">🗑</button></div>`;}).join("");}
-function spawnParticles(rankIdx){const em=rankIdx>=25?["💎","\u2728","🌟","🎊","👑"]:rankIdx>=15?["\u2b50","\u2728","🎉","💫"]:["\u2728","💫","🎊"];for(let i=0;i<Math.min(5,rankIdx-8);i++){const el=document.createElement("div");el.className="particle";el.textContent=em[Math.floor(Math.random()*em.length)];el.style.left=(20+Math.random()*60)+"vw";el.style.top=(30+Math.random()*30)+"vh";el.style.animationDelay=(Math.random()*.3)+"s";document.body.appendChild(el);setTimeout(()=>el.remove(),1500);}}
+function renderInventory(){const list=document.getElementById("inventory-list");if(!list)return;if(!inventory.length){list.innerHTML='<div class="inv-empty">No items yet!</div>';return;}list.innerHTML=inventory.map(item=>{const c=getDisplayColor(item),eon=isEon(item)&&item.secretIdx<0,eeon=isEEon(item),ss=item.superSecretIdx>=0||item.perfectRngIdx>=0;const bc=eeon?EEON_OUTLINE:eon?EON_OUTLINE:c;const bsh=eeon?`box-shadow:inset 3px 0 0 ${EEON_SOLID};`:eon?`box-shadow:inset 3px 0 0 ${EON_SOLID};`:"";const ns=getDisplayName(item,false);const vn=(!ss&&!eon)?variantNameHTML(ns,item.variantIdx,c):null;const spr=(!ss&&!eon)?specialBaseRankNameHTML(item,ns):null;const rh=ss?superSecretNameHTML(item,ns):eon?eonNameHTML(ns):spr?`<span class="inv-rank">${spr}</span>`:vn?`<span class="inv-rank">${vn}</span>`:`<span class="inv-rank" style="color:${c}">${ns}</span>`;const ft=item.superSecretIdx===SS_TOTALLYMAX?`<span style="font-size:.6rem;color:#ff9966;margin-left:3px;font-style:italic">(it's fake...)</span>`:"";return`<div class="inventory-item" style="border-left-color:${bc};${bsh}"><div class="inv-left"><div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap">${rh}${ft}${variantBadgeHTML(item.variantIdx)}<span class="inv-val">${getDisplayValue(item,false)}</span></div></div><button class="inv-delete-btn" onclick="deleteInventoryItem(${item.id})" title="Remove">\ud83d\uddd1</button></div>`;}).join("");}
+function spawnParticles(rankIdx){const em=rankIdx>=25?["\ud83d\udc8e","\u2728","\ud83c\udf1f","\ud83c\udf8a","\ud83d\udc51"]:rankIdx>=15?["\u2b50","\u2728","\ud83c\udf89","\ud83d\udcab"]:["\u2728","\ud83d\udcab","\ud83c\udf8a"];for(let i=0;i<Math.min(5,rankIdx-8);i++){const el=document.createElement("div");el.className="particle";el.textContent=em[Math.floor(Math.random()*em.length)];el.style.left=(20+Math.random()*60)+"vw";el.style.top=(30+Math.random()*30)+"vh";el.style.animationDelay=(Math.random()*.3)+"s";document.body.appendChild(el);setTimeout(()=>el.remove(),1500);}}
 function startCoinflipTimer(){
   clearInterval(coinflipTimer);coinflipTimer=null;
   if(!coinflipEnabled)return;
@@ -889,7 +928,6 @@ function playBlackHoleCutscene(){
   const sz=Math.min(window.innerWidth,window.innerHeight)*0.7;
   canvas.width=sz;canvas.height=sz;
   el.classList.add("bh-show");
-  // pulsation state — multiple independent noise oscillators
   const osc=Array.from({length:6},()=>({phase:Math.random()*Math.PI*2,freq:0.3+Math.random()*1.2,amp:0.08+Math.random()*0.22}));
   function getPulse(now){return osc.reduce((s,o)=>s+Math.sin(o.phase+now*0.001*o.freq)*o.amp,0)/osc.length;}
   function draw(now){
@@ -898,30 +936,20 @@ function playBlackHoleCutscene(){
     const pull=Math.min(1,elapsed/2500);
     const pulse=getPulse(now)*pull;
     ctx.clearRect(0,0,sz,sz);
-    // deep space background fade
     const bg=ctx.createRadialGradient(cx,cy,0,cx,cy,sz*.5);
     bg.addColorStop(0,"rgba(0,4,20,1)");bg.addColorStop(1,"rgba(0,0,0,0)");
     ctx.fillStyle=bg;ctx.beginPath();ctx.arc(cx,cy,sz*.5,0,Math.PI*2);ctx.fill();
-    // orb body — pure black sphere with subtle deep blue core glow
     const orbGrd=ctx.createRadialGradient(cx-orbR*.18,cy-orbR*.18,0,cx,cy,orbR);
-    orbGrd.addColorStop(0,"rgba(10,18,60,1)");
-    orbGrd.addColorStop(0.35,"rgba(4,8,30,1)");
-    orbGrd.addColorStop(1,"rgba(0,0,0,1)");
+    orbGrd.addColorStop(0,"rgba(10,18,60,1)");orbGrd.addColorStop(0.35,"rgba(4,8,30,1)");orbGrd.addColorStop(1,"rgba(0,0,0,1)");
     ctx.fillStyle=orbGrd;ctx.beginPath();ctx.arc(cx,cy,orbR*pull,0,Math.PI*2);ctx.fill();
-    // outer glow rings — pulsating randomly
     if(pull>0.05){
-      const glowAlpha=0.45+pulse*1.8;
-      const glowW=sz*(0.018+pulse*0.04);
-      const glowR=orbR*(1.04+pulse*0.12);
+      const glowAlpha=0.45+pulse*1.8,glowW=sz*(0.018+pulse*0.04),glowR=orbR*(1.04+pulse*0.12);
       ctx.beginPath();ctx.arc(cx,cy,glowR*pull,0,Math.PI*2);
       ctx.strokeStyle=`rgba(40,120,255,${Math.max(0,Math.min(1,glowAlpha))})`;
-      ctx.lineWidth=glowW;ctx.shadowColor="#1155ff";ctx.shadowBlur=sz*(0.06+pulse*0.14);
-      ctx.stroke();
-      // second softer ring
+      ctx.lineWidth=glowW;ctx.shadowColor="#1155ff";ctx.shadowBlur=sz*(0.06+pulse*0.14);ctx.stroke();
       ctx.beginPath();ctx.arc(cx,cy,(glowR+glowW*.6)*pull,0,Math.PI*2);
       ctx.strokeStyle=`rgba(80,160,255,${Math.max(0,Math.min(1,(glowAlpha*0.35)))})`;
-      ctx.lineWidth=glowW*2.5;ctx.shadowColor="#3399ff";ctx.shadowBlur=sz*(0.1+pulse*0.2);
-      ctx.stroke();
+      ctx.lineWidth=glowW*2.5;ctx.shadowColor="#3399ff";ctx.shadowBlur=sz*(0.1+pulse*0.2);ctx.stroke();
       ctx.shadowBlur=0;
     }
     if(remaining>0)animId=requestAnimationFrame(draw);else end();
@@ -941,15 +969,12 @@ function buildIndex(){
   const vc={shiny:"#ffe040",glowy:"#64ffb4",rgb:"#ff44ff",inversion:"#44ffff",monochrome:"#cccccc",stone:"#666666",transparent:"#cccccc"};
   document.getElementById("variant-index-grid").innerHTML=VARIANTS.map(v=>{const c=vc[v.name]||"#fff";let nh;if(v.name==="rgb")nh=`<span style="animation:rgbName 1.2s linear infinite">${v.name}</span>`;else if(v.name==="inversion")nh=`<span style="animation:inversionBadge 2.4s ease-in-out infinite;color:#44ffff">${v.name}</span>`;else nh=`<span style="color:${c}">${v.name}</span>`;return`<div class="index-row" style="border-left-color:${c}">${nh} <span style="font-size:.55rem;color:var(--muted)">1/${v.chance}</span><span class="index-range">\u00d7${v.multi}</span></div>`;}).join("");
   const eg=document.getElementById("enchant-index-grid");let ehtml="";
-  for(const[cat,defs]of Object.entries(ENCHANT_CATS)){ehtml+=`<div class="index-section-title">enchants \u00b7 ${cat}</div><div class="index-grid">`;ehtml+=defs.map(d=>{const effs=[];if(d.effect.luck)effs.push(`+${d.effect.luck}\u00d7 luck`);if(d.effect.luckBonus)effs.push(`+${d.effect.luckBonus}\u00d7 luck`);if(d.effect.speed)effs.push(`\u2212${d.effect.speed}s`);if(d.effect.flash)effs.push("\u00bd spd");if(d.effect.variantLuck)effs.push(`+${d.effect.variantLuck}\u00d7 var`);if(d.effect.secretLuckBonus)effs.push(`+${d.effect.secretLuckBonus}\u00d7 sec luck`);if(d.effect.coinPenalty)effs.push(`<span style="color:#ff6666">\u2212${d.effect.coinPenalty}\u00d7 coins</span>`);if(d.effect.speedPenalty)effs.push(`<span style="color:#ff6666">+${d.effect.speedPenalty}s delay (bypasses upgrades)</span>`);if(d.effect.multiRoll)effs.push(`+${d.effect.multiRoll} multi`);if(d.effect.crateInterval)effs.push(d.effect.crateInterval<1?`📦 ${Math.round(1/d.effect.crateInterval)}/s`:`📦/${d.effect.crateInterval}s`);if(d.effect.enchantLuckBonus)effs.push(`+${d.effect.enchantLuckBonus*100}% ench luck`);if(d.effect.combination)effs.push(`all tier-${d.effect.combination} (luck/speed/var/duper/sparkles)`);if(d.effect.nut){if(d.name==="walnut")effs.push("+0.1\u00d7 all (cascades w/ higher nuts, cap 5 each)");else if(d.name==="peanut")effs.push("\u00d7(1+1.25 per peanut) on walnut");else if(d.name==="almond nut")effs.push("\u00d7(1+0.25 per almond) on top");else if(d.name==="chestnut")effs.push("\u00d7(1+0.1 per chestnut) on top");}return`<div class="index-row" style="border-left-color:${d.color}"><span class="index-name" style="color:${d.color}">${d.name} <span style="font-size:.5rem;color:var(--muted)">1/${fmtChance(d.chance)}</span></span><span class="index-range">${effs.join(", ")}</span></div>`;}).join("");ehtml+="</div>";}
+  for(const[cat,defs]of Object.entries(ENCHANT_CATS)){ehtml+=`<div class="index-section-title">enchants \u00b7 ${cat}</div><div class="index-grid">`;ehtml+=defs.map(d=>{const effs=[];if(d.effect.luck)effs.push(`+${d.effect.luck}\u00d7 luck`);if(d.effect.luckBonus)effs.push(`+${d.effect.luckBonus}\u00d7 luck`);if(d.effect.speed)effs.push(`\u2212${d.effect.speed}s`);if(d.effect.flash)effs.push("\u00bd spd");if(d.effect.variantLuck)effs.push(`+${d.effect.variantLuck}\u00d7 var`);if(d.effect.secretLuckBonus)effs.push(`+${d.effect.secretLuckBonus}\u00d7 sec luck`);if(d.effect.coinPenalty)effs.push(`<span style="color:#ff6666">\u2212${d.effect.coinPenalty}\u00d7 coins</span>`);if(d.effect.speedPenalty)effs.push(`<span style="color:#ff6666">+${d.effect.speedPenalty}s delay (bypasses upgrades)</span>`);if(d.effect.multiRoll)effs.push(`+${d.effect.multiRoll} multi`);if(d.effect.crateInterval)effs.push(d.effect.crateInterval<1?`\ud83d\udce6 ${Math.round(1/d.effect.crateInterval)}/s`:`\ud83d\udce6/${d.effect.crateInterval}s`);if(d.effect.enchantLuckBonus)effs.push(`+${d.effect.enchantLuckBonus*100}% ench luck`);if(d.effect.combination)effs.push(`all tier-${d.effect.combination} (luck/speed/var/duper/sparkles)`);if(d.effect.nut){if(d.name==="walnut")effs.push("+0.1\u00d7 all (cascades w/ higher nuts, cap 5 each)");else if(d.name==="peanut")effs.push("\u00d7(1+1.25 per peanut) on walnut");else if(d.name==="almond nut")effs.push("\u00d7(1+0.25 per almond) on top");else if(d.name==="chestnut")effs.push("\u00d7(1+0.1 per chestnut) on top");}return`<div class="index-row" style="border-left-color:${d.color}"><span class="index-name" style="color:${d.color}">${d.name} <span style="font-size:.5rem;color:var(--muted)">1/${fmtChance(d.chance)}</span></span><span class="index-range">${effs.join(", ")}</span></div>`;}).join("");ehtml+="</div>";}
   eg.innerHTML=ehtml;
   document.getElementById("secret-index-grid").innerHTML=SECRET_RANKS.map(r=>{const disc=discoveredSecrets.has(r.name);const mark=disc?'<span style="color:#44ff88;margin-left:4px">\u2713</span>':'<span style="color:#ff4444;margin-left:4px;opacity:.6">\u2717</span>';return`<div class="index-row" style="border-left-color:${SECRET_RANK_COLOR}"><span class="index-name" style="color:${SECRET_RANK_COLOR}">${r.name.toUpperCase()}${mark}</span><span class="index-range">1/${fmtChance(r.rng)}</span></div>`;}).join("");
   document.getElementById("super-secret-index-grid").innerHTML=SS_INDEX.map((entry,i)=>{
     const ss=SUPER_SECRETS[i];
-    // rank_██.err — pure black card, white stroke, no discovery mark
-    if(i===SS_ERR){
-      return`<div class="index-row" style="border-left-color:#000;background:#000;grid-column:1/-1"><span class="index-name" style="color:#fff;-webkit-text-stroke:1px #fff">${entry.name}</span><span class="index-range" style="color:#fff;-webkit-text-stroke:1px #fff">${ss.desc}</span></div>`;
-    }
+    if(i===SS_ERR)return`<div class="index-row" style="border-left-color:#000;background:#000;grid-column:1/-1"><span class="index-name" style="color:#fff;-webkit-text-stroke:1px #fff">${entry.name}</span><span class="index-range" style="color:#fff;-webkit-text-stroke:1px #fff">${ss.desc}</span></div>`;
     const disc=discoveredSuperSecrets.has(entry.name),hidden=entry.hidden&&!disc;
     const mark=disc?'<span style="color:#44ff88;margin-left:4px">\u2713</span>':'<span style="color:#ff4444;margin-left:4px;opacity:.6">\u2717</span>';
     if(hidden)return`<div class="index-row" style="border-left-color:#555"><span class="index-name" style="color:#777">??? (hidden until found)</span><span class="index-range">???</span></div>`;
@@ -962,7 +987,6 @@ function buildIndex(){
     return`<div class="index-row" style="border-left-color:${borderColor}${extraStyle}"><span class="index-name">${nh}<span style="font-size:.62rem;color:var(--muted);display:block;margin-top:1px">${ss.desc}</span></span><span class="index-range" style="white-space:nowrap">${rngStr}</span></div>`;
   }).join("");
   document.getElementById("exact-secret-index-grid").innerHTML=PERFECT_RNG_INDEX.map(entry=>{
-    // legacy entries (ssIdx set) check discoveredSuperSecrets; new entries check discoveredPerfectRng
     const disc=entry.ssIdx!==undefined?discoveredSuperSecrets.has(entry.name):discoveredPerfectRng.has(entry.name);
     const mark=disc?'<span style="color:#44ff88;margin-left:4px">\u2713</span>':'<span style="color:#ff4444;margin-left:4px;opacity:.6">\u2717</span>';
     const isGrad=entry.color.startsWith("linear-gradient")||entry.color.startsWith("radial-gradient");
@@ -970,7 +994,7 @@ function buildIndex(){
     const borderColor=isGrad?(entry.color.match(/#[0-9a-fA-F]{3,6}/)||["#888"])[0]:entry.color;
     return`<div class="index-row" style="border-left-color:${borderColor}"><span class="index-name"><span style="${nameStyle}">${entry.name}</span>${mark}</span><span class="index-range">exact ${entry.perfectrng.toLocaleString()}.00</span></div>`;
   }).join("");
-  document.getElementById("booster-type-index").innerHTML=[{label:"+ ADD",desc:"Additive luck boost",color:"#aaaaff",chance:"common"},{label:"\u00d7 MULTI",desc:"Multiplicative luck (blue)",color:"#6baaff",chance:"1/25"},{label:"^ PWR",desc:"Exponent luck, ^2 max, stackable",color:"#cc55ff",chance:"1/5000"},{label:"🔵 rounded",desc:"Rounds rng val to nearest integer",color:"#88aaff",chance:"1/15 attr"},{label:"🟡 random",desc:"Variant luck boost",color:"#ffdd44",chance:"1/50 attr"},{label:"🟣 gamma",desc:"Secret luck +min(100,1+luck/100)\u00d7",color:"#cc88ff",chance:"1/250 attr"},].map(b=>`<div class="index-row" style="border-left-color:${b.color}"><span class="index-name" style="color:${b.color}">${b.label} <span style="font-size:.5rem;color:var(--muted)">${b.chance}</span></span><span class="index-range">${b.desc}</span></div>`).join("");
+  document.getElementById("booster-type-index").innerHTML=[{label:"+ ADD",desc:"Additive luck boost",color:"#aaaaff",chance:"common"},{label:"\u00d7 MULTI",desc:"Multiplicative luck (blue)",color:"#6baaff",chance:"1/25"},{label:"^ PWR",desc:"Exponent luck, ^2 max, stackable",color:"#cc55ff",chance:"1/5000"},{label:"\ud83d\udd35 rounded",desc:"Rounds rng val to nearest integer",color:"#88aaff",chance:"1/15 attr"},{label:"\ud83d\udfe1 random",desc:"Variant luck boost",color:"#ffdd44",chance:"1/50 attr"},{label:"\ud83d\udfe3 gamma",desc:"Secret luck +min(100,1+luck/100)\u00d7",color:"#cc88ff",chance:"1/250 attr"},].map(b=>`<div class="index-row" style="border-left-color:${b.color}"><span class="index-name" style="color:${b.color}">${b.label} <span style="font-size:.5rem;color:var(--muted)">${b.chance}</span></span><span class="index-range">${b.desc}</span></div>`).join("");
 }
 function updateUI(){
   document.getElementById("coins").textContent=formatValue(coins);document.getElementById("luck-display").textContent=luck.toFixed(1)+"x";document.getElementById("bulk-display").textContent=(1+bulkLevel)+" roll"+(1+bulkLevel>1?"s":"");document.getElementById("total-rolls").textContent=totalRolls;
@@ -978,21 +1002,21 @@ function updateUI(){
   document.getElementById("bulk-cost").textContent=bulkLevel>=4?"MAXED":formatValue(bulkCost);document.getElementById("bulk-level").textContent=bulkLevel;const bb=document.getElementById("bulk-btn");bb.disabled=bulkLevel>=4||coins<bulkCost;if(bulkLevel>=4)bb.classList.add("maxed");
   const rsM=rollSpeedLevel>=10;document.getElementById("rollspeed-cost").textContent=rsM?"MAXED":formatValue(rollSpeedCost);document.getElementById("rollspeed-level").textContent=(rollSpeedLevel*.1).toFixed(1);document.getElementById("rollspeed-ms").textContent=getSpinMs();const rsb=document.getElementById("rollspeed-btn");rsb.disabled=rsM||coins<rollSpeedCost;if(rsM)rsb.classList.add("maxed");
   const qrb=document.getElementById("quickroll-btn"),qrc=document.getElementById("quickroll-cost"),qrs=document.getElementById("quickroll-status");if(quickRollUnlocked){qrc.textContent="Unlocked";qrs.textContent=quickRollEnabled?"ON \u26a1":"OFF";qrb.disabled=false;qrb.classList.toggle("qr-active",quickRollEnabled);}else{qrc.textContent=formatValue(quickRollCost);qrs.textContent="Locked";qrb.disabled=coins<quickRollCost;qrb.classList.remove("qr-active");}
-  const ufb=document.getElementById("ultra-fast-roll-btn"),ufc=document.getElementById("ultra-fast-roll-cost"),ufs=document.getElementById("ultra-fast-roll-status");if(ultraFastRollUnlocked){ufc.textContent="Unlocked";ufs.textContent=ultraFastRollEnabled?"ON 🚀":"OFF";ufb.disabled=false;ufb.classList.toggle("ufr-active",ultraFastRollEnabled);}else{ufc.textContent=formatValue(ultraFastRollCost);ufs.textContent="Locked";ufb.disabled=coins<ultraFastRollCost;ufb.classList.remove("ufr-active");}
+  const ufb=document.getElementById("ultra-fast-roll-btn"),ufc=document.getElementById("ultra-fast-roll-cost"),ufs=document.getElementById("ultra-fast-roll-status");if(ultraFastRollUnlocked){ufc.textContent="Unlocked";ufs.textContent=ultraFastRollEnabled?"ON \ud83d\ude80":"OFF";ufb.disabled=false;ufb.classList.toggle("ufr-active",ultraFastRollEnabled);}else{ufc.textContent=formatValue(ultraFastRollCost);ufs.textContent="Locked";ufb.disabled=coins<ultraFastRollCost;ufb.classList.remove("ufr-active");}
   const vlB=getVariantLuckBonus(),vlM=vlB>=2.5;document.getElementById("variant-luck-cost").textContent=vlM?"MAXED":formatValue(variantLuckCost);document.getElementById("variant-luck-level").textContent=vlB.toFixed(3);const vlb=document.getElementById("variant-luck-btn");vlb.disabled=vlM||coins<variantLuckCost;if(vlM)vlb.classList.add("maxed");
   const slB=getSecretLuckBonus(),slM=slB>=5;document.getElementById("secret-luck-cost").textContent=slM?"MAXED":formatValue(secretLuckCost);document.getElementById("secret-luck-level").textContent=slB.toFixed(2);const slb=document.getElementById("secret-luck-btn");slb.disabled=slM||coins<secretLuckCost;if(slM)slb.classList.add("maxed");
   const cgM=coinGainLevel>=100;document.getElementById("coin-gain-cost").textContent=cgM?"MAXED":formatValue(coinGainCost);document.getElementById("coin-gain-level").textContent=coinGainLevel*10;const cgb=document.getElementById("coin-gain-btn");cgb.disabled=cgM||coins<coinGainCost;if(cgM)cgb.classList.add("maxed");
   const elM=enchantLuckLevel>=15;document.getElementById("enchant-luck-cost").textContent=elM?"MAXED":formatValue(enchantLuckCost);document.getElementById("enchant-luck-level").textContent=enchantLuckLevel*5;const elb=document.getElementById("enchant-luck-btn");elb.disabled=elM||coins<enchantLuckCost;if(elM)elb.classList.add("maxed");
-  const ob=document.getElementById("optimizer-btn"),oc=document.getElementById("optimizer-cost"),os=document.getElementById("optimizer-status");if(optimizerUnlocked){oc.textContent="Unlocked";os.textContent=optimizerEnabled?"ON 🧠":"OFF";ob.disabled=false;ob.classList.toggle("opt-active",optimizerEnabled);}else{oc.textContent=formatValue(optimizerCost);os.textContent="Locked";ob.disabled=coins<optimizerCost;ob.classList.remove("opt-active");}
+  const ob=document.getElementById("optimizer-btn"),oc=document.getElementById("optimizer-cost"),os=document.getElementById("optimizer-status");if(optimizerUnlocked){oc.textContent="Unlocked";os.textContent=optimizerEnabled?"ON \ud83e\udde0":"OFF";ob.disabled=false;ob.classList.toggle("opt-active",optimizerEnabled);}else{oc.textContent=formatValue(optimizerCost);os.textContent="Locked";ob.disabled=coins<optimizerCost;ob.classList.remove("opt-active");}
   const dupM=duperUpgradeLevel>=2;document.getElementById("duper-upgrade-cost").textContent=dupM?"MAXED":formatValue(duperUpgradeCost);document.getElementById("duper-upgrade-level").textContent=duperUpgradeLevel;const db=document.getElementById("duper-upgrade-btn");db.disabled=dupM||coins<duperUpgradeCost;if(dupM)db.classList.add("maxed");
-  const cfb=document.getElementById("coinflip-btn"),cfc=document.getElementById("coinflip-cost"),cfs=document.getElementById("coinflip-status"),cfm=document.getElementById("coinflip-mult");if(coinflipUnlocked){cfc.textContent="Unlocked";cfs.textContent=coinflipEnabled?"ON 🪙":"OFF";cfb.disabled=false;cfb.classList.toggle("qr-active",coinflipEnabled);}else{cfc.textContent=formatValue(coinflipCost);cfs.textContent="Locked";cfb.disabled=coins<coinflipCost;cfb.classList.remove("qr-active");}if(cfm)cfm.textContent=coinflipMult.toFixed(1);
+  const cfb=document.getElementById("coinflip-btn"),cfc=document.getElementById("coinflip-cost"),cfs=document.getElementById("coinflip-status"),cfm=document.getElementById("coinflip-mult");if(coinflipUnlocked){cfc.textContent="Unlocked";cfs.textContent=coinflipEnabled?"ON \ud83e\ude99":"OFF";cfb.disabled=false;cfb.classList.toggle("qr-active",coinflipEnabled);}else{cfc.textContent=formatValue(coinflipCost);cfs.textContent="Locked";cfb.disabled=coins<coinflipCost;cfb.classList.remove("qr-active");}if(cfm)cfm.textContent=coinflipMult.toFixed(1);
   document.getElementById("inv-count").textContent=inventory.length;if(bestRankIdx>=0){const bEl=document.getElementById("best-rank");bEl.textContent=RANKS[bestRankIdx].name.toUpperCase();bEl.style.color=RANK_COLORS[bestRankIdx];}
 }
-function renderRankAutoConfig(){const c=document.getElementById("rank-auto-list");if(!c)return;c.innerHTML=RANKS.map((rank,i)=>{const cur=rankAutoOverride[i]||0,color=RANK_COLORS[i];return`<div class="auto-rank-row" style="border-left-color:${color}"><span class="auto-rank-name">${rank.name}</span><div class="auto-rank-btns"><button class="auto-rank-btn ${cur===-1?'active-decline':''}" onclick="setRankOverride(${i},-1)">🔴</button><button class="auto-rank-btn ${cur===0?'active-neutral':''}" onclick="setRankOverride(${i},0)">\u26aa</button><button class="auto-rank-btn ${cur===1?'active-accept':''}" onclick="setRankOverride(${i},1)">🟢</button></div></div>`;}).join("");}
+function renderRankAutoConfig(){const c=document.getElementById("rank-auto-list");if(!c)return;c.innerHTML=RANKS.map((rank,i)=>{const cur=rankAutoOverride[i]||0,color=RANK_COLORS[i];return`<div class="auto-rank-row" style="border-left-color:${color}"><span class="auto-rank-name">${rank.name}</span><div class="auto-rank-btns"><button class="auto-rank-btn ${cur===-1?'active-decline':''}" onclick="setRankOverride(${i},-1)">\ud83d\udd34</button><button class="auto-rank-btn ${cur===0?'active-neutral':''}" onclick="setRankOverride(${i},0)">\u26aa</button><button class="auto-rank-btn ${cur===1?'active-accept':''}" onclick="setRankOverride(${i},1)">\ud83d\udfe2</button></div></div>`;}).join("");}
 function setRankOverride(idx,val){rankAutoOverride[idx]=val;renderRankAutoConfig();saveData();}
-function renderSecretAutoConfig(){const c=document.getElementById("secret-auto-list");if(!c)return;c.innerHTML=SECRET_RANKS.map((secret,i)=>{const cur=secretAutoOverride[i]||0;return`<div class="auto-rank-row" style="border-left-color:${SECRET_RANK_COLOR}"><span class="auto-rank-name">${secret.name}</span><div class="auto-rank-btns"><button class="auto-rank-btn ${cur===-1?'active-decline':''}" onclick="setSecretOverride(${i},-1)">🔴</button><button class="auto-rank-btn ${cur===0?'active-neutral':''}" onclick="setSecretOverride(${i},0)">\u26aa</button><button class="auto-rank-btn ${cur===1?'active-accept':''}" onclick="setSecretOverride(${i},1)">🟢</button></div></div>`;}).join("");}
+function renderSecretAutoConfig(){const c=document.getElementById("secret-auto-list");if(!c)return;c.innerHTML=SECRET_RANKS.map((secret,i)=>{const cur=secretAutoOverride[i]||0;return`<div class="auto-rank-row" style="border-left-color:${SECRET_RANK_COLOR}"><span class="auto-rank-name">${secret.name}</span><div class="auto-rank-btns"><button class="auto-rank-btn ${cur===-1?'active-decline':''}" onclick="setSecretOverride(${i},-1)">\ud83d\udd34</button><button class="auto-rank-btn ${cur===0?'active-neutral':''}" onclick="setSecretOverride(${i},0)">\u26aa</button><button class="auto-rank-btn ${cur===1?'active-accept':''}" onclick="setSecretOverride(${i},1)">\ud83d\udfe2</button></div></div>`;}).join("");}
 function setSecretOverride(idx,val){secretAutoOverride[idx]=val;renderSecretAutoConfig();saveData();}
-function renderSuperSecretAutoConfig(){const c=document.getElementById("supersecret-auto-list");if(!c)return;c.innerHTML=SUPER_SECRETS.map((ss,i)=>{if(i===SS_ERR)return'';const cur=superSecretAutoOverride[i]||0;return`<div class="auto-rank-row" style="border-left-color:${ss.color}"><span class="auto-rank-name">${ss.name}</span><div class="auto-rank-btns"><button class="auto-rank-btn ${cur===-1?'active-decline':''}" onclick="setSuperSecretOverride(${i},-1)">🔴</button><button class="auto-rank-btn ${cur===0?'active-neutral':''}" onclick="setSuperSecretOverride(${i},0)">\u26aa</button><button class="auto-rank-btn ${cur===1?'active-accept':''}" onclick="setSuperSecretOverride(${i},1)">🟢</button></div></div>`;}).join("");}
+function renderSuperSecretAutoConfig(){const c=document.getElementById("supersecret-auto-list");if(!c)return;c.innerHTML=SUPER_SECRETS.map((ss,i)=>{if(i===SS_ERR)return'';const cur=superSecretAutoOverride[i]||0;return`<div class="auto-rank-row" style="border-left-color:${ss.color}"><span class="auto-rank-name">${ss.name}</span><div class="auto-rank-btns"><button class="auto-rank-btn ${cur===-1?'active-decline':''}" onclick="setSuperSecretOverride(${i},-1)">\ud83d\udd34</button><button class="auto-rank-btn ${cur===0?'active-neutral':''}" onclick="setSuperSecretOverride(${i},0)">\u26aa</button><button class="auto-rank-btn ${cur===1?'active-accept':''}" onclick="setSuperSecretOverride(${i},1)">\ud83d\udfe2</button></div></div>`;}).join("");}
 function setSuperSecretOverride(idx,val){superSecretAutoOverride[idx]=val;renderSuperSecretAutoConfig();saveData();}
 function renderPerfectRngAutoConfig(){
   const c=document.getElementById("perfectrng-auto-list");if(!c)return;
@@ -1000,7 +1024,7 @@ function renderPerfectRngAutoConfig(){
     const cur=perfectRngAutoOverride[i]||0;
     const isGrad=entry.color.startsWith("linear-gradient")||entry.color.startsWith("radial-gradient");
     const borderColor=isGrad?(entry.color.match(/#[0-9a-fA-F]{3,6}/)||["#888"])[0]:entry.color;
-    return`<div class="auto-rank-row" style="border-left-color:${borderColor}"><span class="auto-rank-name">${entry.name} <span style="font-size:.6rem;color:var(--muted)">(${entry.perfectrng})</span></span><div class="auto-rank-btns"><button class="auto-rank-btn ${cur===-1?'active-decline':''}" onclick="setPerfectRngOverride(${i},-1)">🔴</button><button class="auto-rank-btn ${cur===0?'active-neutral':''}" onclick="setPerfectRngOverride(${i},0)">⚪</button><button class="auto-rank-btn ${cur===1?'active-accept':''}" onclick="setPerfectRngOverride(${i},1)">🟢</button></div></div>`;
+    return`<div class="auto-rank-row" style="border-left-color:${borderColor}"><span class="auto-rank-name">${entry.name} <span style="font-size:.6rem;color:var(--muted)">(${entry.perfectrng})</span></span><div class="auto-rank-btns"><button class="auto-rank-btn ${cur===-1?'active-decline':''}" onclick="setPerfectRngOverride(${i},-1)">\ud83d\udd34</button><button class="auto-rank-btn ${cur===0?'active-neutral':''}" onclick="setPerfectRngOverride(${i},0)">\u26aa</button><button class="auto-rank-btn ${cur===1?'active-accept':''}" onclick="setPerfectRngOverride(${i},1)">\ud83d\udfe2</button></div></div>`;
   }).join("");
 }
 function setPerfectRngOverride(idx,val){perfectRngAutoOverride[idx]=val;renderPerfectRngAutoConfig();saveData();}
