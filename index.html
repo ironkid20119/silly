@@ -101,6 +101,7 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 @keyframes evilPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,40,40,0)}50%{box-shadow:0 0 8px 2px rgba(255,40,40,.35)}}
 @keyframes evilTextPulse{0%,100%{text-shadow:0 0 6px #ff006688,0 0 14px #ff000055}50%{text-shadow:0 0 16px #ff0066cc,0 0 30px #ff000099}}
 @keyframes funniPulse{0%,100%{filter:drop-shadow(0 0 4px #ffaa0088)}50%{filter:drop-shadow(0 0 12px #ffff44cc)}}
+@keyframes ewwhatBlob{0%,100%{box-shadow:0 0 80px 133px rgba(107,140,0,0.82)!important}33%{box-shadow:0 0 80px 133px rgba(139,105,20,0.85)!important}66%{box-shadow:0 0 80px 133px rgba(85,107,47,0.80)!important}}
 .booster-del{position:absolute;top:3px;right:4px;background:none;border:none;cursor:pointer;font-size:.52rem;color:var(--border);line-height:1;padding:0;transition:color .15s;}
 .booster-del:hover{color:#ff4466;}
 .booster-shape{width:34px;height:34px;flex-shrink:0;background:linear-gradient(to bottom,#fff 0%,#2a2a55 100%);filter:drop-shadow(0 2px 4px rgba(0,0,0,.55));}
@@ -117,6 +118,18 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .booster-tag.multi-tag{color:#6baaff;}.booster-tag.power-tag{color:#cc55ff;}.booster-tag.evil-tag{color:#ff4444;}.booster-tag.var-tag{font-style:italic;}
 .booster-item.booster-active{border-color:#ffe06b!important;box-shadow:0 0 10px 2px rgba(255,220,80,.55);background:rgba(255,200,50,.13)!important;}
 .booster-item.booster-active .booster-shape{filter:drop-shadow(0 0 7px #ffe06b) drop-shadow(0 2px 3px rgba(0,0,0,.5))!important;}
+.craft-slot{flex:1;min-width:80px;background:var(--surface2);border:1.5px dashed var(--border);border-radius:11px;padding:7px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:.65rem;color:var(--muted);text-align:center;position:relative;transition:border-color .2s;}
+.craft-slot.filled{border-style:solid;background:rgba(255,153,68,.06);}
+.craft-recipe{background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:10px 12px;margin-bottom:8px;transition:border-color .2s;}
+.craft-recipe:hover{border-color:#ff9944;}
+.craft-recipe-name{font-size:.9rem;font-weight:700;margin-bottom:2px;}
+.craft-buffs{font-size:.68rem;color:#6bffb8;margin:2px 0;}
+.craft-req{font-size:.63rem;color:var(--muted);line-height:1.7;}
+.craft-queue-item{background:var(--surface2);border:1.5px solid #ff994455;border-radius:10px;padding:7px 10px;display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;animation:slideIn .14s ease;}
+.craft-timer{font-size:.7rem;color:#ff9944;font-variant-numeric:tabular-nums;}
+.craft-collect-btn{background:rgba(107,255,184,.15);border:1.5px solid #6bffb8;border-radius:7px;color:#6bffb8;font-family:'Fredoka One',cursive;font-size:.72rem;padding:3px 10px;cursor:pointer;white-space:nowrap;}
+.craft-collect-btn:hover{background:rgba(107,255,184,.3);}
+.craft-collect-btn:disabled{opacity:.4;cursor:not-allowed;}
 .enchant-panel{flex:0 0 auto;background:var(--surface);border:1.5px solid var(--border);border-radius:18px;padding:12px 14px;}
 .enchant-panel h2{font-size:1.05rem;color:#bb88ff;margin-bottom:8px;text-align:center;letter-spacing:1px;}
 .equip-slots{display:flex;gap:7px;margin-bottom:9px;flex-wrap:wrap;}
@@ -252,6 +265,7 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
     <button class="nav-btn" id="nav-enchants" onclick="switchTab('enchants')"><span class="nav-icon">&#x1F52E;</span>Orbs<span class="nav-badge" id="ench-badge" style="display:none">0</span></button>
     <button class="nav-btn" id="nav-indexes" onclick="switchTab('indexes')"><span class="nav-icon">&#x1F4D6;</span>Index</button>
     <button class="nav-btn" id="nav-boosters" onclick="switchTab('boosters')"><span class="nav-icon">&#x26A1;</span>Boost<span class="nav-badge" id="booster-badge" style="display:none">0</span></button>
+    <button class="nav-btn" id="nav-crafting" onclick="switchTab('crafting')"><span class="nav-icon">&#x1F528;</span>Craft</button>
     <button class="nav-btn" id="nav-extras" onclick="switchTab('extras')"><span class="nav-icon">&#x2699;&#xFE0F;</span>Extras</button>
   </nav>
   <div class="main-area">
@@ -286,7 +300,9 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
     <button class="upgrade-btn" id="optimizer-btn" onclick="buyOrToggleOptimizer()"><div class="upgrade-name">&#x1F9E0; Optimizer</div><div class="upgrade-desc">Toggle: luck &times;1.75 BUT coin gain &minus;325%</div><div class="upgrade-cost">Cost: <span id="optimizer-cost">5,000,000</span> &#x1FA99;</div><div class="upgrade-level">Status: <span id="optimizer-status">Locked</span></div></button>
     <button class="upgrade-btn" id="duper-upgrade-btn" onclick="buyUpgrade('duperUpgrade')"><div class="upgrade-name">&#x1F3AF; Duper</div><div class="upgrade-desc">+1 multi roll per reel (max +2)</div><div class="upgrade-cost">Cost: <span id="duper-upgrade-cost">500,000</span> &#x1FA99;</div><div class="upgrade-level">Owned: <span id="duper-upgrade-level">0</span> / 2</div></button>
     <button class="upgrade-btn" id="coinflip-btn" onclick="buyOrToggleCoinflip()"><div class="upgrade-name">&#x1FA99; Coinflip Potency</div><div class="upgrade-desc">Toggle: every 10s, 50/50 chance +0.1&times; or &minus;0.1&times; luck (min &times;0.1, max &times;2.5)</div><div class="upgrade-cost">Cost: <span id="coinflip-cost">100,000,000,000</span> &#x1FA99;</div><div class="upgrade-level">Status: <span id="coinflip-status">Locked</span> &middot; Mult: <span id="coinflip-mult">1.0</span>&times;</div></button>
-    <div class="info-note"><div class="note-title">&#x2139;&#xFE0F; How Luck Works</div>Higher luck &rarr; bigger values &rarr; rarer ranks!<br>Coins = rng^0.5 &times; (1 + log&#x2081;&#x2080;(rng))</div>
+    <button class="upgrade-btn" id="craft-speed-btn" onclick="buyUpgrade('craftSpeed')"><div class="upgrade-name">&#x2697;&#xFE0F; Craft Speed</div><div class="upgrade-desc">+0.1&times; craft speed (max +0.5&times;)</div><div class="upgrade-cost">Cost: <span id="craft-speed-cost">1,000,000</span> &#x1FA99;</div><div class="upgrade-level">Speed: <span id="craft-speed-level">1.0</span>&times;</div></button>
+    <button class="upgrade-btn" id="crate-luck-btn" onclick="buyUpgrade('crateLuck')"><div class="upgrade-name">&#x1F4E6; Crate Luck</div><div class="upgrade-desc">+1% better crate tier chance (max +20%)</div><div class="upgrade-cost">Cost: <span id="crate-luck-cost">75,000</span> &#x1FA99;</div><div class="upgrade-level">Bonus: +<span id="crate-luck-level">0</span>%</div></button>
+        <div class="info-note"><div class="note-title">&#x2139;&#xFE0F; How Luck Works</div>Higher luck &rarr; bigger values &rarr; rarer ranks!<br>Coins = rng^0.5 &times; (1 + log&#x2081;&#x2080;(rng))</div>
   </div></div>
   <div class="tab-panel" id="tab-inventory"><div class="inventory-panel"><h2>&#x1F392; Inventory (<span id="inv-count">0</span>)</h2><div class="inventory-list" id="inventory-list"><div class="inv-empty">No items yet!</div></div></div></div>
   <div class="tab-panel" id="tab-enchants"><div class="enchant-panel">
@@ -309,6 +325,16 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
     <div class="index-section-title">Booster Types</div><div class="index-grid" id="booster-type-index"></div>
   </div></div>
   <div class="tab-panel" id="tab-boosters"><div class="booster-panel"><h2 id="booster-hdr">&#x26A1; Boosters (0)</h2><div class="booster-preview" id="booster-luck-preview">Click a crate to collect!</div><div class="booster-list" id="booster-list"><div class="booster-empty">No boosters yet</div></div></div></div>
+  <div class="tab-panel" id="tab-crafting"><div class="panel" style="flex:0 0 auto"><h2>&#x1F528; Crafting</h2>
+    <div style="font-size:.72rem;color:var(--muted);margin-bottom:8px;text-align:center">Consume ranks &amp; boosters to craft equippable items. Max 3 equipped.</div>
+    <div style="font-size:.75rem;color:var(--accent3);margin-bottom:5px">&#x2697;&#xFE0F; Equipped Items</div>
+    <div style="display:flex;gap:7px;margin-bottom:10px;flex-wrap:wrap" id="craft-equip-slots"></div>
+    <div id="craft-queue-hdr" style="font-size:.75rem;color:var(--accent3);margin-bottom:5px;display:none">&#x23F3; In Progress</div>
+    <div id="craft-queue-list"></div>
+    <div id="craft-crafted-list"></div>
+    <div style="font-size:.75rem;color:var(--accent3);margin-bottom:6px;margin-top:4px">&#x1F4CB; Recipes</div>
+    <div id="craft-recipes-list"></div>
+  </div></div>
   <div class="tab-panel" id="tab-extras"><div class="panel"><h2>&#x1F4E4; Export / Import</h2>
     <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:8px"><button class="upgrade-btn" style="width:auto;flex:1;min-width:90px;text-align:center;padding:9px 12px;" onclick="exportData()"><div class="upgrade-name" style="color:#6bddff">&#x1F4C1; JSON</div><div class="upgrade-desc">Export as .json file</div></button><button class="upgrade-btn" style="width:auto;flex:1;min-width:90px;text-align:center;padding:9px 12px;" onclick="document.getElementById('import-file-input').click()"><div class="upgrade-name" style="color:#6bffb8">&#x1F4C2; Import JSON</div><div class="upgrade-desc">Load a .json save</div></button><button class="upgrade-btn" style="width:auto;flex:1;min-width:90px;text-align:center;padding:9px 12px;" onclick="exportTxt()"><div class="upgrade-name" style="color:#ffe06b">&#x1F4CB; Copy Code</div><div class="upgrade-desc">Export as text code</div></button></div>
     <input type="file" id="import-file-input" accept=".json" style="display:none" onchange="importData(this)">
@@ -395,7 +421,7 @@ const SECRET_RANKS=[
   {name:"neverending...",rng:1e9,displayrng:1,display:false},{name:"use this to autodecline clover lmao",rng:1e999,displayrng:1,display:false},
 ];
 const SECRET_RANK_COLOR="#ff9999";
-const SS_ABYSSAL=0,SS_EEON=1,SS_TOTALLYMAX=2,SS_VERYEVIL=3,SS_BLACKHOLE=4,SS_FUNNI=5,SS_SINGULARITY=6,SS_SUPERCHARGED=7,SS_ERR=8,SS_NAN=9,SS_CENSORED=10;
+const SS_ABYSSAL=0,SS_EEON=1,SS_TOTALLYMAX=2,SS_VERYEVIL=3,SS_BLACKHOLE=4,SS_FUNNI=5,SS_SINGULARITY=6,SS_SUPERCHARGED=7,SS_ERR=8,SS_NAN=9,SS_CENSORED=10,SS_EWWHAT=11;
 const BH_BASE_RNG=3.9e15;
 const SUPER_SECRETS=[
   {name:"abyssal",color:"#5500cc",rng:10000000,displayrng:-1,hideUntilRolled:false,desc:"Only secret luck applies."},
@@ -408,7 +434,8 @@ const SUPER_SECRETS=[
   {name:"supercharged",color:"#ffff44",rng:null,displayrng:222222,hideUntilRolled:false,desc:"Roll exactly 222,222.00."},
   {name:'rank_\u2588\u2588.err("\u2588\u2588\u2588" [at line "\u2588\u2588\u2588"])',color:"#000000",rng:null,displayrng:"\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588",hideUntilRolled:false,desc:"Script error: \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588."},
   {name:"NaN",color:"#ffaa88",rng:null,displayrng:"???",hideUntilRolled:false,desc:"The number that isn't a number. Appears when numbers break."},
-  {name:"CENSORED",color:"#cc0000",rng:750000,displayrng:"[CENSORED]",hideUntilRolled:true,desc:"Redacted. 1/750,000 true RNG."}
+  {name:"CENSORED",color:"#cc0000",rng:750000,displayrng:"[CENSORED]",hideUntilRolled:true,desc:"Redacted. 1/750,000 true RNG."},
+  {name:"EW?? what is this !!!",color:"#6b8c00",rng:222222222,displayrng:"ew...",hideUntilRolled:false,desc:"Replaces WEIRD. 1/222,222,222. Disgusting."}
 ];
 const SS_INDEX=[
   {name:"abyssal",                rng:"1/10,000,000",       hidden:false, color:"#5500cc"},
@@ -421,7 +448,8 @@ const SS_INDEX=[
   {name:"supercharged",           rng:"exact 222,222.00",    hidden:false, color:"linear-gradient(90deg,#ffff44,#ffffaa,#ffff00,#ffff44)"},
   {name:SUPER_SECRETS[SS_ERR].name, rng:null,               hidden:false, color:"#000000"},
   {name:"NaN",                    rng:"???",                 hidden:false, color:"#ffaa88"},
-  {name:"CENSORED",               rng:"1/750,000",           hidden:true,  color:"#cc0000"}
+  {name:"CENSORED",               rng:"1/750,000",           hidden:true,  color:"#cc0000"},
+  {name:"EW?? what is this !!!",    rng:"1/222,222,222",       hidden:false,  color:"linear-gradient(135deg,#6b8c00,#8b6914,#556b2f,#a0522d,#808000)"}
 ];
 const PERFECT_RNG_INDEX=[
   {name:"Very Evil Idiot", perfectrng:77777776, color:"#ff0066",                                                          ssIdx:SS_VERYEVIL},
@@ -471,6 +499,10 @@ let optimizerUnlocked=false,optimizerEnabled=false,optimizerCost=5000000;
 let duperUpgradeLevel=0,duperUpgradeCost=500000;
 let coinflipUnlocked=false,coinflipEnabled=false,coinflipMult=1.0,coinflipCost=100000000000;
 let coinflipTimer=null;
+let craftSpeedLevel=0,craftSpeedCost=1000000;
+let crateLuckLevel=0,crateLuckCost=75000;
+let craftQueue=[],craftedItems=[],equippedCraftItems=[];
+let craftTimer=null;
 let totalRolls=0,bestRankIdx=-1;
 let inventory=[],pendingResults=[],boosterInventory=[],equippedOrbs=[],enchantInventory=[];
 let autoDeclineTierMap={},orbAutoDeleteThreshold=null,mergeMode=false,mergeSelected=[];
@@ -511,7 +543,7 @@ function getEnchantMultiRollBonus(){return getActiveEnchantEffects().reduce((s,e
 function getEnchantSpeedInfo(){const effs=getActiveEnchantEffects();return{flat:effs.reduce((s,e)=>s+(e.effect.speed||0),0),hasFlash:effs.some(e=>e.effect.flash)};}
 function getEnchantLuckBonusFromOrbs(){return getActiveEnchantEffects().reduce((s,e)=>s+(e.effect.enchantLuckBonus||0),0);}
 function getMultiRollBonus(){return getEnchantMultiRollBonus()+duperUpgradeLevel;}
-function getEffectiveLuck(){return luck*(optimizerEnabled?1.75:1)*(coinflipEnabled?coinflipMult:1);}
+function getEffectiveLuck(){return (luck+getCraftLuckBonus())*(optimizerEnabled?1.75:1)*(coinflipEnabled?coinflipMult:1);}
 function getSpinMs(){
   const pen=Math.round(getEnchantSpeedPenalty()*1000);
   if(ultraFastRollEnabled)return Math.max(16,Math.floor(1000/detectedFPS))+pen;
@@ -523,9 +555,9 @@ function getSpinMs(){
 }
 function getStaggerMs(){return ultraFastRollEnabled?Math.max(16,Math.floor(1000/detectedFPS)):22.5;}
 function getAutoRollDelay(){return ultraFastRollEnabled?Math.max(16,Math.floor(1000/detectedFPS)):200;}
-function getVariantLuckBonus(){return variantLuckLevel*0.125+getEnchantVariantAdd();}
-function getSecretLuckBonus(){return secretLuckLevel*0.05+getEnchantSecretLuckBonus();}
-function getCoinGainMult(){const b=1+coinGainLevel*0.1;const ao=optimizerEnabled?Math.max(0.01,b-3.25):b;return Math.max(0.001,ao-getEnchantCoinPenalty());}
+function getVariantLuckBonus(){return variantLuckLevel*0.125+getEnchantVariantAdd()+getCraftVariantLuckBonus();}
+function getSecretLuckBonus(){return secretLuckLevel*0.05+getEnchantSecretLuckBonus()+getCraftSecretLuckBonus();}
+function getCoinGainMult(){const b=1+coinGainLevel*0.1+getCraftCoinGainBonus();const ao=optimizerEnabled?Math.max(0.01,b-3.25):b;return Math.max(0.001,ao-getEnchantCoinPenalty());}
 function getEnchantLuckMult(){return(1+enchantLuckLevel*0.05)*(1+getEnchantLuckBonusFromOrbs());}
 function hasSingularity(){return inventory.some(i=>i.superSecretIdx===SS_SINGULARITY)||pendingResults.some(i=>i.superSecretIdx===SS_SINGULARITY);}
 function isEon(r){return r.rankIdx===EON_RANK_IDX&&r.superSecretIdx!==SS_EEON&&r.superSecretIdx!==SS_NAN;}
@@ -547,6 +579,7 @@ function getDisplayColor(r){
   if(r.superSecretIdx===SS_SUPERCHARGED)return"#ffff44";
   if(r.superSecretIdx===SS_NAN)return"#ffaa88";
   if(r.superSecretIdx===SS_CENSORED)return"#cc0000";
+  if(r.superSecretIdx===SS_EWWHAT)return"#6b8c00";
   if(isEon(r))return EON_SOLID;
   if(isVoidtouched(r))return VOIDTOUCHED_SOLID;
   if(isOmniversal(r))return OMNIVERSAL_SOLID;
@@ -563,6 +596,7 @@ function specialBaseRankNameHTML(r,n){if(isVoidtouched(r))return voidtouchedName
 function eeonNameHTML(n){return`<span style="background:${EEON_GRADIENT};-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 8px #ff220088)">${n}</span>`;}
 function bhNameHTML(n){return`<span style="background:radial-gradient(ellipse at 30% 40%,#8844ff,#220033,#000);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 8px #8844ff99)">${n}</span>`;}
 function censoredNameHTML(n){return`<span style="font-family:'Afacad Flux',sans-serif;font-weight:600;font-style:italic;color:#cc0000;background:#000;padding:0 3px">${n}</span>`;}
+function ewwhatNameHTML(n){return`<span style="font-weight:900;background:linear-gradient(135deg,#ff6600,#adff2f,#ff00cc,#ffff00,#00ff88,#ff3300);-webkit-background-clip:text!important;-webkit-text-fill-color:transparent!important;background-clip:text!important;display:inline-block!important;position:relative!important;z-index:99999!important;box-shadow:0 0 80px 133px rgba(107,140,0,0.82)!important;border-radius:50%!important;animation:ewwhatBlob 1.8s ease-in-out infinite!important">${n}</span>`;}
 function errNameHTML(n){return`<span style="color:#fff;-webkit-text-stroke:1px #fff">${n}</span>`;}
 function getPerfectRngColor(entry){
   const c=entry.color;
@@ -581,6 +615,7 @@ function superSecretNameHTML(r,n){
   if(r.perfectRngIdx>=0)return perfectRngNameHTML(PERFECT_RNG_INDEX[r.perfectRngIdx],n);
   if(r.superSecretIdx===SS_ERR)return errNameHTML(n);
   if(r.superSecretIdx===SS_CENSORED)return censoredNameHTML(n);
+  if(r.superSecretIdx===SS_EWWHAT)return ewwhatNameHTML(n);
   if(r.superSecretIdx===SS_EEON)return eeonNameHTML(n);
   if(r.superSecretIdx===SS_ABYSSAL)return`<span style="color:#5500cc;text-shadow:0 0 8px #5500ccaa">${n}</span>`;
   if(r.superSecretIdx===SS_TOTALLYMAX)return`<span style="background:linear-gradient(90deg,#ffffaa,#ffcc44,#ffffaa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">${n}</span>`;
@@ -627,7 +662,7 @@ function setNumFmt(fmt){numberFormat=fmt;['normal','eng','sci'].forEach(f=>docum
 function computeCoins(val){if(!isFinite(val)||val<=0)return 0;return Math.floor(Math.pow(val,0.5)*(1+Math.log10(val))*getCoinGainMult());}
 function getRank(v){for(let i=RANKS.length-1;i>=0;i--)if(v>=RANKS[i].min)return i;return 0;}
 function saveData(toastMsg){
-  const d={coins,luck,bulkLevel,luckLevel,luckCost,bulkCost,rollSpeedLevel,rollSpeedCost,variantLuckLevel,variantLuckCost,secretLuckLevel,secretLuckCost,coinGainLevel,coinGainCost,enchantLuckLevel,enchantLuckCost,quickRollUnlocked,quickRollEnabled,quickRollCost,ultraFastRollUnlocked,ultraFastRollEnabled,ultraFastRollCost,optimizerUnlocked,optimizerEnabled,optimizerCost,duperUpgradeLevel,duperUpgradeCost,coinflipUnlocked,coinflipEnabled,coinflipMult,coinflipCost,totalRolls,bestRankIdx,inventory,boosterInventory,equippedOrbs,enchantInventory,autoAcceptThreshold,autoDeleteMinRank,autoDeleteSecret,nextItemId,numberFormat,colorScheme,sillyCursorEnabled,discoveredSecrets:[...discoveredSecrets],discoveredSuperSecrets:[...discoveredSuperSecrets],discoveredPerfectRng:[...discoveredPerfectRng],blackHoleRng,autoDeclineTierMap,orbAutoDeleteThreshold,rankAutoOverride,secretAutoOverride,superSecretAutoOverride,perfectRngAutoOverride,enchantAutoOverride};
+  const d={coins,luck,bulkLevel,luckLevel,luckCost,bulkCost,craftSpeedLevel,craftSpeedCost,crateLuckLevel,crateLuckCost,craftQueue,craftedItems,equippedCraftItems,rollSpeedLevel,rollSpeedCost,variantLuckLevel,variantLuckCost,secretLuckLevel,secretLuckCost,coinGainLevel,coinGainCost,enchantLuckLevel,enchantLuckCost,quickRollUnlocked,quickRollEnabled,quickRollCost,ultraFastRollUnlocked,ultraFastRollEnabled,ultraFastRollCost,optimizerUnlocked,optimizerEnabled,optimizerCost,duperUpgradeLevel,duperUpgradeCost,coinflipUnlocked,coinflipEnabled,coinflipMult,coinflipCost,totalRolls,bestRankIdx,inventory,boosterInventory,equippedOrbs,enchantInventory,autoAcceptThreshold,autoDeleteMinRank,autoDeleteSecret,nextItemId,numberFormat,colorScheme,sillyCursorEnabled,discoveredSecrets:[...discoveredSecrets],discoveredSuperSecrets:[...discoveredSuperSecrets],discoveredPerfectRng:[...discoveredPerfectRng],blackHoleRng,autoDeclineTierMap,orbAutoDeleteThreshold,rankAutoOverride,secretAutoOverride,superSecretAutoOverride,perfectRngAutoOverride,enchantAutoOverride};
   localStorage.setItem("sillys_rng_save",JSON.stringify(d));
   const ind=document.getElementById("save-indicator");
   ind.textContent=toastMsg||"\ud83d\udcbe Saved";
@@ -636,7 +671,7 @@ function saveData(toastMsg){
 function loadData(){
   try{
     const raw=localStorage.getItem("sillys_rng_save");if(!raw)return;const d=JSON.parse(raw);
-    coins=d.coins??0;luck=d.luck??1;bulkLevel=d.bulkLevel??0;luckLevel=d.luckLevel??0;luckCost=d.luckCost??75;bulkCost=d.bulkCost??1000;rollSpeedLevel=d.rollSpeedLevel??0;rollSpeedCost=d.rollSpeedCost??100;variantLuckLevel=d.variantLuckLevel??0;variantLuckCost=d.variantLuckCost??75;secretLuckLevel=d.secretLuckLevel??0;secretLuckCost=d.secretLuckCost??25;coinGainLevel=d.coinGainLevel??0;coinGainCost=d.coinGainCost??5000;enchantLuckLevel=d.enchantLuckLevel??0;enchantLuckCost=d.enchantLuckCost??500;quickRollUnlocked=d.quickRollUnlocked??false;quickRollEnabled=d.quickRollEnabled??false;quickRollCost=d.quickRollCost??10000;ultraFastRollUnlocked=d.ultraFastRollUnlocked??false;ultraFastRollEnabled=d.ultraFastRollEnabled??false;ultraFastRollCost=d.ultraFastRollCost??10000000;optimizerUnlocked=d.optimizerUnlocked??false;optimizerEnabled=d.optimizerEnabled??false;optimizerCost=d.optimizerCost??5000000;duperUpgradeLevel=d.duperUpgradeLevel??0;duperUpgradeCost=d.duperUpgradeCost??500000;coinflipUnlocked=d.coinflipUnlocked??false;coinflipEnabled=d.coinflipEnabled??false;coinflipMult=d.coinflipMult??1.0;coinflipCost=d.coinflipCost??100000000000;totalRolls=d.totalRolls??0;bestRankIdx=d.bestRankIdx??-1;
+    coins=d.coins??0;luck=d.luck??1;bulkLevel=d.bulkLevel??0;craftSpeedLevel=d.craftSpeedLevel??0;craftSpeedCost=d.craftSpeedCost??1000000;crateLuckLevel=d.crateLuckLevel??0;crateLuckCost=d.crateLuckCost??75000;craftQueue=d.craftQueue??[];craftedItems=d.craftedItems??[];equippedCraftItems=d.equippedCraftItems??[];luckLevel=d.luckLevel??0;luckCost=d.luckCost??75;bulkCost=d.bulkCost??1000;rollSpeedLevel=d.rollSpeedLevel??0;rollSpeedCost=d.rollSpeedCost??100;variantLuckLevel=d.variantLuckLevel??0;variantLuckCost=d.variantLuckCost??75;secretLuckLevel=d.secretLuckLevel??0;secretLuckCost=d.secretLuckCost??25;coinGainLevel=d.coinGainLevel??0;coinGainCost=d.coinGainCost??5000;enchantLuckLevel=d.enchantLuckLevel??0;enchantLuckCost=d.enchantLuckCost??500;quickRollUnlocked=d.quickRollUnlocked??false;quickRollEnabled=d.quickRollEnabled??false;quickRollCost=d.quickRollCost??10000;ultraFastRollUnlocked=d.ultraFastRollUnlocked??false;ultraFastRollEnabled=d.ultraFastRollEnabled??false;ultraFastRollCost=d.ultraFastRollCost??10000000;optimizerUnlocked=d.optimizerUnlocked??false;optimizerEnabled=d.optimizerEnabled??false;optimizerCost=d.optimizerCost??5000000;duperUpgradeLevel=d.duperUpgradeLevel??0;duperUpgradeCost=d.duperUpgradeCost??500000;coinflipUnlocked=d.coinflipUnlocked??false;coinflipEnabled=d.coinflipEnabled??false;coinflipMult=d.coinflipMult??1.0;coinflipCost=d.coinflipCost??100000000000;totalRolls=d.totalRolls??0;bestRankIdx=d.bestRankIdx??-1;
     inventory=d.inventory??[];boosterInventory=d.boosterInventory??[];equippedOrbs=d.equippedOrbs??[];enchantInventory=d.enchantInventory??[];nextItemId=d.nextItemId??Date.now();
     if(equippedOrbs.length>1)equippedOrbs=[equippedOrbs[0]];
     autoAcceptThreshold=d.autoAcceptThreshold!==undefined?d.autoAcceptThreshold:null;autoDeleteMinRank=d.autoDeleteMinRank??"none";autoDeleteSecret=d.autoDeleteSecret??"none";numberFormat=d.numberFormat??"normal";colorScheme=d.colorScheme??"default";sillyCursorEnabled=d.sillyCursorEnabled??true;
@@ -678,7 +713,7 @@ function fullReloadUI(){
   startCoinflipTimer();
   buildSchemeSwatches();buildIndex();buildAutoDeclineGrid();renderMergeUI();
   const oi=document.getElementById("orb-auto-delete-input");if(oi)oi.value=orbAutoDeleteThreshold??"";
-  renderRankAutoConfig();renderSecretAutoConfig();renderSuperSecretAutoConfig();renderPerfectRngAutoConfig();renderEnchantAutoConfig();
+  renderRankAutoConfig();renderSecretAutoConfig();renderSuperSecretAutoConfig();renderPerfectRngAutoConfig();renderEnchantAutoConfig();renderCrafting();startCraftTimer();
 }
 const VISIBLE_HALF=3,NUM_DECOR=26;
 function getItemW(){return parseInt(getComputedStyle(document.documentElement).getPropertyValue("--item-w"))||75;}
@@ -699,6 +734,7 @@ function getDisplayValue(r,forReel=false){
   if(r.superSecretIdx===SS_EEON)return formatValue(r.val);
   if(r.superSecretIdx===SS_NAN)return "NaN";
   if(r.superSecretIdx===SS_CENSORED)return "[CENSORED]";
+  if(r.superSecretIdx===SS_EWWHAT)return "ew...";
   if(r.secretIdx>=0&&SECRET_RANKS[r.secretIdx].displayrng!==false)return String(SECRET_RANKS[r.secretIdx].displayrng);
   return formatValue(r.val);
 }
@@ -776,6 +812,7 @@ function computeRoll(luckOverride,forcedVariantIdx,boosterAttrs){
     else if(hasSingularity()&&Math.random()<1/blackHoleRng){superSecretIdx=SS_BLACKHOLE;secretIdx=-1;blackHoleRolledRng=blackHoleRng;blackHoleRng=BH_BASE_RNG;}
     else if(Math.random()<1/39000000){superSecretIdx=SS_SINGULARITY;secretIdx=-1;}
     else if(val>=1e250&&Math.random()<1/6.66){superSecretIdx=SS_EEON;secretIdx=-1;val=Math.round(val*666666*100)/100;}
+    else if(secretIdx>=0&&SECRET_RANKS[secretIdx]&&SECRET_RANKS[secretIdx].name==="WEIRD"&&Math.random()<1/222222222*sBonus){superSecretIdx=SS_EWWHAT;secretIdx=-1;}
     else if(Math.random()<1/750000){superSecretIdx=SS_CENSORED;secretIdx=-1;}
   }
   // Catch NaN/Infinity and convert to NaN secret
@@ -784,6 +821,16 @@ function computeRoll(luckOverride,forcedVariantIdx,boosterAttrs){
   }
   return{val,baseVal:baseValR,variantIdx,secretIdx,superSecretIdx,perfectRngIdx,totallyMaxDisplayVal,blackHoleRolledRng};
 }
+const CRAFT_RECIPES=[
+  {name:"Clover Talisman",desc:"Passive luck boost",color:"#44ff88",buffs:[{type:"luck",value:0.25}],ranksNeeded:[{rankName:"rare",count:5},{rankName:"gilded",count:2}],boostersNeeded:[],inSeconds:30},
+  {name:"Golden Reel",desc:"Coin multiplier",color:"#ffcc44",buffs:[{type:"coinGain",value:0.15}],ranksNeeded:[{rankName:"gilded",count:3},{rankName:"light",count:1}],boostersNeeded:[{tierName:"bigger",count:1}],inSeconds:60},
+  {name:"Shiny Badge",desc:"Variant luck up",color:"#ffe040",buffs:[{type:"variantLuck",value:0.5}],ranksNeeded:[{rankName:"epic",variantName:"shiny",count:2},{rankName:"rare",count:3}],boostersNeeded:[],inSeconds:90},
+  {name:"Mystic Lens",desc:"Secret luck up",color:"#ff88ff",buffs:[{type:"secretLuck",value:0.1}],ranksNeeded:[{rankName:"elusive",count:4},{rankName:"unordinary",count:1}],boostersNeeded:[{tierName:"normal",count:3}],inSeconds:120},
+  {name:"Crate Magnet",desc:"Better crate tiers",color:"#6bddff",buffs:[{type:"crateChance",value:0.1}],ranksNeeded:[{rankName:"divine",count:3}],boostersNeeded:[{tierName:"bigger",count:2},{tierName:"giant",count:1}],inSeconds:180},
+  {name:"RGB Crystal",desc:"Big variant luck",color:"#ff44ff",buffs:[{type:"variantLuck",value:0.75}],ranksNeeded:[{rankName:"light",variantName:"rgb",count:1},{rankName:"elusive",count:3}],boostersNeeded:[],inSeconds:150},
+  {name:"Void Shard",desc:"Massive luck boost",color:"#8833ff",buffs:[{type:"luck",value:1.5}],ranksNeeded:[{rankName:"colossal",count:1},{rankName:"inimitable",count:1},{rankName:"mega",count:5}],boostersNeeded:[{tierName:"oversized",count:1}],inSeconds:600},
+  {name:"Titan Core",desc:"Luck + coins",color:"#ff4455",buffs:[{type:"luck",value:1.0},{type:"coinGain",value:0.20}],ranksNeeded:[{rankName:"rngesus",count:2},{rankName:"infinity",count:1}],boostersNeeded:[{tierName:"titan",count:1}],inSeconds:300},
+];
 const BOOSTER_SHAPES=["circle","square","triangle","hexagon","star"];
 const BOOSTER_TIERS=[
   {name:"normal",   min:5,     max:50,       chance:1,     size:1},
@@ -795,15 +842,100 @@ const BOOSTER_TIERS=[
   {name:"titan",    min:10000, max:Infinity, chance:10000, size:7},
 ];
 const BOOSTER_TIER_COLORS=["#aaaaff","#88ccff","#66ffbb","#ffdd55","#ff9944","#ff55cc","#ff4455"];
+function getCraftBuffSum(type){return equippedCraftItems.reduce((s,c)=>s+CRAFT_RECIPES[c.recipeIdx].buffs.filter(b=>b.type===type).reduce((a,b)=>a+b.value,0),0);}
+function getCraftLuckBonus(){return getCraftBuffSum('luck');}
+function getCraftCoinGainBonus(){return getCraftBuffSum('coinGain');}
+function getCraftVariantLuckBonus(){return getCraftBuffSum('variantLuck');}
+function getCraftSecretLuckBonus(){return getCraftBuffSum('secretLuck');}
+function getCraftCrateBonus(){return getCraftBuffSum('crateChance');}
+function getCraftSpeedMult(){return 1+craftSpeedLevel*0.1;}
+function getCrateLuckBonus(){return crateLuckLevel*0.01+getCraftCrateBonus();}
+function formatDuration(secs){if(secs<60)return Math.ceil(secs)+'s';if(secs<3600)return Math.floor(secs/60)+'m '+Math.ceil(secs%60)+'s';return Math.floor(secs/3600)+'h '+Math.floor((secs%3600)/60)+'m';}
+function formatCraftBuff(b){if(b.type==='luck')return`+${b.value}\u00d7 luck`;if(b.type==='coinGain')return`+${Math.round(b.value*100)}% coins`;if(b.type==='variantLuck')return`+${b.value}\u00d7 var luck`;if(b.type==='secretLuck')return`+${b.value}\u00d7 sec luck`;if(b.type==='crateChance')return`+${Math.round(b.value*100)}% crate luck`;return b.type;}
+function getCraftIngredients(recipe){
+  const rankMatches=[],boosterMatches=[];let canCraft=true;
+  for(const req of recipe.ranksNeeded){
+    const rankIdx=RANKS.findIndex(r=>r.name===req.rankName);
+    const variantIdx=req.variantName?VARIANTS.findIndex(v=>v.name===req.variantName):-1;
+    const matches=inventory.filter(item=>item.rankIdx===rankIdx&&item.secretIdx<0&&item.superSecretIdx<0&&item.perfectRngIdx<0&&(variantIdx<0||item.variantIdx===variantIdx));
+    rankMatches.push({req,matches,rankIdx,variantIdx});
+    if(matches.length<req.count)canCraft=false;
+  }
+  for(const req of(recipe.boostersNeeded||[])){
+    const tierIdx=BOOSTER_TIERS.findIndex(t=>t.name===req.tierName);
+    const matches=boosterInventory.filter(b=>(b.tierIdx??0)===tierIdx&&!b.isEvil);
+    boosterMatches.push({req,matches,tierIdx});
+    if(matches.length<req.count)canCraft=false;
+  }
+  return{rankMatches,boosterMatches,canCraft};
+}
+function startCraft(recipeIdx){
+  const recipe=CRAFT_RECIPES[recipeIdx];
+  const{rankMatches,boosterMatches,canCraft}=getCraftIngredients(recipe);
+  if(!canCraft)return;
+  for(const{req,matches}of rankMatches){const ids=matches.slice(0,req.count).map(m=>m.id);inventory=inventory.filter(item=>!ids.includes(item.id));}
+  for(const{req,matches}of boosterMatches){const idxs=matches.slice(0,req.count).map(m=>boosterInventory.indexOf(m)).sort((a,b)=>b-a);idxs.forEach(i=>boosterInventory.splice(i,1));}
+  const duration=Math.max(1,recipe.inSeconds/getCraftSpeedMult());
+  craftQueue.push({id:newId(),recipeIdx,endTime:Date.now()+duration*1000});
+  renderInventory();renderBoosterInventory();renderCrafting();saveData();
+}
+function collectCraft(craftId){
+  const idx=craftQueue.findIndex(c=>c.id===craftId);if(idx<0)return;
+  craftedItems.push({id:newId(),recipeIdx:craftQueue[idx].recipeIdx});
+  craftQueue.splice(idx,1);renderCrafting();saveData();
+}
+function equipCraftItem(itemId){
+  const item=craftedItems.find(c=>c.id===itemId);if(!item||equippedCraftItems.length>=3)return;
+  equippedCraftItems.push({...item});craftedItems=craftedItems.filter(c=>c.id!==itemId);
+  renderCrafting();updateUI();saveData();
+}
+function unequipCraftItem(itemId){
+  const item=equippedCraftItems.find(c=>c.id===itemId);if(!item)return;
+  craftedItems.push({...item});equippedCraftItems=equippedCraftItems.filter(c=>c.id!==itemId);
+  renderCrafting();updateUI();saveData();
+}
+function renderCrafting(){
+  const slotsEl=document.getElementById('craft-equip-slots');if(!slotsEl)return;
+  slotsEl.innerHTML=Array.from({length:3},(_,i)=>{
+    const eq=equippedCraftItems[i];
+    if(!eq)return`<div class="craft-slot">Empty</div>`;
+    const r=CRAFT_RECIPES[eq.recipeIdx];const bs=r.buffs.map(formatCraftBuff).join(', ');
+    return`<div class="craft-slot filled" style="border-color:${r.color}99"><button onclick="unequipCraftItem(${eq.id})" style="position:absolute;top:2px;right:3px;background:none;border:none;cursor:pointer;font-size:.5rem;color:var(--border)">\u2715</button><div style="font-size:.63rem;font-weight:700;color:${r.color}">${r.name}</div><div style="font-size:.53rem;color:var(--muted)">${bs}</div></div>`;
+  }).join('');
+  const now=Date.now();
+  const queueEl=document.getElementById('craft-queue-list');const queueHdr=document.getElementById('craft-queue-hdr');
+  if(craftQueue.length>0){
+    if(queueHdr)queueHdr.style.display='';
+    queueEl.innerHTML=craftQueue.map(c=>{const r=CRAFT_RECIPES[c.recipeIdx];const rem=Math.max(0,c.endTime-now);const done=rem<=0;return`<div class="craft-queue-item"><div><div style="font-size:.8rem;color:${r.color}">${r.name}</div><div class="craft-timer">${done?'\u2705 Done!':formatDuration(rem/1000)}</div></div>${done?`<button class="craft-collect-btn" onclick="collectCraft(${c.id})">Collect</button>`:''}</div>`;}).join('');
+  }else{if(queueHdr)queueHdr.style.display='none';queueEl.innerHTML='';}
+  const craftedListEl=document.getElementById('craft-crafted-list');
+  if(craftedListEl){
+    let html='';
+    if(craftedItems.length>0){html=`<div style="font-size:.75rem;color:var(--accent3);margin-bottom:5px;margin-top:6px">\ud83c\udf92 Ready to Equip</div>`;html+=craftedItems.map(c=>{const r=CRAFT_RECIPES[c.recipeIdx];const bs=r.buffs.map(formatCraftBuff).join(', ');const can=equippedCraftItems.length<3;return`<div class="craft-queue-item" style="border-color:${r.color}66"><div><div style="font-size:.8rem;color:${r.color}">${r.name}</div><div style="font-size:.6rem;color:var(--muted)">${bs}</div></div><button class="craft-collect-btn" onclick="equipCraftItem(${c.id})" ${can?'':'disabled style="opacity:.5;cursor:not-allowed"'}>Equip</button></div>`;}).join('');}
+    craftedListEl.innerHTML=html;
+  }
+  const recipesEl=document.getElementById('craft-recipes-list');if(!recipesEl)return;
+  recipesEl.innerHTML=CRAFT_RECIPES.map((r,idx)=>{
+    const{rankMatches,boosterMatches,canCraft}=getCraftIngredients(r);
+    const dur=Math.max(1,r.inSeconds/getCraftSpeedMult());
+    const rankHtml=rankMatches.map(({req,matches})=>{const ok=matches.length>=req.count;const nm=req.variantName?`${req.variantName} ${req.rankName}`:req.rankName;return`<span style="color:${ok?'#6bffb8':'#ff6666'}">${nm} \u00d7${req.count}</span><span style="color:var(--muted);font-size:.58rem"> (${Math.min(matches.length,req.count)}/${req.count})</span>`;}).join(', ');
+    const bstHtml=boosterMatches.length?' &middot; '+boosterMatches.map(({req,matches})=>{const ok=matches.length>=req.count;return`<span style="color:${ok?'#6bffb8':'#ff6666'}">${req.tierName} booster \u00d7${req.count}</span><span style="color:var(--muted);font-size:.58rem"> (${Math.min(matches.length,req.count)}/${req.count})</span>`;}).join(', '):'';
+    const buffsHtml=r.buffs.map(b=>`<span style="color:#6bffb8">${formatCraftBuff(b)}</span>`).join(', ');
+    return`<div class="craft-recipe"><div class="craft-recipe-name" style="color:${r.color}">${r.name}</div><div class="craft-buffs">${buffsHtml}</div><div class="craft-req">Needs: ${rankHtml}${bstHtml}</div><div style="font-size:.6rem;color:var(--muted);margin-top:2px">\u23f1 ${formatDuration(dur)}</div><button class="upgrade-btn" style="width:auto;margin-top:6px;padding:5px 14px" onclick="startCraft(${idx})" ${canCraft?'':'disabled'}>&#x1F528; Craft</button></div>`;
+  }).join('');
+}
+function startCraftTimer(){clearInterval(craftTimer);craftTimer=setInterval(()=>{if(craftQueue.some(c=>c.endTime<=Date.now()+1500))renderCrafting();else if(craftQueue.length)renderCrafting();},1000);}
 function rollBoosterTier(){
+  const boost=1+getCrateLuckBonus();
   const checks=[6,5,4,3,2,1];
-  for(const i of checks){if(Math.random()<1/BOOSTER_TIERS[i].chance)return i;}
+  for(const i of checks){if(Math.random()<Math.min(1,boost/BOOSTER_TIERS[i].chance))return i;}
   return 0;
 }
 function computeBoosterVal(tierIdx){
   const t=BOOSTER_TIERS[tierIdx];
-  if(t.max===Infinity)return Math.round(t.min+Math.floor(Math.random()*t.min*9));
-  return Math.round(t.min+Math.random()*(t.max-t.min));
+  const r=Math.pow(Math.random(),1.75);
+  if(t.max===Infinity)return Math.round(t.min+Math.floor(r*t.min*9));
+  return Math.round(t.min+r*(t.max-t.min));
 }
 function computeBooster(tierIdx){
   const ti=tierIdx??rollBoosterTier();
@@ -916,7 +1048,7 @@ function spawnCrate(){
   });
 }
 function startCrateTimer(){clearInterval(crateTimer);crateTimer=setInterval(()=>{if(Math.random()<1/5)spawnCrate();},5000);}
-const ALL_TABS=["rolling","upgrades","inventory","enchants","indexes","boosters","extras"];
+const ALL_TABS=["rolling","upgrades","inventory","enchants","indexes","boosters","crafting","extras"];
 function switchTab(name){ALL_TABS.forEach(t=>{document.getElementById("tab-"+t).classList.toggle("active",t===name);document.getElementById("nav-"+t).classList.toggle("active",t===name);});}
 function doRoll(){
   if(isRolling)return;isRolling=true;clearTimeout(autoRollTimer);
@@ -1001,7 +1133,7 @@ function buyOrToggleCoinflip(){
   document.getElementById("coinflip-btn").classList.toggle("qr-active",coinflipEnabled);
   startCoinflipTimer();updateUI();saveData();
 }
-function buyUpgrade(type){if(type==="luck"){if(luckLevel>=40||coins<luckCost)return;coins-=luckCost;luckLevel++;luck+=0.5;luckCost=Math.ceil(luckCost*1.2);}else if(type==="bulk"){if(bulkLevel>=4||coins<bulkCost)return;coins-=bulkCost;bulkLevel++;bulkCost=Math.ceil(bulkCost*1.5);}else if(type==="rollSpeed"){if(rollSpeedLevel>=10||coins<rollSpeedCost)return;coins-=rollSpeedCost;rollSpeedLevel++;rollSpeedCost=Math.ceil(rollSpeedCost*1.1);}else if(type==="variantLuck"){if(getVariantLuckBonus()>=2.5||coins<variantLuckCost)return;coins-=variantLuckCost;variantLuckLevel++;variantLuckCost=Math.ceil(variantLuckCost*1.25);}else if(type==="secretLuck"){if(getSecretLuckBonus()>=5||coins<secretLuckCost)return;coins-=secretLuckCost;secretLuckLevel++;secretLuckCost=Math.ceil(secretLuckCost*1.25);}else if(type==="coinGain"){if(coinGainLevel>=100||coins<coinGainCost)return;coins-=coinGainCost;coinGainLevel++;coinGainCost=Math.ceil(coinGainCost*1.2);}else if(type==="enchantLuck"){if(enchantLuckLevel>=15||coins<enchantLuckCost)return;coins-=enchantLuckCost;enchantLuckLevel++;enchantLuckCost=Math.ceil(enchantLuckCost*1.25);}else if(type==="duperUpgrade"){if(duperUpgradeLevel>=2||coins<duperUpgradeCost)return;coins-=duperUpgradeCost;duperUpgradeLevel++;duperUpgradeCost=Math.ceil(duperUpgradeCost*2.75);}updateUI();saveData();}
+function buyUpgrade(type){if(type==="luck"){if(luckLevel>=40||coins<luckCost)return;coins-=luckCost;luckLevel++;luck+=0.5;luckCost=Math.ceil(luckCost*1.2);}else if(type==="bulk"){if(bulkLevel>=4||coins<bulkCost)return;coins-=bulkCost;bulkLevel++;bulkCost=Math.ceil(bulkCost*1.5);}else if(type==="rollSpeed"){if(rollSpeedLevel>=10||coins<rollSpeedCost)return;coins-=rollSpeedCost;rollSpeedLevel++;rollSpeedCost=Math.ceil(rollSpeedCost*1.1);}else if(type==="variantLuck"){if(getVariantLuckBonus()>=2.5||coins<variantLuckCost)return;coins-=variantLuckCost;variantLuckLevel++;variantLuckCost=Math.ceil(variantLuckCost*1.25);}else if(type==="secretLuck"){if(getSecretLuckBonus()>=5||coins<secretLuckCost)return;coins-=secretLuckCost;secretLuckLevel++;secretLuckCost=Math.ceil(secretLuckCost*1.25);}else if(type==="coinGain"){if(coinGainLevel>=100||coins<coinGainCost)return;coins-=coinGainCost;coinGainLevel++;coinGainCost=Math.ceil(coinGainCost*1.2);}else if(type==="enchantLuck"){if(enchantLuckLevel>=15||coins<enchantLuckCost)return;coins-=enchantLuckCost;enchantLuckLevel++;enchantLuckCost=Math.ceil(enchantLuckCost*1.25);}else if(type==="duperUpgrade"){if(duperUpgradeLevel>=2||coins<duperUpgradeCost)return;coins-=duperUpgradeCost;duperUpgradeLevel++;duperUpgradeCost=Math.ceil(duperUpgradeCost*2.75);}else if(type==="craftSpeed"){if(craftSpeedLevel>=5||coins<craftSpeedCost)return;coins-=craftSpeedCost;craftSpeedLevel++;craftSpeedCost=Math.ceil(craftSpeedCost*500);}else if(type==="crateLuck"){if(crateLuckLevel>=20||coins<crateLuckCost)return;coins-=crateLuckCost;crateLuckLevel++;crateLuckCost=Math.ceil(crateLuckCost*1.25);}updateUI();saveData();}
 function buyOrToggleQuickRoll(){if(!quickRollUnlocked){if(coins<quickRollCost)return;coins-=quickRollCost;quickRollUnlocked=true;quickRollEnabled=true;}else quickRollEnabled=!quickRollEnabled;document.getElementById("quickroll-btn").classList.toggle("qr-active",quickRollEnabled);updateUI();saveData();}
 function buyOrToggleUltraFastRoll(){if(!ultraFastRollUnlocked){if(coins<ultraFastRollCost)return;coins-=ultraFastRollCost;ultraFastRollUnlocked=true;ultraFastRollEnabled=true;}else ultraFastRollEnabled=!ultraFastRollEnabled;document.getElementById("ultra-fast-roll-btn").classList.toggle("ufr-active",ultraFastRollEnabled);updateUI();saveData();}
 function buyOrToggleOptimizer(){if(!optimizerUnlocked){if(coins<optimizerCost)return;coins-=optimizerCost;optimizerUnlocked=true;optimizerEnabled=true;}else optimizerEnabled=!optimizerEnabled;document.getElementById("optimizer-btn").classList.toggle("opt-active",optimizerEnabled);updateUI();saveData();}
@@ -1093,7 +1225,7 @@ function updateUI(){
   const ob=document.getElementById("optimizer-btn"),oc=document.getElementById("optimizer-cost"),os=document.getElementById("optimizer-status");if(optimizerUnlocked){oc.textContent="Unlocked";os.textContent=optimizerEnabled?"ON \ud83e\udde0":"OFF";ob.disabled=false;ob.classList.toggle("opt-active",optimizerEnabled);}else{oc.textContent=formatValue(optimizerCost);os.textContent="Locked";ob.disabled=coins<optimizerCost;ob.classList.remove("opt-active");}
   const dupM=duperUpgradeLevel>=2;document.getElementById("duper-upgrade-cost").textContent=dupM?"MAXED":formatValue(duperUpgradeCost);document.getElementById("duper-upgrade-level").textContent=duperUpgradeLevel;const db=document.getElementById("duper-upgrade-btn");db.disabled=dupM||coins<duperUpgradeCost;if(dupM)db.classList.add("maxed");
   const cfb=document.getElementById("coinflip-btn"),cfc=document.getElementById("coinflip-cost"),cfs=document.getElementById("coinflip-status"),cfm=document.getElementById("coinflip-mult");if(coinflipUnlocked){cfc.textContent="Unlocked";cfs.textContent=coinflipEnabled?"ON \ud83e\ude99":"OFF";cfb.disabled=false;cfb.classList.toggle("qr-active",coinflipEnabled);}else{cfc.textContent=formatValue(coinflipCost);cfs.textContent="Locked";cfb.disabled=coins<coinflipCost;cfb.classList.remove("qr-active");}if(cfm)cfm.textContent=coinflipMult.toFixed(1);
-  document.getElementById("inv-count").textContent=inventory.length;if(bestRankIdx>=0){const bEl=document.getElementById("best-rank");bEl.textContent=RANKS[bestRankIdx].name.toUpperCase();bEl.style.color=RANK_COLORS[bestRankIdx];}
+  const csM=craftSpeedLevel>=5;document.getElementById("craft-speed-cost").textContent=csM?"MAXED":formatValue(craftSpeedCost);document.getElementById("craft-speed-level").textContent=(getCraftSpeedMult()).toFixed(1);const csb=document.getElementById("craft-speed-btn");if(csb){csb.disabled=csM||coins<craftSpeedCost;if(csM)csb.classList.add("maxed");}const clM=crateLuckLevel>=20;document.getElementById("crate-luck-cost").textContent=clM?"MAXED":formatValue(crateLuckCost);document.getElementById("crate-luck-level").textContent=crateLuckLevel;const clb=document.getElementById("crate-luck-btn");if(clb){clb.disabled=clM||coins<crateLuckCost;if(clM)clb.classList.add("maxed");}document.getElementById("inv-count").textContent=inventory.length;if(bestRankIdx>=0){const bEl=document.getElementById("best-rank");bEl.textContent=RANKS[bestRankIdx].name.toUpperCase();bEl.style.color=RANK_COLORS[bestRankIdx];}
 }
 function renderRankAutoConfig(){const c=document.getElementById("rank-auto-list");if(!c)return;c.innerHTML=RANKS.map((rank,i)=>{const cur=rankAutoOverride[i]||0,color=RANK_COLORS[i];return`<div class="auto-rank-row" style="border-left-color:${color}"><span class="auto-rank-name">${rank.name}</span><div class="auto-rank-btns"><button class="auto-rank-btn ${cur===-1?'active-decline':''}" onclick="setRankOverride(${i},-1)">\ud83d\udd34</button><button class="auto-rank-btn ${cur===0?'active-neutral':''}" onclick="setRankOverride(${i},0)">\u26aa</button><button class="auto-rank-btn ${cur===1?'active-accept':''}" onclick="setRankOverride(${i},1)">\ud83d\udfe2</button></div></div>`;}).join("");}
 function setRankOverride(idx,val){rankAutoOverride[idx]=val;renderRankAutoConfig();saveData();}
