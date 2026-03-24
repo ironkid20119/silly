@@ -810,7 +810,10 @@ function computeRoll(luckOverride,forcedVariantIdx,boosterAttrs){
     if(Math.random()<sBonus/10000000){superSecretIdx=SS_ABYSSAL;secretIdx=-1;}
     else if(Math.random()<1/69420){superSecretIdx=SS_TOTALLYMAX;secretIdx=-1;totallyMaxDisplayVal=Math.round(1e18*Math.pow(Math.random(),-1.5)*100)/100;val=Math.max(1e18,Math.min(val,1e29));}
     else if(hasSingularity()&&Math.random()<1/blackHoleRng){superSecretIdx=SS_BLACKHOLE;secretIdx=-1;blackHoleRolledRng=blackHoleRng;blackHoleRng=BH_BASE_RNG;}
-    else if(Math.random()<1/39000000){superSecretIdx=SS_SINGULARITY;secretIdx=-1;}
+    else if(Math.random() < (1/39000000) * (1 + getSecretLuckBonus())) {
+    superSecretIdx = SS_SINGULARITY;
+    secretIdx = -1;
+}
     else if(val>=1e250&&Math.random()<1/6.66){superSecretIdx=SS_EEON;secretIdx=-1;val=Math.round(val*666666*100)/100;}
     else if(secretIdx>=0&&SECRET_RANKS[secretIdx]&&SECRET_RANKS[secretIdx].name==="WEIRD"&&Math.random()<1/222222222*sBonus){superSecretIdx=SS_EWWHAT;secretIdx=-1;}
     else if(Math.random()<1/750000){superSecretIdx=SS_CENSORED;secretIdx=-1;}
