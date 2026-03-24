@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=yes">
 <title>Silly's RNG Game</title>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Afacad+Flux:wght@600&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0d0d1a;--surface:#16162a;--surface2:#1f1f38;--border:#2e2e55;--accent:#ff6bff;--accent2:#6bddff;--accent3:#ffe06b;--text:#f0eeff;--muted:#7a7aaa;--item-w:75px;--reel-h:75px;--nav-w:70px;}
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -317,6 +317,8 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
     <div id="import-status" style="font-size:.72rem;color:var(--muted);text-align:center;margin-top:5px;min-height:1em;"></div>
   </div>
   <div class="panel"><h2>&#x2699;&#xFE0F; Settings</h2>
+    <div style="font-size:.75rem;color:var(--muted);margin-bottom:6px">Silly Cursor</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px"><button class="auto-btn" id="cursor-btn" onclick="toggleSillyCursor()">:3 ON</button><span style="font-size:.68rem;color:var(--muted);align-self:center">circle face cursor</span></div>
     <div style="font-size:.75rem;color:var(--muted);margin-bottom:6px">Number Format</div>
     <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px"><button class="auto-btn" id="fmt-btn-normal" onclick="setNumFmt('normal')">Normal (1.23Qn)</button><button class="auto-btn" id="fmt-btn-eng" onclick="setNumFmt('eng')">Eng (1.23e18)</button><button class="auto-btn" id="fmt-btn-sci" onclick="setNumFmt('sci')">Sci (1.23&times;10&sup1;&sup8;)</button></div>
     <div style="font-size:.75rem;color:var(--muted);margin-bottom:6px">Color Scheme</div>
@@ -329,6 +331,8 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
     <div class="auto-rank-list" id="supersecret-auto-list"></div>
     <div style="font-size:.75rem;color:var(--muted);margin-bottom:6px;margin-top:12px">Perfect RNG Auto Config</div>
     <div class="auto-rank-list" id="perfectrng-auto-list"></div>
+    <div style="font-size:.75rem;color:var(--muted);margin-bottom:6px;margin-top:12px">Enchant Auto Config</div>
+    <div class="auto-rank-list" id="enchant-auto-list"></div>
     <hr style="border:none;border-top:1px solid var(--border);margin:10px 0">
     <button class="auto-btn" style="width:100%;color:#ff4444;border-color:#ff444466;background:rgba(255,68,68,.06);padding:10px;font-size:.88rem" onclick="confirmWipe()">&#x1F480; WIPE SAVE</button>
     <div id="wipe-confirm" style="display:none;margin-top:8px;text-align:center"><div style="font-size:.75rem;color:#ff6666;margin-bottom:7px">&#x26A0;&#xFE0F; This deletes ALL progress forever.</div><div style="display:flex;gap:8px;justify-content:center"><button class="auto-btn" style="color:#ff4444;border-color:#ff444466" onclick="wipeSave()">Yes, wipe it</button><button class="auto-btn" onclick="document.getElementById('wipe-confirm').style.display='none'">Cancel</button></div></div>
@@ -390,7 +394,7 @@ const SECRET_RANKS=[
   {name:"neverending...",rng:1e9,displayrng:1,display:false},{name:"use this to autodecline clover lmao",rng:1e999,displayrng:1,display:false},
 ];
 const SECRET_RANK_COLOR="#ff9999";
-const SS_ABYSSAL=0,SS_EEON=1,SS_TOTALLYMAX=2,SS_VERYEVIL=3,SS_BLACKHOLE=4,SS_FUNNI=5,SS_SINGULARITY=6,SS_SUPERCHARGED=7,SS_ERR=8,SS_NAN=9;
+const SS_ABYSSAL=0,SS_EEON=1,SS_TOTALLYMAX=2,SS_VERYEVIL=3,SS_BLACKHOLE=4,SS_FUNNI=5,SS_SINGULARITY=6,SS_SUPERCHARGED=7,SS_ERR=8,SS_NAN=9,SS_CENSORED=10;
 const BH_BASE_RNG=3.9e15;
 const SUPER_SECRETS=[
   {name:"abyssal",color:"#5500cc",rng:10000000,displayrng:-1,hideUntilRolled:false,desc:"Only secret luck applies."},
@@ -402,7 +406,8 @@ const SUPER_SECRETS=[
   {name:"singularity",color:"#aaffff",rng:39000000,displayrng:-6.18,hideUntilRolled:false,desc:"1/39M. Allows Black Hole."},
   {name:"supercharged",color:"#ffff44",rng:null,displayrng:222222,hideUntilRolled:false,desc:"Roll exactly 222,222.00."},
   {name:'rank_\u2588\u2588.err("\u2588\u2588\u2588" [at line "\u2588\u2588\u2588"])',color:"#000000",rng:null,displayrng:"\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588",hideUntilRolled:false,desc:"Script error: \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588."},
-  {name:"NaN",color:"#ffaa88",rng:null,displayrng:"???",hideUntilRolled:false,desc:"The number that isn't a number. Appears when numbers break."}
+  {name:"NaN",color:"#ffaa88",rng:null,displayrng:"???",hideUntilRolled:false,desc:"The number that isn't a number. Appears when numbers break."},
+  {name:"CENSORED",color:"#cc0000",rng:750000,displayrng:"[CENSORED]",hideUntilRolled:true,desc:"Redacted. 1/750,000 true RNG."}
 ];
 const SS_INDEX=[
   {name:"abyssal",                rng:"1/10,000,000",       hidden:false, color:"#5500cc"},
@@ -414,7 +419,8 @@ const SS_INDEX=[
   {name:"singularity",            rng:"1/39,000,000",        hidden:false, color:"linear-gradient(90deg,#aaffff,#ffffff,#44ffff,#aaffff)"},
   {name:"supercharged",           rng:"exact 222,222.00",    hidden:false, color:"linear-gradient(90deg,#ffff44,#ffffaa,#ffff00,#ffff44)"},
   {name:SUPER_SECRETS[SS_ERR].name, rng:null,               hidden:false, color:"#000000"},
-  {name:"NaN",                    rng:"???",                 hidden:false, color:"#ffaa88"}
+  {name:"NaN",                    rng:"???",                 hidden:false, color:"#ffaa88"},
+  {name:"CENSORED",               rng:"1/750,000",           hidden:true,  color:"#cc0000"}
 ];
 const PERFECT_RNG_INDEX=[
   {name:"Very Evil Idiot", perfectrng:77777776, color:"#ff0066",                                                          ssIdx:SS_VERYEVIL},
@@ -537,6 +543,7 @@ function getDisplayColor(r){
   if(r.superSecretIdx===SS_SINGULARITY)return"#aaffff";
   if(r.superSecretIdx===SS_SUPERCHARGED)return"#ffff44";
   if(r.superSecretIdx===SS_NAN)return"#ffaa88";
+  if(r.superSecretIdx===SS_CENSORED)return"#cc0000";
   if(isEon(r))return EON_SOLID;
   if(isVoidtouched(r))return VOIDTOUCHED_SOLID;
   if(isOmniversal(r))return OMNIVERSAL_SOLID;
@@ -552,6 +559,7 @@ function aetherialNameHTML(n){return`<span style="background:${AETHERIAL_GRADIEN
 function specialBaseRankNameHTML(r,n){if(isVoidtouched(r))return voidtouchedNameHTML(n);if(isOmniversal(r))return omniversalNameHTML(n);if(isParagon(r))return paragonNameHTML(n);if(isAetherial(r))return aetherialNameHTML(n);return null;}
 function eeonNameHTML(n){return`<span style="background:${EEON_GRADIENT};-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 8px #ff220088)">${n}</span>`;}
 function bhNameHTML(n){return`<span style="background:radial-gradient(ellipse at 30% 40%,#8844ff,#220033,#000);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 8px #8844ff99)">${n}</span>`;}
+function censoredNameHTML(n){return`<span style="font-family:'Afacad Flux',sans-serif;font-weight:600;font-style:italic;color:#cc0000;background:#000;padding:0 3px">${n}</span>`;}
 function errNameHTML(n){return`<span style="color:#fff;-webkit-text-stroke:1px #fff">${n}</span>`;}
 function getPerfectRngColor(entry){
   const c=entry.color;
@@ -569,6 +577,7 @@ function perfectRngNameHTML(entry,name){
 function superSecretNameHTML(r,n){
   if(r.perfectRngIdx>=0)return perfectRngNameHTML(PERFECT_RNG_INDEX[r.perfectRngIdx],n);
   if(r.superSecretIdx===SS_ERR)return errNameHTML(n);
+  if(r.superSecretIdx===SS_CENSORED)return censoredNameHTML(n);
   if(r.superSecretIdx===SS_EEON)return eeonNameHTML(n);
   if(r.superSecretIdx===SS_ABYSSAL)return`<span style="color:#5500cc;text-shadow:0 0 8px #5500ccaa">${n}</span>`;
   if(r.superSecretIdx===SS_TOTALLYMAX)return`<span style="background:linear-gradient(90deg,#ffffaa,#ffcc44,#ffffaa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">${n}</span>`;
@@ -581,6 +590,7 @@ function superSecretNameHTML(r,n){
   return n;
 }
 let colorScheme="default";
+let sillyCursorEnabled=true;
 const COLOR_SCHEMES={
   default:{bg:"#0d0d1a",surface:"#16162a",surface2:"#1f1f38",border:"#2e2e55",accent:"#ff6bff",accent2:"#6bddff",accent3:"#ffe06b",text:"#f0eeff",muted:"#7a7aaa",swatch:"linear-gradient(135deg,#ff6bff,#6bddff)"},
   synthwave:{bg:"#0a0014",surface:"#160028",surface2:"#200040",border:"#440066",accent:"#ff00aa",accent2:"#ff66ff",accent3:"#ff9900",text:"#fff0ff",muted:"#995588",swatch:"linear-gradient(135deg,#ff00aa,#ff9900)"},
@@ -590,6 +600,20 @@ const COLOR_SCHEMES={
   sunset:{bg:"#160808",surface:"#221010",surface2:"#301818",border:"#552222",accent:"#ff5533",accent2:"#ffaa33",accent3:"#ffee44",text:"#fff0e8",muted:"#885544",swatch:"linear-gradient(135deg,#ff5533,#ffee44)"},
 };
 function applyColorScheme(name){colorScheme=name;const s=COLOR_SCHEMES[name]||COLOR_SCHEMES.default;const r=document.documentElement.style;r.setProperty('--bg',s.bg);r.setProperty('--surface',s.surface);r.setProperty('--surface2',s.surface2);r.setProperty('--border',s.border);r.setProperty('--accent',s.accent);r.setProperty('--accent2',s.accent2);r.setProperty('--accent3',s.accent3);r.setProperty('--text',s.text);r.setProperty('--muted',s.muted);document.querySelectorAll('.scheme-swatch').forEach(el=>el.classList.toggle('active-scheme',el.dataset.scheme===name));saveData();}
+function makeCursorUrl(){
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><circle cx="40" cy="40" r="37" fill="#ffe06b" stroke="#8b6914" stroke-width="2.5"/><ellipse cx="30" cy="54" rx="7" ry="4.5" fill="#ff8fa3" opacity="0.45"/><ellipse cx="50" cy="54" rx="7" ry="4.5" fill="#ff8fa3" opacity="0.45"/><text x="40" y="55" text-anchor="middle" font-family="Arial,sans-serif" font-size="32" font-weight="900" fill="#333" transform="rotate(90 40 40)">:3</text></svg>`;
+  return`url("data:image/svg+xml,${encodeURIComponent(svg)}") 40 40`;
+}
+function applySillyCursor(){
+  let el=document.getElementById("silly-cursor-style");
+  if(!el){el=document.createElement("style");el.id="silly-cursor-style";document.head.appendChild(el);}
+  const btn=document.getElementById("cursor-btn");
+  if(!sillyCursorEnabled){el.textContent="";if(btn){btn.textContent=":3 OFF";btn.classList.remove("active");}return;}
+  if(btn){btn.textContent=":3 ON";btn.classList.add("active");}
+  const cur=makeCursorUrl();
+  el.textContent=`*{cursor:${cur},auto !important;}`;
+}
+function toggleSillyCursor(){sillyCursorEnabled=!sillyCursorEnabled;applySillyCursor();saveData();}
 function buildSchemeSwatches(){const c=document.getElementById('scheme-btns');if(!c)return;c.innerHTML=Object.entries(COLOR_SCHEMES).map(([k,s])=>`<div class="scheme-swatch${colorScheme===k?' active-scheme':''}" data-scheme="${k}" title="${k}" style="background:${s.swatch}" onclick="applyColorScheme('${k}')"></div>`).join('');}
 let numberFormat="normal";
 const NUM_SUFFIXES=(()=>{const base=['K','M','B','T','Qd','Qn','Sx','Sp','Oc','Nn'];const prefixes=['','U','D','Tr','Qd','Qn','Sx','Sp','Oc','Nn'];const mults=['Dc','Vg','Tg','Qd','Qn','Sx','Sp','Oc','Nn','Cn'];const s=[...base];for(let m=0;m<mults.length;m++)for(let p=0;p<prefixes.length;p++)s.push(prefixes[p]+mults[m]);return s;})();
@@ -600,7 +624,7 @@ function setNumFmt(fmt){numberFormat=fmt;['normal','eng','sci'].forEach(f=>docum
 function computeCoins(val){if(!isFinite(val)||val<=0)return 0;return Math.floor(Math.pow(val,0.5)*(1+Math.log10(val))*getCoinGainMult());}
 function getRank(v){for(let i=RANKS.length-1;i>=0;i--)if(v>=RANKS[i].min)return i;return 0;}
 function saveData(toastMsg){
-  const d={coins,luck,bulkLevel,luckLevel,luckCost,bulkCost,rollSpeedLevel,rollSpeedCost,variantLuckLevel,variantLuckCost,secretLuckLevel,secretLuckCost,coinGainLevel,coinGainCost,enchantLuckLevel,enchantLuckCost,quickRollUnlocked,quickRollEnabled,quickRollCost,ultraFastRollUnlocked,ultraFastRollEnabled,ultraFastRollCost,optimizerUnlocked,optimizerEnabled,optimizerCost,duperUpgradeLevel,duperUpgradeCost,coinflipUnlocked,coinflipEnabled,coinflipMult,coinflipCost,totalRolls,bestRankIdx,inventory,boosterInventory,equippedOrbs,enchantInventory,autoAcceptThreshold,autoDeleteMinRank,autoDeleteSecret,nextItemId,numberFormat,colorScheme,discoveredSecrets:[...discoveredSecrets],discoveredSuperSecrets:[...discoveredSuperSecrets],discoveredPerfectRng:[...discoveredPerfectRng],blackHoleRng,autoDeclineTierMap,orbAutoDeleteThreshold,rankAutoOverride,secretAutoOverride,superSecretAutoOverride,perfectRngAutoOverride,enchantAutoOverride};
+  const d={coins,luck,bulkLevel,luckLevel,luckCost,bulkCost,rollSpeedLevel,rollSpeedCost,variantLuckLevel,variantLuckCost,secretLuckLevel,secretLuckCost,coinGainLevel,coinGainCost,enchantLuckLevel,enchantLuckCost,quickRollUnlocked,quickRollEnabled,quickRollCost,ultraFastRollUnlocked,ultraFastRollEnabled,ultraFastRollCost,optimizerUnlocked,optimizerEnabled,optimizerCost,duperUpgradeLevel,duperUpgradeCost,coinflipUnlocked,coinflipEnabled,coinflipMult,coinflipCost,totalRolls,bestRankIdx,inventory,boosterInventory,equippedOrbs,enchantInventory,autoAcceptThreshold,autoDeleteMinRank,autoDeleteSecret,nextItemId,numberFormat,colorScheme,sillyCursorEnabled,discoveredSecrets:[...discoveredSecrets],discoveredSuperSecrets:[...discoveredSuperSecrets],discoveredPerfectRng:[...discoveredPerfectRng],blackHoleRng,autoDeclineTierMap,orbAutoDeleteThreshold,rankAutoOverride,secretAutoOverride,superSecretAutoOverride,perfectRngAutoOverride,enchantAutoOverride};
   localStorage.setItem("sillys_rng_save",JSON.stringify(d));
   const ind=document.getElementById("save-indicator");
   ind.textContent=toastMsg||"\ud83d\udcbe Saved";
@@ -612,7 +636,7 @@ function loadData(){
     coins=d.coins??0;luck=d.luck??1;bulkLevel=d.bulkLevel??0;luckLevel=d.luckLevel??0;luckCost=d.luckCost??75;bulkCost=d.bulkCost??1000;rollSpeedLevel=d.rollSpeedLevel??0;rollSpeedCost=d.rollSpeedCost??100;variantLuckLevel=d.variantLuckLevel??0;variantLuckCost=d.variantLuckCost??75;secretLuckLevel=d.secretLuckLevel??0;secretLuckCost=d.secretLuckCost??25;coinGainLevel=d.coinGainLevel??0;coinGainCost=d.coinGainCost??5000;enchantLuckLevel=d.enchantLuckLevel??0;enchantLuckCost=d.enchantLuckCost??500;quickRollUnlocked=d.quickRollUnlocked??false;quickRollEnabled=d.quickRollEnabled??false;quickRollCost=d.quickRollCost??10000;ultraFastRollUnlocked=d.ultraFastRollUnlocked??false;ultraFastRollEnabled=d.ultraFastRollEnabled??false;ultraFastRollCost=d.ultraFastRollCost??10000000;optimizerUnlocked=d.optimizerUnlocked??false;optimizerEnabled=d.optimizerEnabled??false;optimizerCost=d.optimizerCost??5000000;duperUpgradeLevel=d.duperUpgradeLevel??0;duperUpgradeCost=d.duperUpgradeCost??500000;coinflipUnlocked=d.coinflipUnlocked??false;coinflipEnabled=d.coinflipEnabled??false;coinflipMult=d.coinflipMult??1.0;coinflipCost=d.coinflipCost??100000000000;totalRolls=d.totalRolls??0;bestRankIdx=d.bestRankIdx??-1;
     inventory=d.inventory??[];boosterInventory=d.boosterInventory??[];equippedOrbs=d.equippedOrbs??[];enchantInventory=d.enchantInventory??[];nextItemId=d.nextItemId??Date.now();
     if(equippedOrbs.length>1)equippedOrbs=[equippedOrbs[0]];
-    autoAcceptThreshold=d.autoAcceptThreshold!==undefined?d.autoAcceptThreshold:null;autoDeleteMinRank=d.autoDeleteMinRank??"none";autoDeleteSecret=d.autoDeleteSecret??"none";numberFormat=d.numberFormat??"normal";colorScheme=d.colorScheme??"default";
+    autoAcceptThreshold=d.autoAcceptThreshold!==undefined?d.autoAcceptThreshold:null;autoDeleteMinRank=d.autoDeleteMinRank??"none";autoDeleteSecret=d.autoDeleteSecret??"none";numberFormat=d.numberFormat??"normal";colorScheme=d.colorScheme??"default";sillyCursorEnabled=d.sillyCursorEnabled??true;
     const ds=d.discoveredSecrets??[];discoveredSecrets=new Set(ds);if(!ds.length)SECRET_RANKS.filter(r=>r.display).forEach(r=>discoveredSecrets.add(r.name));
     discoveredSuperSecrets=new Set(d.discoveredSuperSecrets??[]);blackHoleRng=d.blackHoleRng??BH_BASE_RNG;
     if(d.autoDeclineTierMap)autoDeclineTierMap=d.autoDeclineTierMap;else{autoDeclineTierMap={};(d.autoDeclineEnchants??[]).forEach(c=>{autoDeclineTierMap[c]=999;});}
@@ -642,7 +666,7 @@ function confirmWipe(){document.getElementById("wipe-confirm").style.display="bl
 function wipeSave(){localStorage.removeItem("sillys_rng_save");location.reload();}
 function fullReloadUI(){
   buildAutoDeleteSelects();const ai=document.getElementById("auto-accept-input");if(autoAcceptThreshold!==null)ai.value=autoAcceptThreshold;else ai.value="";
-  applyColorScheme(colorScheme);setNumFmt(numberFormat);
+  applyColorScheme(colorScheme);setNumFmt(numberFormat);applySillyCursor();
   updateUI();renderInventory();renderEnchantInventory();renderBoosterInventory();renderEquippedOrbs();updateNavBadges();updateBoxerTimer();startCrateTimer();
   document.getElementById("quickroll-btn").classList.toggle("qr-active",quickRollEnabled);
   document.getElementById("ultra-fast-roll-btn").classList.toggle("ufr-active",ultraFastRollEnabled);
@@ -651,7 +675,7 @@ function fullReloadUI(){
   startCoinflipTimer();
   buildSchemeSwatches();buildIndex();buildAutoDeclineGrid();renderMergeUI();
   const oi=document.getElementById("orb-auto-delete-input");if(oi)oi.value=orbAutoDeleteThreshold??"";
-  renderRankAutoConfig();renderSecretAutoConfig();renderSuperSecretAutoConfig();renderPerfectRngAutoConfig();
+  renderRankAutoConfig();renderSecretAutoConfig();renderSuperSecretAutoConfig();renderPerfectRngAutoConfig();renderEnchantAutoConfig();
 }
 const VISIBLE_HALF=3,NUM_DECOR=26;
 function getItemW(){return parseInt(getComputedStyle(document.documentElement).getPropertyValue("--item-w"))||75;}
@@ -671,6 +695,7 @@ function getDisplayValue(r,forReel=false){
   if(r.superSecretIdx===SS_BLACKHOLE){if(!forReel&&r.blackHoleRolledRng!=null)return`-618 (was 1/${formatValue(r.blackHoleRolledRng)})`;return"-618";}
   if(r.superSecretIdx===SS_EEON)return formatValue(r.val);
   if(r.superSecretIdx===SS_NAN)return "NaN";
+  if(r.superSecretIdx===SS_CENSORED)return "[CENSORED]";
   if(r.secretIdx>=0&&SECRET_RANKS[r.secretIdx].displayrng!==false)return String(SECRET_RANKS[r.secretIdx].displayrng);
   return formatValue(r.val);
 }
@@ -711,10 +736,10 @@ function computeRoll(luckOverride,forcedVariantIdx,boosterAttrs){
   const activeLuck=(luckOverride!==undefined?luckOverride:getEffectiveLuck())+getEnchantLuckBonus();
   let selectedRankIdx=0;
   for(let i=RANKS.length-1;i>=1;i--){
-    if(Math.random()<Math.min(1,(activeLuck*2.5/(0.2+Math.random()*24.8))/RANKS[i].min)){selectedRankIdx=i;break;}
+    if(Math.random()<Math.min(1,Math.pow((activeLuck*2.5/(0.2+Math.random()*24.8))/RANKS[i].min,1/1.33))){selectedRankIdx=i;break;}
   }
   const rank=RANKS[selectedRankIdx];
-  const luckExp=1/Math.max(1,1+activeLuck*1);
+  const luckExp=Math.max(0.25,1/Math.max(1,1+activeLuck*1));
   let val;
   if(rank.max===Infinity){
     let rawVal=rank.min/Math.pow(Math.random(),Math.max(1,1+activeLuck*0.08));
@@ -748,6 +773,7 @@ function computeRoll(luckOverride,forcedVariantIdx,boosterAttrs){
     else if(hasSingularity()&&Math.random()<1/blackHoleRng){superSecretIdx=SS_BLACKHOLE;secretIdx=-1;blackHoleRolledRng=blackHoleRng;blackHoleRng=BH_BASE_RNG;}
     else if(Math.random()<1/39000000){superSecretIdx=SS_SINGULARITY;secretIdx=-1;}
     else if(val>=1e250&&Math.random()<1/6.66){superSecretIdx=SS_EEON;secretIdx=-1;val=Math.round(val*666666*100)/100;}
+    else if(Math.random()<1/750000){superSecretIdx=SS_CENSORED;secretIdx=-1;}
   }
   // Catch NaN/Infinity and convert to NaN secret
   if(!isFinite(val)||isNaN(val)){
@@ -829,7 +855,7 @@ function renderEquippedOrbs(){
   bar.innerHTML=parts.length?parts.join("  \u00b7  "):'<span style="color:var(--muted)">No active effects</span>';
 }
 function toggleBoosterActive(idx){if(idx<0||idx>=boosterInventory.length)return;boosterInventory[idx].active=!boosterInventory[idx].active;renderBoosterInventory();saveData();}
-function applyAndConsumeBooster(){const actives=boosterInventory.filter(b=>b.active);if(!actives.length)return{effectiveLuck:getEffectiveLuck(),forcedVariantIdx:-1,boosterAttrs:{}};const add=actives.filter(b=>!b.isMulti&&!b.isPower&&!b.isEvil),mul=actives.filter(b=>b.isMulti&&!b.isEvil),pow=actives.filter(b=>b.isPower&&!b.isEvil),evl=actives.filter(b=>b.isEvil),evlm=evl.filter(b=>b.isMulti);const addS=add.reduce((s,b)=>s+b.val,0)+evl.filter(b=>!b.isMulti&&!b.isPower).reduce((s,b)=>s+b.val,0);const mulP=mul.reduce((s,b)=>s*b.val,1);const cp=pow.length?parseFloat((1+pow.reduce((s,b)=>s+(b.powerVal-1),0)).toFixed(4)):1;let fvi=-1;actives.forEach(b=>{if(b.variantIdx>fvi)fvi=b.variantIdx;});let eff=getEffectiveLuck();if(add.length||evl.filter(b=>!b.isMulti&&!b.isPower).length)eff*=(addS>0?addS:1);if(mul.length)eff*=mulP;if(evlm.length)eff*=0;if(cp!==1)eff=Math.pow(Math.max(0,eff),cp);const ba={isRounded:actives.some(b=>b.isRounded),isRandom:actives.some(b=>b.isRandom),isGamma:actives.some(b=>b.isGamma)};boosterInventory=boosterInventory.filter(b=>!b.active);return{effectiveLuck:eff,forcedVariantIdx:fvi,boosterAttrs:ba};}
+function applyAndConsumeBooster(){const actives=boosterInventory.filter(b=>b.active);if(!actives.length)return{effectiveLuck:getEffectiveLuck(),forcedVariantIdx:-1,boosterAttrs:{}};const add=actives.filter(b=>!b.isMulti&&!b.isPower&&!b.isEvil),mul=actives.filter(b=>b.isMulti&&!b.isEvil),pow=actives.filter(b=>b.isPower&&!b.isEvil),evl=actives.filter(b=>b.isEvil),evlm=evl.filter(b=>b.isMulti);const baseLuck=getEffectiveLuck();const luckMult=1+baseLuck/5;const addS=(add.reduce((s,b)=>s+b.val,0)+evl.filter(b=>!b.isMulti&&!b.isPower).reduce((s,b)=>s+b.val,0))*luckMult;const mulP=mul.reduce((s,b)=>s*b.val,1);const cp=pow.length?parseFloat((1+pow.reduce((s,b)=>s+(b.powerVal-1),0)).toFixed(4)):1;let fvi=-1;actives.forEach(b=>{if(b.variantIdx>fvi)fvi=b.variantIdx;});let eff=baseLuck;if(add.length||evl.filter(b=>!b.isMulti&&!b.isPower).length)eff*=(addS>0?addS:1);if(mul.length)eff*=mulP;if(evlm.length)eff*=0;if(cp!==1)eff=Math.pow(Math.max(0,eff),cp);const ba={isRounded:actives.some(b=>b.isRounded),isRandom:actives.some(b=>b.isRandom),isGamma:actives.some(b=>b.isGamma)};boosterInventory=boosterInventory.filter(b=>!b.active);return{effectiveLuck:eff,forcedVariantIdx:fvi,boosterAttrs:ba};}
 function spawnCrate(){const crate=document.createElement("div");crate.className="crate";crate.textContent="\ud83d\udce6";crate.style.left=(6+Math.random()*82)+"vw";crate.style.top="-70px";const dur=Math.round(6500+Math.random()*4000);crate.style.setProperty("--dur",dur+"ms");document.body.appendChild(crate);const cl=setTimeout(()=>crate.remove(),dur+300);crate.addEventListener("click",()=>{clearTimeout(cl);const b=computeBooster();boosterInventory.push(b);const rect=crate.getBoundingClientRect();const n=document.createElement("div");n.className="crate-notif";const VC=VARIANTS.map(v=>v.color);let ts;if(b.isEvil)ts=`<span style="color:#ff4444">EVIL</span>`;else if(b.isPower)ts=`<span style="color:#cc55ff">^${b.powerVal.toFixed(2)} PWR</span>`;else if(b.isMulti)ts=`\u00d7${b.val>=1000?(b.val/1000).toFixed(1)+"K":b.val} MULTI`;else ts=`+${b.val>=1000?(b.val/1000).toFixed(1)+"K":b.val} ADD`;const vs=(b.variantIdx>=0&&!b.isEvil)?` <span style="color:${VC[b.variantIdx]}">\u2728${VARIANTS[b.variantIdx].name}</span>`:"";n.innerHTML=`\ud83d\udce6 ${ts}${vs}`;n.style.left=Math.min(rect.left,window.innerWidth-200)+"px";n.style.top=(rect.top-8)+"px";document.body.appendChild(n);setTimeout(()=>n.remove(),2300);crate.style.animation="none";crate.style.opacity="0";crate.style.transform="scale(1.5)";crate.style.transition="opacity .2s,transform .2s";setTimeout(()=>crate.remove(),250);renderBoosterInventory();saveData();});}
 function startCrateTimer(){clearInterval(crateTimer);crateTimer=setInterval(()=>{if(Math.random()<1/5)spawnCrate();},5000);}
 const ALL_TABS=["rolling","upgrades","inventory","enchants","indexes","boosters","extras"];
@@ -853,13 +879,12 @@ function doRoll(){
   const hasErr=allResults.some(r=>r.superSecretIdx===SS_ERR);
   const best=[...allResults].sort((a,b)=>b.rankIdx-a.rankIdx||b.val-a.val)[0];
   let totalCoins=0;allResults.forEach(r=>{if(r.superSecretIdx!==SS_ERR)totalCoins+=computeCoins(r.val);});
-  if(!hasErr)coins+=totalCoins;
+  coins+=totalCoins;
   totalRolls+=allResults.length;
   if(best.rankIdx>bestRankIdx&&best.superSecretIdx!==SS_ERR){bestRankIdx=best.rankIdx;const bEl=document.getElementById("best-rank");bEl.textContent=RANKS[bestRankIdx].name.toUpperCase();bEl.style.color=RANK_COLORS[bestRankIdx];}
   document.getElementById("result-coins").classList.remove("show");document.getElementById("result-coins").textContent="";
   let accepted=[],pending=[];
   allResults.forEach(r=>{
-    if(r.superSecretIdx===SS_ERR)return;
     let ov=0;if(r.perfectRngIdx>=0)ov=perfectRngAutoOverride[r.perfectRngIdx]||0;else if(r.superSecretIdx>=0)ov=superSecretAutoOverride[r.superSecretIdx]||0;else if(r.secretIdx>=0)ov=secretAutoOverride[r.secretIdx]||0;else ov=rankAutoOverride[r.rankIdx]||0;
     if(ov===-1)return;if(ov===1){accepted.push(r);return;}
     if(shouldAutoDelete(r))return;
@@ -879,7 +904,7 @@ function doRoll(){
         renderPending();if(best.rankIdx>=10&&!hasErr)spawnParticles(best.rankIdx);
         renderEnchantInventory();updateNavBadges();buildIndex();
         if(allResults.some(r=>r.superSecretIdx===SS_BLACKHOLE))setTimeout(playBlackHoleCutscene,400);
-        if(hasErr){coins=-404;if(autoRollEnabled){autoRollEnabled=false;clearTimeout(autoRollTimer);document.getElementById("auto-btn").classList.remove("active");document.getElementById("auto-btn").textContent="\ud83d\udd04 Auto Roll";}setTimeout(playErrCutscene,400);}
+        if(hasErr){setTimeout(playErrCutscene,400);}
         updateUI();saveData();isRolling=false;btn.disabled=false;
         if(autoRollEnabled)autoRollTimer=setTimeout(doRoll,getAutoRollDelay());
       }
@@ -992,7 +1017,7 @@ function buildIndex(){
     const isGrad=entry.color.startsWith("linear-gradient")||entry.color.startsWith("radial-gradient");
     const nameStyle=isGrad?`background:${entry.color};-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text`:`color:${entry.color}`;
     const borderColor=isGrad?(entry.color.match(/#[0-9a-fA-F]{3,6}/)||["#888"])[0]:entry.color;
-    return`<div class="index-row" style="border-left-color:${borderColor}"><span class="index-name"><span style="${nameStyle}">${entry.name}</span>${mark}</span><span class="index-range">exact ${entry.perfectrng.toLocaleString()}.00</span></div>`;
+    return`<div class="index-row" style="border-left-color:${borderColor}"><span class="index-name"><span style="${nameStyle}">${entry.name}</span>${mark}</span><span class="index-range">exact ${Number.isInteger(entry.perfectrng)?entry.perfectrng.toLocaleString():entry.perfectrng.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</span></div>`;
   }).join("");
   document.getElementById("booster-type-index").innerHTML=[{label:"+ ADD",desc:"Additive luck boost",color:"#aaaaff",chance:"common"},{label:"\u00d7 MULTI",desc:"Multiplicative luck (blue)",color:"#6baaff",chance:"1/25"},{label:"^ PWR",desc:"Exponent luck, ^2 max, stackable",color:"#cc55ff",chance:"1/5000"},{label:"\ud83d\udd35 rounded",desc:"Rounds rng val to nearest integer",color:"#88aaff",chance:"1/15 attr"},{label:"\ud83d\udfe1 random",desc:"Variant luck boost",color:"#ffdd44",chance:"1/50 attr"},{label:"\ud83d\udfe3 gamma",desc:"Secret luck +min(100,1+luck/100)\u00d7",color:"#cc88ff",chance:"1/250 attr"},].map(b=>`<div class="index-row" style="border-left-color:${b.color}"><span class="index-name" style="color:${b.color}">${b.label} <span style="font-size:.5rem;color:var(--muted)">${b.chance}</span></span><span class="index-range">${b.desc}</span></div>`).join("");
 }
@@ -1016,7 +1041,7 @@ function renderRankAutoConfig(){const c=document.getElementById("rank-auto-list"
 function setRankOverride(idx,val){rankAutoOverride[idx]=val;renderRankAutoConfig();saveData();}
 function renderSecretAutoConfig(){const c=document.getElementById("secret-auto-list");if(!c)return;c.innerHTML=SECRET_RANKS.map((secret,i)=>{const cur=secretAutoOverride[i]||0;return`<div class="auto-rank-row" style="border-left-color:${SECRET_RANK_COLOR}"><span class="auto-rank-name">${secret.name}</span><div class="auto-rank-btns"><button class="auto-rank-btn ${cur===-1?'active-decline':''}" onclick="setSecretOverride(${i},-1)">\ud83d\udd34</button><button class="auto-rank-btn ${cur===0?'active-neutral':''}" onclick="setSecretOverride(${i},0)">\u26aa</button><button class="auto-rank-btn ${cur===1?'active-accept':''}" onclick="setSecretOverride(${i},1)">\ud83d\udfe2</button></div></div>`;}).join("");}
 function setSecretOverride(idx,val){secretAutoOverride[idx]=val;renderSecretAutoConfig();saveData();}
-function renderSuperSecretAutoConfig(){const c=document.getElementById("supersecret-auto-list");if(!c)return;c.innerHTML=SUPER_SECRETS.map((ss,i)=>{if(i===SS_ERR)return'';const cur=superSecretAutoOverride[i]||0;return`<div class="auto-rank-row" style="border-left-color:${ss.color}"><span class="auto-rank-name">${ss.name}</span><div class="auto-rank-btns"><button class="auto-rank-btn ${cur===-1?'active-decline':''}" onclick="setSuperSecretOverride(${i},-1)">\ud83d\udd34</button><button class="auto-rank-btn ${cur===0?'active-neutral':''}" onclick="setSuperSecretOverride(${i},0)">\u26aa</button><button class="auto-rank-btn ${cur===1?'active-accept':''}" onclick="setSuperSecretOverride(${i},1)">\ud83d\udfe2</button></div></div>`;}).join("");}
+function renderSuperSecretAutoConfig(){const c=document.getElementById("supersecret-auto-list");if(!c)return;c.innerHTML=SUPER_SECRETS.map((ss,i)=>{const cur=superSecretAutoOverride[i]||0;return`<div class="auto-rank-row" style="border-left-color:${ss.color}"><span class="auto-rank-name">${ss.name}</span><div class="auto-rank-btns"><button class="auto-rank-btn ${cur===-1?'active-decline':''}" onclick="setSuperSecretOverride(${i},-1)">\ud83d\udd34</button><button class="auto-rank-btn ${cur===0?'active-neutral':''}" onclick="setSuperSecretOverride(${i},0)">\u26aa</button><button class="auto-rank-btn ${cur===1?'active-accept':''}" onclick="setSuperSecretOverride(${i},1)">\ud83d\udfe2</button></div></div>`;}).join("");}
 function setSuperSecretOverride(idx,val){superSecretAutoOverride[idx]=val;renderSuperSecretAutoConfig();saveData();}
 function renderPerfectRngAutoConfig(){
   const c=document.getElementById("perfectrng-auto-list");if(!c)return;
@@ -1028,6 +1053,19 @@ function renderPerfectRngAutoConfig(){
   }).join("");
 }
 function setPerfectRngOverride(idx,val){perfectRngAutoOverride[idx]=val;renderPerfectRngAutoConfig();saveData();}
+function renderEnchantAutoConfig(){
+  const c=document.getElementById("enchant-auto-list");if(!c)return;
+  let html="";
+  for(const[cat,defs]of Object.entries(ENCHANT_CATS)){
+    html+=`<div style="font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin:6px 0 3px;padding-left:4px">⬡ ${cat}</div>`;
+    html+=defs.map((d,i)=>{
+      const key=`${cat}:${i}`,cur=enchantAutoOverride[key]??0;
+      return`<div class="auto-rank-row" style="border-left-color:${d.color}"><span class="auto-rank-name" style="color:${d.color};font-size:.68rem">${d.name} <span style="font-size:.5rem;color:var(--muted)">1/${d.chance>=1e9?(d.chance/1e9).toFixed(0)+"B":d.chance>=1e6?(d.chance/1e6).toFixed(0)+"M":d.chance>=1000?(d.chance/1000).toFixed(0)+"K":d.chance}</span></span><div class="auto-rank-btns"><button class="auto-rank-btn ${cur===-1?'active-decline':''}" onclick="setEnchantOverride('${key}',-1)">🔴</button><button class="auto-rank-btn ${cur===0?'active-neutral':''}" onclick="setEnchantOverride('${key}',0)">⚪</button><button class="auto-rank-btn ${cur===1?'active-accept':''}" onclick="setEnchantOverride('${key}',1)">🟢</button></div></div>`;
+    }).join("");
+  }
+  c.innerHTML=html;
+}
+function setEnchantOverride(key,val){enchantAutoOverride[key]=val;renderEnchantAutoConfig();saveData();}
 document.addEventListener("keydown",e=>{if((e.code==="Space"||e.code==="Enter")&&!isRolling&&!autoRollEnabled){const btn=document.getElementById("roll-btn");if(!btn.disabled)doRoll();}});
 loadData();
 fullReloadUI();
