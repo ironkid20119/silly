@@ -822,14 +822,11 @@ function computeRoll(luckOverride,forcedVariantIdx,boosterAttrs){
   return{val,baseVal:baseValR,variantIdx,secretIdx,superSecretIdx,perfectRngIdx,totallyMaxDisplayVal,blackHoleRolledRng};
 }
 const CRAFT_RECIPES=[
-  {name:"Clover Talisman",desc:"Passive luck boost",color:"#44ff88",buffs:[{type:"luck",value:0.25}],ranksNeeded:[{rankName:"rare",count:5},{rankName:"gilded",count:2}],boostersNeeded:[],inSeconds:30},
-  {name:"Golden Reel",desc:"Coin multiplier",color:"#ffcc44",buffs:[{type:"coinGain",value:0.15}],ranksNeeded:[{rankName:"gilded",count:3},{rankName:"light",count:1}],boostersNeeded:[{tierName:"bigger",count:1}],inSeconds:60},
-  {name:"Shiny Badge",desc:"Variant luck up",color:"#ffe040",buffs:[{type:"variantLuck",value:0.5}],ranksNeeded:[{rankName:"epic",variantName:"shiny",count:2},{rankName:"rare",count:3}],boostersNeeded:[],inSeconds:90},
-  {name:"Mystic Lens",desc:"Secret luck up",color:"#ff88ff",buffs:[{type:"secretLuck",value:0.1}],ranksNeeded:[{rankName:"elusive",count:4},{rankName:"unordinary",count:1}],boostersNeeded:[{tierName:"normal",count:3}],inSeconds:120},
-  {name:"Crate Magnet",desc:"Better crate tiers",color:"#6bddff",buffs:[{type:"crateChance",value:0.1}],ranksNeeded:[{rankName:"divine",count:3}],boostersNeeded:[{tierName:"bigger",count:2},{tierName:"giant",count:1}],inSeconds:180},
-  {name:"RGB Crystal",desc:"Big variant luck",color:"#ff44ff",buffs:[{type:"variantLuck",value:0.75}],ranksNeeded:[{rankName:"light",variantName:"rgb",count:1},{rankName:"elusive",count:3}],boostersNeeded:[],inSeconds:150},
-  {name:"Void Shard",desc:"Massive luck boost",color:"#8833ff",buffs:[{type:"luck",value:1.5}],ranksNeeded:[{rankName:"colossal",count:1},{rankName:"inimitable",count:1},{rankName:"mega",count:5}],boostersNeeded:[{tierName:"oversized",count:1}],inSeconds:600},
-  {name:"Titan Core",desc:"Luck + coins",color:"#ff4455",buffs:[{type:"luck",value:1.0},{type:"coinGain",value:0.20}],ranksNeeded:[{rankName:"rngesus",count:2},{rankName:"infinity",count:1}],boostersNeeded:[{tierName:"titan",count:1}],inSeconds:300},
+  {name:"???", desc:"this is a placeholder crafting will be added soon fully (im just lazy and cant come up with ideas)", color:"#aaaaaa", 
+ buffs:[{type:"luck",value:0.1}], 
+ ranksNeeded:[{rankName:"maximum",count:1e303}], 
+ boostersNeeded:[], 
+ inSeconds:1e303},
 ];
 const BOOSTER_SHAPES=["circle","square","triangle","hexagon","star"];
 const BOOSTER_TIERS=[
