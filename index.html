@@ -825,11 +825,32 @@ function computeRoll(luckOverride,forcedVariantIdx,boosterAttrs){
   return{val,baseVal:baseValR,variantIdx,secretIdx,superSecretIdx,perfectRngIdx,totallyMaxDisplayVal,blackHoleRolledRng};
 }
 const CRAFT_RECIPES=[
-  {name:"???", desc:"this is a placeholder crafting will be added soon fully (im just lazy and cant come up with ideas)", color:"#aaaaaa", 
- buffs:[{type:"luck",value:0.1}], 
- ranksNeeded:[{rankName:"maximum",count:1e303}], 
+  {name: "clover bit", desc:"item !!", color:"#3deb34", 
+ buffs:[{type:"luck",value:7.77}], 
+ ranksNeeded:[{rankName:"clover",count:7}], 
  boostersNeeded:[], 
- inSeconds:1e303},
+ inSeconds:777},
+  {name: "eyeball orb", desc:"wgar?", color:"#563675",
+  buffs:[{type:"secretLuck",value:5}],
+  ranksNeeded:[{rankName:"WEIRD",count:5}],
+  boostersNeeded:[],
+   inSeconds:200},
+  {name:"booster booster", desc:"WOAH !!", color:"#f2bbd8",
+    buffs:[{type:"crateChance",value:0.175}],
+  ranksNeeded:[],
+  boostersNeeded:[{tierName: "giant", count: 5}],
+    inSeconds: 480},
+  {
+  name: "coin ring",
+  desc: "shiny gilded coin ring, MONEY !!!",
+  color: "#ffaa33",
+  buffs: [{ type: "coinGain", value: 1.75 }],
+  ranksNeeded: [
+    { rankName: "gilded", count: 25, variantName: "shiny" }
+  ],
+  boostersNeeded: [],
+  inSeconds: 240
+}
 ];
 const BOOSTER_SHAPES=["circle","square","triangle","hexagon","star"];
 const BOOSTER_TIERS=[
