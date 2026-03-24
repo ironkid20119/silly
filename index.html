@@ -274,7 +274,7 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
     <div class="pending-area" id="pending-area"></div>
   </div>
   <div class="tab-panel" id="tab-upgrades"><div class="panel"><h2>&#x1F6D2; Upgrades</h2>
-    <button class="upgrade-btn" id="luck-btn" onclick="buyUpgrade('luck')"><div class="upgrade-name">&#x26A1; Luck Boost</div><div class="upgrade-desc">+0.5&times; luck multiplier</div><div class="upgrade-cost">Cost: <span id="luck-cost">75</span> &#x1FA99;</div><div class="upgrade-level">Owned: <span id="luck-level">0</span></div></button>
+    <button class="upgrade-btn" id="luck-btn" onclick="buyUpgrade('luck')"><div class="upgrade-name">&#x26A1; Luck Boost</div><div class="upgrade-desc">+0.5&times; luck multiplier (max +20&times;)</div><div class="upgrade-cost">Cost: <span id="luck-cost">75</span> &#x1FA99;</div><div class="upgrade-level">Owned: <span id="luck-level">0</span> / 40</div></button>
     <button class="upgrade-btn" id="bulk-btn" onclick="buyUpgrade('bulk')"><div class="upgrade-name">&#x1F3B0; Bulk Roll</div><div class="upgrade-desc">+1 extra reel per roll (max +4)</div><div class="upgrade-cost">Cost: <span id="bulk-cost">1000</span> &#x1FA99;</div><div class="upgrade-level">Owned: <span id="bulk-level">0</span> / 4</div></button>
     <button class="upgrade-btn" id="rollspeed-btn" onclick="buyUpgrade('rollSpeed')"><div class="upgrade-name">&#x23E9; Roll Speed</div><div class="upgrade-desc">&minus;0.1s cooldown &amp; animation (max &minus;1s)</div><div class="upgrade-cost">Cost: <span id="rollspeed-cost">100</span> &#x1FA99;</div><div class="upgrade-level">&minus;<span id="rollspeed-level">0.0</span>s &middot; <span id="rollspeed-ms">1750</span>ms spin</div></button>
     <button class="upgrade-btn" id="quickroll-btn" onclick="buyOrToggleQuickRoll()"><div class="upgrade-name">&#x26A1; Quick Roll</div><div class="upgrade-desc">Toggle: animation &amp; cooldown = 0.2s</div><div class="upgrade-cost">Cost: <span id="quickroll-cost">10,000</span> &#x1FA99;</div><div class="upgrade-level">Status: <span id="quickroll-status">Locked</span></div></button>
@@ -785,8 +785,35 @@ function computeRoll(luckOverride,forcedVariantIdx,boosterAttrs){
   return{val,baseVal:baseValR,variantIdx,secretIdx,superSecretIdx,perfectRngIdx,totallyMaxDisplayVal,blackHoleRolledRng};
 }
 const BOOSTER_SHAPES=["circle","square","triangle","hexagon","star"];
-function computeBoosterRawVal(){const r=Math.random();return 5+Math.floor(r===0?5e8:1/(2*r));}
-function computeBooster(){const isEvil=Math.random()<1/6666,isPower=!isEvil&&Math.random()<1/5000,isMulti=!isEvil&&!isPower&&Math.random()<1/25;const shape=BOOSTER_SHAPES[Math.floor(Math.random()*BOOSTER_SHAPES.length)];let val=isEvil?0:computeBoosterRawVal(),powerVal=null;if(isPower)powerVal=parseFloat(Math.min(2,1+val/100).toFixed(2));let variantIdx=-1;if(!isEvil){const vb=1+getVariantLuckBonus();for(let i=VARIANTS.length-1;i>=0;i--){if(Math.random()<vb/(VARIANTS[i].chance*2.5)){variantIdx=i;break;}}}return{val,isMulti,isPower,powerVal,isEvil,variantIdx,shape,active:false,isRounded:Math.random()<1/15,isRandom:Math.random()<1/50,isGamma:Math.random()<1/250};}
+const BOOSTER_TIERS=[
+  {name:"normal",   min:5,     max:50,       chance:1,     size:1},
+  {name:"bigger",   min:50,    max:100,      chance:30,    size:2},
+  {name:"giant",    min:100,   max:250,      chance:75,    size:3},
+  {name:"massive",  min:250,   max:500,      chance:175,   size:4},
+  {name:"gigantic", min:500,   max:1000,     chance:333,   size:5},
+  {name:"oversized",min:1000,  max:10000,    chance:1000,  size:6},
+  {name:"titan",    min:10000, max:Infinity, chance:10000, size:7},
+];
+const BOOSTER_TIER_COLORS=["#aaaaff","#88ccff","#66ffbb","#ffdd55","#ff9944","#ff55cc","#ff4455"];
+function rollBoosterTier(){
+  const checks=[6,5,4,3,2,1];
+  for(const i of checks){if(Math.random()<1/BOOSTER_TIERS[i].chance)return i;}
+  return 0;
+}
+function computeBoosterVal(tierIdx){
+  const t=BOOSTER_TIERS[tierIdx];
+  if(t.max===Infinity)return Math.round(t.min+Math.floor(Math.random()*t.min*9));
+  return Math.round(t.min+Math.random()*(t.max-t.min));
+}
+function computeBooster(tierIdx){
+  const ti=tierIdx??rollBoosterTier();
+  const isEvil=Math.random()<1/6666,isPower=!isEvil&&Math.random()<1/5000,isMulti=!isEvil&&!isPower&&Math.random()<1/25;
+  const shape=BOOSTER_SHAPES[Math.floor(Math.random()*BOOSTER_SHAPES.length)];
+  let val=isEvil?0:computeBoosterVal(ti),powerVal=null;
+  if(isPower)powerVal=parseFloat(Math.min(2,1+val/100).toFixed(2));
+  let variantIdx=-1;if(!isEvil){const vb=1+getVariantLuckBonus();for(let i=VARIANTS.length-1;i>=0;i--){if(Math.random()<vb/(VARIANTS[i].chance*2.5)){variantIdx=i;break;}}}
+  return{val,isMulti,isPower,powerVal,isEvil,variantIdx,shape,active:false,tierIdx:ti,tierName:BOOSTER_TIERS[ti].name,isRounded:Math.random()<1/15,isRandom:Math.random()<1/50,isGamma:Math.random()<1/250};
+}
 function deleteBooster(idx){boosterInventory.splice(idx,1);renderBoosterInventory();saveData();}
 function renderBoosterInventory(){
   const list=document.getElementById("booster-list"),hdr=document.getElementById("booster-hdr"),badge=document.getElementById("booster-badge");
@@ -808,7 +835,9 @@ function renderBoosterInventory(){
     const sf=(vc&&!b.isEvil&&!b.isPower&&!b.isMulti)?`filter:drop-shadow(0 0 7px ${vc}) drop-shadow(0 2px 3px rgba(0,0,0,.5))`:"";
     const vl=(b.variantIdx>=0&&!b.isEvil)?`<div class="booster-tag var-tag" style="color:${vc}">\u2728${VARIANTS[b.variantIdx].name}</div>`:"";
     const al=[b.isRounded?"\ud83d\udd35rnd":null,b.isRandom?"\ud83d\udfe1rng":null,b.isGamma?"\ud83d\udfe3\u03b3":null].filter(Boolean).join(" ");
-    return`<div class="booster-item${tc}${ac}" onclick="toggleBoosterActive(${i})"><button class="booster-del" onclick="event.stopPropagation();deleteBooster(${i})">\u2715</button><div class="booster-shape ${b.shape} ${sx}" style="${sf}"></div><div class="booster-value">${vs}</div><div class="booster-tag${gc}">${tl}</div>${vl}${al?`<div style="font-size:.4rem;color:#aaaaff">${al}</div>`:""}</div>`;
+    const ti=b.tierIdx??0,tc2=BOOSTER_TIER_COLORS[ti]||"#aaaaff";
+    const tierLabel=(!b.isEvil&&!b.isMulti&&!b.isPower&&ti>0)?`<div style="font-size:.4rem;color:${tc2};letter-spacing:.3px">${BOOSTER_TIERS[ti].name}</div>`:"";
+    return`<div class="booster-item${tc}${ac}" onclick="toggleBoosterActive(${i})"><button class="booster-del" onclick="event.stopPropagation();deleteBooster(${i})">\u2715</button><div class="booster-shape ${b.shape} ${sx}" style="${sf}"></div><div class="booster-value">${vs}</div><div class="booster-tag${gc}">${tl}</div>${vl}${tierLabel}${al?`<div style="font-size:.4rem;color:#aaaaff">${al}</div>`:""}</div>`;
   }).join("");
 }
 function generateEnchants(val){
@@ -859,7 +888,33 @@ function renderEquippedOrbs(){
 }
 function toggleBoosterActive(idx){if(idx<0||idx>=boosterInventory.length)return;boosterInventory[idx].active=!boosterInventory[idx].active;renderBoosterInventory();saveData();}
 function applyAndConsumeBooster(){const actives=boosterInventory.filter(b=>b.active);if(!actives.length)return{effectiveLuck:getEffectiveLuck(),forcedVariantIdx:-1,boosterAttrs:{}};const add=actives.filter(b=>!b.isMulti&&!b.isPower&&!b.isEvil),mul=actives.filter(b=>b.isMulti&&!b.isEvil),pow=actives.filter(b=>b.isPower&&!b.isEvil),evl=actives.filter(b=>b.isEvil),evlm=evl.filter(b=>b.isMulti);const baseLuck=getEffectiveLuck();const luckMult=1+baseLuck/5;const addS=(add.reduce((s,b)=>s+b.val,0)+evl.filter(b=>!b.isMulti&&!b.isPower).reduce((s,b)=>s+b.val,0))*luckMult;const mulP=mul.reduce((s,b)=>s*b.val,1);const cp=pow.length?parseFloat((1+pow.reduce((s,b)=>s+(b.powerVal-1),0)).toFixed(4)):1;let fvi=-1;actives.forEach(b=>{if(b.variantIdx>fvi)fvi=b.variantIdx;});let eff=baseLuck;if(add.length||evl.filter(b=>!b.isMulti&&!b.isPower).length)eff*=(addS>0?addS:1);if(mul.length)eff*=mulP;if(evlm.length)eff*=0;if(cp!==1)eff=Math.pow(Math.max(0,eff),cp);const ba={isRounded:actives.some(b=>b.isRounded),isRandom:actives.some(b=>b.isRandom),isGamma:actives.some(b=>b.isGamma)};boosterInventory=boosterInventory.filter(b=>!b.active);return{effectiveLuck:eff,forcedVariantIdx:fvi,boosterAttrs:ba};}
-function spawnCrate(){const crate=document.createElement("div");crate.className="crate";crate.textContent="\ud83d\udce6";crate.style.left=(6+Math.random()*82)+"vw";crate.style.top="-70px";const dur=Math.round(6500+Math.random()*4000);crate.style.setProperty("--dur",dur+"ms");document.body.appendChild(crate);const cl=setTimeout(()=>crate.remove(),dur+300);crate.addEventListener("click",()=>{clearTimeout(cl);const b=computeBooster();boosterInventory.push(b);const rect=crate.getBoundingClientRect();const n=document.createElement("div");n.className="crate-notif";const VC=VARIANTS.map(v=>v.color);let ts;if(b.isEvil)ts=`<span style="color:#ff4444">EVIL</span>`;else if(b.isPower)ts=`<span style="color:#cc55ff">^${b.powerVal.toFixed(2)} PWR</span>`;else if(b.isMulti)ts=`\u00d7${b.val>=1000?(b.val/1000).toFixed(1)+"K":b.val} MULTI`;else ts=`+${b.val>=1000?(b.val/1000).toFixed(1)+"K":b.val} ADD`;const vs=(b.variantIdx>=0&&!b.isEvil)?` <span style="color:${VC[b.variantIdx]}">\u2728${VARIANTS[b.variantIdx].name}</span>`:"";n.innerHTML=`\ud83d\udce6 ${ts}${vs}`;n.style.left=Math.min(rect.left,window.innerWidth-200)+"px";n.style.top=(rect.top-8)+"px";document.body.appendChild(n);setTimeout(()=>n.remove(),2300);crate.style.animation="none";crate.style.opacity="0";crate.style.transform="scale(1.5)";crate.style.transition="opacity .2s,transform .2s";setTimeout(()=>crate.remove(),250);renderBoosterInventory();saveData();});}
+function spawnCrate(){
+  const ti=rollBoosterTier();
+  const t=BOOSTER_TIERS[ti];
+  const baseSize=42,sz=baseSize*t.size;
+  const crate=document.createElement("div");crate.className="crate";crate.textContent="\ud83d\udce6";
+  crate.style.left=(6+Math.random()*82)+"vw";crate.style.top="-70px";
+  crate.style.width=sz+"px";crate.style.height=sz+"px";
+  crate.style.fontSize=(sz*0.055)+"rem";
+  if(ti>0)crate.style.filter=`drop-shadow(0 0 ${4+ti*3}px ${BOOSTER_TIER_COLORS[ti]}88)`;
+  const dur=Math.round(6500+Math.random()*4000);crate.style.setProperty("--dur",dur+"ms");
+  document.body.appendChild(crate);
+  const cl=setTimeout(()=>crate.remove(),dur+300);
+  crate.addEventListener("click",()=>{
+    clearTimeout(cl);const b=computeBooster(ti);boosterInventory.push(b);
+    const rect=crate.getBoundingClientRect();const n=document.createElement("div");n.className="crate-notif";
+    const VC=VARIANTS.map(v=>v.color);let ts;
+    if(b.isEvil)ts=`<span style="color:#ff4444">EVIL</span>`;
+    else if(b.isPower)ts=`<span style="color:#cc55ff">^${b.powerVal.toFixed(2)} PWR</span>`;
+    else if(b.isMulti)ts=`\u00d7${b.val>=1000?(b.val/1000).toFixed(1)+"K":b.val} MULTI`;
+    else ts=`<span style="color:${BOOSTER_TIER_COLORS[ti]}">[${t.name}]</span> +${b.val>=1000?(b.val/1000).toFixed(1)+"K":b.val} ADD`;
+    const vs=(b.variantIdx>=0&&!b.isEvil)?` <span style="color:${VC[b.variantIdx]}">\u2728${VARIANTS[b.variantIdx].name}</span>`:"";
+    n.innerHTML=`\ud83d\udce6 ${ts}${vs}`;n.style.left=Math.min(rect.left,window.innerWidth-200)+"px";n.style.top=(rect.top-8)+"px";
+    document.body.appendChild(n);setTimeout(()=>n.remove(),2300);
+    crate.style.animation="none";crate.style.opacity="0";crate.style.transform="scale(1.5)";crate.style.transition="opacity .2s,transform .2s";
+    setTimeout(()=>crate.remove(),250);renderBoosterInventory();saveData();
+  });
+}
 function startCrateTimer(){clearInterval(crateTimer);crateTimer=setInterval(()=>{if(Math.random()<1/5)spawnCrate();},5000);}
 const ALL_TABS=["rolling","upgrades","inventory","enchants","indexes","boosters","extras"];
 function switchTab(name){ALL_TABS.forEach(t=>{document.getElementById("tab-"+t).classList.toggle("active",t===name);document.getElementById("nav-"+t).classList.toggle("active",t===name);});}
@@ -946,7 +1001,7 @@ function buyOrToggleCoinflip(){
   document.getElementById("coinflip-btn").classList.toggle("qr-active",coinflipEnabled);
   startCoinflipTimer();updateUI();saveData();
 }
-function buyUpgrade(type){if(type==="luck"){if(coins<luckCost)return;coins-=luckCost;luckLevel++;luck+=0.5;luckCost=Math.ceil(luckCost*1.2);}else if(type==="bulk"){if(bulkLevel>=4||coins<bulkCost)return;coins-=bulkCost;bulkLevel++;bulkCost=Math.ceil(bulkCost*1.5);}else if(type==="rollSpeed"){if(rollSpeedLevel>=10||coins<rollSpeedCost)return;coins-=rollSpeedCost;rollSpeedLevel++;rollSpeedCost=Math.ceil(rollSpeedCost*1.1);}else if(type==="variantLuck"){if(getVariantLuckBonus()>=2.5||coins<variantLuckCost)return;coins-=variantLuckCost;variantLuckLevel++;variantLuckCost=Math.ceil(variantLuckCost*1.25);}else if(type==="secretLuck"){if(getSecretLuckBonus()>=5||coins<secretLuckCost)return;coins-=secretLuckCost;secretLuckLevel++;secretLuckCost=Math.ceil(secretLuckCost*1.25);}else if(type==="coinGain"){if(coinGainLevel>=100||coins<coinGainCost)return;coins-=coinGainCost;coinGainLevel++;coinGainCost=Math.ceil(coinGainCost*1.2);}else if(type==="enchantLuck"){if(enchantLuckLevel>=15||coins<enchantLuckCost)return;coins-=enchantLuckCost;enchantLuckLevel++;enchantLuckCost=Math.ceil(enchantLuckCost*1.25);}else if(type==="duperUpgrade"){if(duperUpgradeLevel>=2||coins<duperUpgradeCost)return;coins-=duperUpgradeCost;duperUpgradeLevel++;duperUpgradeCost=Math.ceil(duperUpgradeCost*2.75);}updateUI();saveData();}
+function buyUpgrade(type){if(type==="luck"){if(luckLevel>=40||coins<luckCost)return;coins-=luckCost;luckLevel++;luck+=0.5;luckCost=Math.ceil(luckCost*1.2);}else if(type==="bulk"){if(bulkLevel>=4||coins<bulkCost)return;coins-=bulkCost;bulkLevel++;bulkCost=Math.ceil(bulkCost*1.5);}else if(type==="rollSpeed"){if(rollSpeedLevel>=10||coins<rollSpeedCost)return;coins-=rollSpeedCost;rollSpeedLevel++;rollSpeedCost=Math.ceil(rollSpeedCost*1.1);}else if(type==="variantLuck"){if(getVariantLuckBonus()>=2.5||coins<variantLuckCost)return;coins-=variantLuckCost;variantLuckLevel++;variantLuckCost=Math.ceil(variantLuckCost*1.25);}else if(type==="secretLuck"){if(getSecretLuckBonus()>=5||coins<secretLuckCost)return;coins-=secretLuckCost;secretLuckLevel++;secretLuckCost=Math.ceil(secretLuckCost*1.25);}else if(type==="coinGain"){if(coinGainLevel>=100||coins<coinGainCost)return;coins-=coinGainCost;coinGainLevel++;coinGainCost=Math.ceil(coinGainCost*1.2);}else if(type==="enchantLuck"){if(enchantLuckLevel>=15||coins<enchantLuckCost)return;coins-=enchantLuckCost;enchantLuckLevel++;enchantLuckCost=Math.ceil(enchantLuckCost*1.25);}else if(type==="duperUpgrade"){if(duperUpgradeLevel>=2||coins<duperUpgradeCost)return;coins-=duperUpgradeCost;duperUpgradeLevel++;duperUpgradeCost=Math.ceil(duperUpgradeCost*2.75);}updateUI();saveData();}
 function buyOrToggleQuickRoll(){if(!quickRollUnlocked){if(coins<quickRollCost)return;coins-=quickRollCost;quickRollUnlocked=true;quickRollEnabled=true;}else quickRollEnabled=!quickRollEnabled;document.getElementById("quickroll-btn").classList.toggle("qr-active",quickRollEnabled);updateUI();saveData();}
 function buyOrToggleUltraFastRoll(){if(!ultraFastRollUnlocked){if(coins<ultraFastRollCost)return;coins-=ultraFastRollCost;ultraFastRollUnlocked=true;ultraFastRollEnabled=true;}else ultraFastRollEnabled=!ultraFastRollEnabled;document.getElementById("ultra-fast-roll-btn").classList.toggle("ufr-active",ultraFastRollEnabled);updateUI();saveData();}
 function buyOrToggleOptimizer(){if(!optimizerUnlocked){if(coins<optimizerCost)return;coins-=optimizerCost;optimizerUnlocked=true;optimizerEnabled=true;}else optimizerEnabled=!optimizerEnabled;document.getElementById("optimizer-btn").classList.toggle("opt-active",optimizerEnabled);updateUI();saveData();}
@@ -1026,7 +1081,7 @@ function buildIndex(){
 }
 function updateUI(){
   document.getElementById("coins").textContent=formatValue(coins);document.getElementById("luck-display").textContent=luck.toFixed(1)+"x";document.getElementById("bulk-display").textContent=(1+bulkLevel)+" roll"+(1+bulkLevel>1?"s":"");document.getElementById("total-rolls").textContent=totalRolls;
-  document.getElementById("luck-cost").textContent=formatValue(luckCost);document.getElementById("luck-level").textContent=luckLevel;document.getElementById("luck-btn").disabled=coins<luckCost;
+  document.getElementById("luck-cost").textContent=formatValue(luckCost);document.getElementById("luck-level").textContent=luckLevel;const lkM=luckLevel>=40;document.getElementById("luck-cost").textContent=lkM?"MAXED":formatValue(luckCost);const lkb=document.getElementById("luck-btn");lkb.disabled=lkM||coins<luckCost;if(lkM)lkb.classList.add("maxed");
   document.getElementById("bulk-cost").textContent=bulkLevel>=4?"MAXED":formatValue(bulkCost);document.getElementById("bulk-level").textContent=bulkLevel;const bb=document.getElementById("bulk-btn");bb.disabled=bulkLevel>=4||coins<bulkCost;if(bulkLevel>=4)bb.classList.add("maxed");
   const rsM=rollSpeedLevel>=10;document.getElementById("rollspeed-cost").textContent=rsM?"MAXED":formatValue(rollSpeedCost);document.getElementById("rollspeed-level").textContent=(rollSpeedLevel*.1).toFixed(1);document.getElementById("rollspeed-ms").textContent=getSpinMs();const rsb=document.getElementById("rollspeed-btn");rsb.disabled=rsM||coins<rollSpeedCost;if(rsM)rsb.classList.add("maxed");
   const qrb=document.getElementById("quickroll-btn"),qrc=document.getElementById("quickroll-cost"),qrs=document.getElementById("quickroll-status");if(quickRollUnlocked){qrc.textContent="Unlocked";qrs.textContent=quickRollEnabled?"ON \u26a1":"OFF";qrb.disabled=false;qrb.classList.toggle("qr-active",quickRollEnabled);}else{qrc.textContent=formatValue(quickRollCost);qrs.textContent="Locked";qrb.disabled=coins<quickRollCost;qrb.classList.remove("qr-active");}
