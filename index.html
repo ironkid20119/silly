@@ -851,6 +851,16 @@ const CRAFT_RECIPES=[
   ],
   boostersNeeded: [],
   inSeconds: 240
+},
+  {
+  name: "all in 1",
+  desc: "a clover bit fused into a coin ring AND a booster booster, ultimate luck, secret luck, boosters AND money!!!",
+  color: "#aaff44",
+  buffs: [{ type: "luck", value: 4.44 }, { type: "coinGain", value: 1.2 }, {type:"crateChance",value:0.1}, {type:"secretLuck",value:2.5}],
+  ranksNeeded: [],
+  craftedNeeded: [{ recipeName: "clover bit", count: 1 }, { recipeName: "coin ring", count: 1 }, { recipeName: "booster booster", count: 1}, {recipeName: "eyeball orb", count: 1}, ],
+  boostersNeeded: [],
+  inSeconds: 1800
 }
 ];
 const BOOSTER_SHAPES=["circle","square","triangle","hexagon","star"];
@@ -875,7 +885,7 @@ function getCrateLuckBonus(){return crateLuckLevel*0.01+getCraftCrateBonus();}
 function formatDuration(secs){if(secs<60)return Math.ceil(secs)+'s';if(secs<3600)return Math.floor(secs/60)+'m '+Math.ceil(secs%60)+'s';return Math.floor(secs/3600)+'h '+Math.floor((secs%3600)/60)+'m';}
 function formatCraftBuff(b){if(b.type==='luck')return`+${b.value}\u00d7 luck`;if(b.type==='coinGain')return`+${Math.round(b.value*100)}% coins`;if(b.type==='variantLuck')return`+${b.value}\u00d7 var luck`;if(b.type==='secretLuck')return`+${b.value}\u00d7 sec luck`;if(b.type==='crateChance')return`+${Math.round(b.value*100)}% crate luck`;return b.type;}
 function getCraftIngredients(recipe){
-  const rankMatches=[],boosterMatches=[];let canCraft=true;
+  const rankMatches=[],boosterMatches=[],craftedMatches=[];let canCraft=true;
   for(const req of recipe.ranksNeeded){
     let rankIdx=-1,secretIdx=-1;
     const normalIdx=RANKS.findIndex(r=>r.name===req.rankName);
@@ -899,17 +909,37 @@ function getCraftIngredients(recipe){
     boosterMatches.push({req,matches,tierIdx});
     if(matches.length<req.count)canCraft=false;
   }
-  return{rankMatches,boosterMatches,canCraft};
+  for(const req of(recipe.craftedNeeded||[])){
+    const recipeIdx=CRAFT_RECIPES.findIndex(r=>r.name===req.recipeName);
+    const matches=[...craftedItems,...equippedCraftItems].filter(c=>c.recipeIdx===recipeIdx);
+    craftedMatches.push({req,matches,recipeIdx});
+    if(matches.length<req.count)canCraft=false;
+  }
+  return{rankMatches,boosterMatches,craftedMatches,canCraft};
 }
 function startCraft(recipeIdx){
   const recipe=CRAFT_RECIPES[recipeIdx];
-  const{rankMatches,boosterMatches,canCraft}=getCraftIngredients(recipe);
+  const{rankMatches,boosterMatches,craftedMatches,canCraft}=getCraftIngredients(recipe);
   if(!canCraft)return;
   for(const{req,matches}of rankMatches){const ids=matches.slice(0,req.count).map(m=>m.id);inventory=inventory.filter(item=>!ids.includes(item.id));}
   for(const{req,matches}of boosterMatches){const idxs=matches.slice(0,req.count).map(m=>boosterInventory.indexOf(m)).sort((a,b)=>b-a);idxs.forEach(i=>boosterInventory.splice(i,1));}
+  for(const{req,recipeIdx:rIdx}of craftedMatches){
+    let remaining=req.count;
+    // consume from unequipped crafted items first
+    const fromCrafted=craftedItems.filter(c=>c.recipeIdx===rIdx).slice(0,remaining);
+    const craftedIds=fromCrafted.map(c=>c.id);
+    craftedItems=craftedItems.filter(c=>!craftedIds.includes(c.id));
+    remaining-=fromCrafted.length;
+    // consume remainder from equipped items (auto-unequip)
+    if(remaining>0){
+      const fromEquipped=equippedCraftItems.filter(c=>c.recipeIdx===rIdx).slice(0,remaining);
+      const equippedIds=fromEquipped.map(c=>c.id);
+      equippedCraftItems=equippedCraftItems.filter(c=>!equippedIds.includes(c.id));
+    }
+  }
   const duration=Math.max(1,recipe.inSeconds/getCraftSpeedMult());
   craftQueue.push({id:newId(),recipeIdx,endTime:Date.now()+duration*1000});
-  renderInventory();renderBoosterInventory();renderCrafting();saveData();
+  renderInventory();renderBoosterInventory();renderCrafting();updateUI();saveData();
 }
 function collectCraft(craftId){
   const idx=craftQueue.findIndex(c=>c.id===craftId);if(idx<0)return;
@@ -948,12 +978,13 @@ function renderCrafting(){
   }
   const recipesEl=document.getElementById('craft-recipes-list');if(!recipesEl)return;
   recipesEl.innerHTML=CRAFT_RECIPES.map((r,idx)=>{
-    const{rankMatches,boosterMatches,canCraft}=getCraftIngredients(r);
+    const{rankMatches,boosterMatches,craftedMatches,canCraft}=getCraftIngredients(r);
     const dur=Math.max(1,r.inSeconds/getCraftSpeedMult());
     const rankHtml=rankMatches.map(({req,matches})=>{const ok=matches.length>=req.count;const nm=req.variantName?`${req.variantName} ${req.rankName}`:req.rankName;return`<span style="color:${ok?'#6bffb8':'#ff6666'}">${nm} \u00d7${req.count}</span><span style="color:var(--muted);font-size:.58rem"> (${Math.min(matches.length,req.count)}/${req.count})</span>`;}).join(', ');
     const bstHtml=boosterMatches.length?' &middot; '+boosterMatches.map(({req,matches})=>{const ok=matches.length>=req.count;return`<span style="color:${ok?'#6bffb8':'#ff6666'}">${req.tierName} booster \u00d7${req.count}</span><span style="color:var(--muted);font-size:.58rem"> (${Math.min(matches.length,req.count)}/${req.count})</span>`;}).join(', '):'';
+    const cftHtml=craftedMatches.length?(rankHtml||bstHtml?' &middot; ':'')+craftedMatches.map(({req,matches})=>{const ok=matches.length>=req.count;const cr=CRAFT_RECIPES.find(x=>x.name===req.recipeName);const col=cr?cr.color:'#aaaaaa';return`<span style="color:${ok?'#6bffb8':'#ff6666'}">&#x1F528; <span style="color:${col}">${req.recipeName}</span> \u00d7${req.count}</span><span style="color:var(--muted);font-size:.58rem"> (${Math.min(matches.length,req.count)}/${req.count})</span>`;}).join(', '):'';
     const buffsHtml=r.buffs.map(b=>`<span style="color:#6bffb8">${formatCraftBuff(b)}</span>`).join(', ');
-    return`<div class="craft-recipe"><div class="craft-recipe-name" style="color:${r.color}">${r.name}</div><div class="craft-buffs">${buffsHtml}</div><div class="craft-req">Needs: ${rankHtml}${bstHtml}</div><div style="font-size:.6rem;color:var(--muted);margin-top:2px">\u23f1 ${formatDuration(dur)}</div><button class="upgrade-btn" style="width:auto;margin-top:6px;padding:5px 14px" onclick="startCraft(${idx})" ${canCraft?'':'disabled'}>&#x1F528; Craft</button></div>`;
+    return`<div class="craft-recipe"><div class="craft-recipe-name" style="color:${r.color}">${r.name}</div><div class="craft-buffs">${buffsHtml}</div><div class="craft-req">Needs: ${rankHtml}${bstHtml}${cftHtml}</div><div style="font-size:.6rem;color:var(--muted);margin-top:2px">\u23f1 ${formatDuration(dur)}</div><button class="upgrade-btn" style="width:auto;margin-top:6px;padding:5px 14px" onclick="startCraft(${idx})" ${canCraft?'':'disabled'}>&#x1F528; Craft</button></div>`;
   }).join('');
 }
 function startCraftTimer(){clearInterval(craftTimer);craftTimer=setInterval(()=>{if(craftQueue.some(c=>c.endTime<=Date.now()+1500))renderCrafting();else if(craftQueue.length)renderCrafting();},1000);}
