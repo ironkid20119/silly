@@ -187,7 +187,16 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .err-line.err-visible{opacity:1;}
 @keyframes paragonCycle{0%,14.28%{color:#ff5555;text-shadow:0 0 8px #ff5555aa}14.29%,28.57%{color:#ffaa55;text-shadow:0 0 8px #ffaa55aa}28.58%,42.85%{color:#ffff55;text-shadow:0 0 8px #ffff55aa}42.86%,57.14%{color:#55ff55;text-shadow:0 0 8px #55ff55aa}57.15%,71.42%{color:#5577ff;text-shadow:0 0 8px #5577ffaa}71.43%,85.71%{color:#9944ff;text-shadow:0 0 8px #9944ffaa}85.72%,100%{color:#ee55ff;text-shadow:0 0 8px #ee55ffaa}}
 @keyframes aetherialShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-@media(max-width:680px){
+@keyframes shakeSmall{0%,100%{transform:translate(0,0)}20%{transform:translate(-2px,1px)}40%{transform:translate(2px,-1px)}60%{transform:translate(-1px,2px)}80%{transform:translate(1px,-2px)}}
+@keyframes shakeMedium{0%,100%{transform:translate(0,0)}15%{transform:translate(-5px,3px)}30%{transform:translate(5px,-3px)}45%{transform:translate(-4px,5px)}60%{transform:translate(4px,-4px)}75%{transform:translate(-3px,2px)}90%{transform:translate(3px,-2px)}}
+@keyframes shakeGiant{0%,100%{transform:translate(0,0)}10%{transform:translate(-10px,6px) rotate(-0.5deg)}20%{transform:translate(10px,-6px) rotate(0.5deg)}30%{transform:translate(-8px,10px) rotate(-0.3deg)}40%{transform:translate(8px,-8px) rotate(0.3deg)}50%{transform:translate(-12px,4px) rotate(-0.6deg)}60%{transform:translate(12px,-4px) rotate(0.6deg)}70%{transform:translate(-6px,8px) rotate(-0.2deg)}80%{transform:translate(6px,-10px) rotate(0.2deg)}90%{transform:translate(-4px,6px)}}
+@keyframes shakeCrazy{0%{transform:translate(0,0) rotate(0deg) scale(1)}5%{transform:translate(-18px,12px) rotate(-2deg) scale(1.02)}10%{transform:translate(20px,-15px) rotate(2.5deg) scale(0.98)}15%{transform:translate(-22px,18px) rotate(-3deg) scale(1.03)}20%{transform:translate(25px,-20px) rotate(3deg) scale(0.97)}25%{transform:translate(-15px,22px) rotate(-1.5deg) scale(1.04)}30%{transform:translate(18px,-25px) rotate(2deg) scale(0.96)}35%{transform:translate(-28px,10px) rotate(-3.5deg) scale(1.05)}40%{transform:translate(30px,-12px) rotate(4deg) scale(0.95)}45%{transform:translate(-20px,28px) rotate(-2.5deg) scale(1.03)}50%{transform:translate(22px,-30px) rotate(3deg) scale(0.97)}55%{transform:translate(-32px,15px) rotate(-4deg) scale(1.06)}60%{transform:translate(28px,-18px) rotate(2.5deg) scale(0.94)}65%{transform:translate(-16px,32px) rotate(-3deg) scale(1.04)}70%{transform:translate(20px,-22px) rotate(1.5deg) scale(0.96)}75%{transform:translate(-24px,16px) rotate(-2deg) scale(1.02)}80%{transform:translate(18px,-20px) rotate(2deg) scale(0.98)}85%{transform:translate(-12px,18px) rotate(-1deg) scale(1.01)}90%{transform:translate(10px,-14px) rotate(1deg) scale(0.99)}95%{transform:translate(-6px,8px) rotate(-0.5deg)}100%{transform:translate(0,0) rotate(0deg) scale(1)}}
+.consumable-item{background:var(--surface2);border:1.5px solid var(--border);border-radius:11px;padding:8px 10px;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:.78rem;transition:border-color .15s;}
+.consumable-item.active-consumable{border-color:#6bffb8;background:rgba(107,255,184,.08);animation:evilPulse 1.5s ease-in-out infinite;}
+.consumable-use-btn{background:rgba(107,221,255,.15);border:1.5px solid var(--accent2);border-radius:7px;color:var(--accent2);font-family:'Fredoka One',cursive;font-size:.72rem;padding:3px 10px;cursor:pointer;white-space:nowrap;transition:background .15s;}
+.consumable-use-btn:hover{background:rgba(107,221,255,.3);}
+.consumable-use-btn:disabled{opacity:.4;cursor:not-allowed;}
+.consumable-count{font-size:.65rem;color:var(--muted);}
 :root{--item-w:52px;--reel-h:52px;}
 .app-wrapper{flex-direction:column;}
 .nav-sidebar{order:999;flex:0 0 50px;flex-direction:row;border-right:none;border-top:1.5px solid var(--border);padding:0;gap:0;justify-content:stretch;width:100%;overflow-x:auto;scrollbar-width:none;}
@@ -266,6 +275,7 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
     <button class="nav-btn" id="nav-indexes" onclick="switchTab('indexes')"><span class="nav-icon">&#x1F4D6;</span>Index</button>
     <button class="nav-btn" id="nav-boosters" onclick="switchTab('boosters')"><span class="nav-icon">&#x26A1;</span>Boost<span class="nav-badge" id="booster-badge" style="display:none">0</span></button>
     <button class="nav-btn" id="nav-crafting" onclick="switchTab('crafting')"><span class="nav-icon">&#x1F528;</span>Craft</button>
+    <button class="nav-btn" id="nav-consumables" onclick="switchTab('consumables')"><span class="nav-icon">&#x1F9EA;</span>Use<span class="nav-badge" id="consumable-badge" style="display:none">0</span></button>
     <button class="nav-btn" id="nav-extras" onclick="switchTab('extras')"><span class="nav-icon">&#x2699;&#xFE0F;</span>Extras</button>
   </nav>
   <div class="main-area">
@@ -334,6 +344,14 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
     <div id="craft-crafted-list"></div>
     <div style="font-size:.75rem;color:var(--accent3);margin-bottom:6px;margin-top:4px">&#x1F4CB; Recipes</div>
     <div id="craft-recipes-list"></div>
+  </div></div>
+  <div class="tab-panel" id="tab-consumables"><div class="panel"><h2>&#x1F9EA; Consumables</h2>
+    <div style="font-size:.72rem;color:var(--muted);text-align:center;margin-bottom:8px">Collect consumables from crates. Click Use to activate.</div>
+    <div style="margin-bottom:8px;padding:8px 10px;background:var(--surface2);border-radius:9px;font-size:.65rem;color:var(--muted)">
+      <b style="color:var(--accent3)">Drop chances (per crate click):</b><br>
+      🍀 clover 1/77 &nbsp;·&nbsp; 🧠 brain food 1/100 &nbsp;·&nbsp; 🖨️ replication machine 1/35 &nbsp;·&nbsp; ⚡ generator 1/200 &nbsp;·&nbsp; 🔮 ultra orb 1/5,000
+    </div>
+    <div id="consumable-list"><div class="inv-empty">No consumables yet! Get them from crates.</div></div>
   </div></div>
   <div class="tab-panel" id="tab-extras"><div class="panel"><h2>&#x1F4E4; Export / Import</h2>
     <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:8px"><button class="upgrade-btn" style="width:auto;flex:1;min-width:90px;text-align:center;padding:9px 12px;" onclick="exportData()"><div class="upgrade-name" style="color:#6bddff">&#x1F4C1; JSON</div><div class="upgrade-desc">Export as .json file</div></button><button class="upgrade-btn" style="width:auto;flex:1;min-width:90px;text-align:center;padding:9px 12px;" onclick="document.getElementById('import-file-input').click()"><div class="upgrade-name" style="color:#6bffb8">&#x1F4C2; Import JSON</div><div class="upgrade-desc">Load a .json save</div></button><button class="upgrade-btn" style="width:auto;flex:1;min-width:90px;text-align:center;padding:9px 12px;" onclick="exportTxt()"><div class="upgrade-name" style="color:#ffe06b">&#x1F4CB; Copy Code</div><div class="upgrade-desc">Export as text code</div></button></div>
@@ -421,7 +439,7 @@ const SECRET_RANKS=[
   {name:"neverending...",rng:1e9,displayrng:1,display:false},{name:"use this to autodecline clover lmao",rng:1e999,displayrng:1,display:false},
 ];
 const SECRET_RANK_COLOR="#ff9999";
-const SS_ABYSSAL=0,SS_EEON=1,SS_TOTALLYMAX=2,SS_VERYEVIL=3,SS_BLACKHOLE=4,SS_FUNNI=5,SS_SINGULARITY=6,SS_SUPERCHARGED=7,SS_ERR=8,SS_NAN=9,SS_CENSORED=10,SS_EWWHAT=11;
+const SS_ABYSSAL=0,SS_EEON=1,SS_TOTALLYMAX=2,SS_VERYEVIL=3,SS_BLACKHOLE=4,SS_FUNNI=5,SS_SINGULARITY=6,SS_SUPERCHARGED=7,SS_ERR=8,SS_NAN=9,SS_CENSORED=10,SS_EWWHAT=11,SS_YJHGF=12,SS_OBLIVION=13;
 const BH_BASE_RNG=3.9e15;
 const SUPER_SECRETS=[
   {name:"abyssal",color:"#5500cc",rng:10000000,displayrng:-1,hideUntilRolled:false,desc:"Only secret luck applies."},
@@ -435,7 +453,9 @@ const SUPER_SECRETS=[
   {name:'rank_\u2588\u2588.err("\u2588\u2588\u2588" [at line "\u2588\u2588\u2588"])',color:"#000000",rng:null,displayrng:"\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588",hideUntilRolled:false,desc:"Script error: \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588."},
   {name:"NaN",color:"#ffaa88",rng:null,displayrng:"???",hideUntilRolled:false,desc:"The number that isn't a number. Appears when numbers break."},
   {name:"CENSORED",color:"#cc0000",rng:750000,displayrng:"[CENSORED]",hideUntilRolled:true,desc:"Redacted. 1/750,000 true RNG."},
-  {name:"EW?? what is this !!!",color:"#6b8c00",rng:222222222,displayrng:"ew...",hideUntilRolled:false,desc:"Replaces WEIRD. 1/222,222,222. Disgusting."}
+  {name:"EW?? what is this !!!",color:"#6b8c00",rng:222222222,displayrng:"ew...",hideUntilRolled:false,desc:"Replaces WEIRD. 1/222,222,222. Disgusting."},
+  {name:"hjhfgfhjdfhgfjieugfhueyfgheudvehjdYUHKJUHWYGDICUIGYEHuocihkesyREODUSYIUY@UWE)*D&*CYIUOE(F)*y",color:"#ff88ff",rng:null,displayrng:"ERROR",hideUntilRolled:true,desc:"1/0. Unless any stat has 69420, then 1/69,000 true RNG."},
+  {name:"oblivion",color:"#330022",rng:null,displayrng:"...",hideUntilRolled:true,desc:"1/6,666 from ultra orb. display flickers."}
 ];
 const SS_INDEX=[
   {name:"abyssal",                rng:"1/10,000,000",       hidden:false, color:"#5500cc"},
@@ -449,7 +469,9 @@ const SS_INDEX=[
   {name:SUPER_SECRETS[SS_ERR].name, rng:null,               hidden:false, color:"#000000"},
   {name:"NaN",                    rng:"???",                 hidden:false, color:"#ffaa88"},
   {name:"CENSORED",               rng:"1/750,000",           hidden:true,  color:"#cc0000"},
-  {name:"EW?? what is this !!!",    rng:"1/222,222,222",       hidden:false,  color:"linear-gradient(135deg,#6b8c00,#8b6914,#556b2f,#a0522d,#808000)"}
+  {name:"EW?? what is this !!!",    rng:"1/222,222,222",       hidden:false,  color:"linear-gradient(135deg,#6b8c00,#8b6914,#556b2f,#a0522d,#808000)"},
+  {name:"hjhfgfhjdfhgfjieugfhueyfgheudvehjdYUHKJUHWYGDICUIGYEHuocihkesyREODUSYIUY@UWE)*D&*CYIUOE(F)*y", rng:"1/0 (1/69,000 if 69420 in stats)", hidden:true, color:"linear-gradient(90deg,#ff88ff,#ffffff,#ff88ff)"},
+  {name:"oblivion",               rng:"1/6,666 from ultra orb",hidden:true,  color:"linear-gradient(90deg,#330022,#880044,#330022)"}
 ];
 const PERFECT_RNG_INDEX=[
   {name:"Very Evil Idiot", perfectrng:77777776, color:"#ff0066",                                                          ssIdx:SS_VERYEVIL},
@@ -480,7 +502,7 @@ const ENCHANT_CATS={
   sparkles:[{name:"sparkles 1",chance:250,color:"#ffdd00",effect:{enchantLuckBonus:0.50}},{name:"sparkles 2",chance:7500,color:"#ffaa00",effect:{enchantLuckBonus:1.25}},{name:"unidentified",chance:62500000,color:"#ff6600",effect:{enchantLuckBonus:7.50}},
 {name: "ultra orb man !!!", chance: 1e303, color: "#fff", effect: {enchantLuckBonus:1.78e308}}],
   insight:[{name:"insight 1",chance:40,color:"#ffaa88",effect:{secretLuckBonus:0.5}},{name:"insight 2",chance:300,color:"#ffaa44",effect:{secretLuckBonus:2}},{name:"magic ball",chance:2000000,color:"#ffaa00",effect:{secretLuckBonus:10}}],
-  combination:[{name:"combination 1",chance:100000,color:"#88ffff",effect:{combination:1}},{name:"combination 2",chance:10000000,color:"#44ddff",effect:{combination:2}},{name:"genesis",chance:1e11,color:"#ffffff",effect:{combination:3}}],
+  combination:[{name:"combination 1",chance:40000,color:"#88ffff",effect:{combination:1}},{name:"combination 2",chance:750000,color:"#44ddff",effect:{combination:2}},{name:"genesis",chance:6250000,color:"#ffffff",effect:{combination:3}}],
   insane:[{name:"insane 1",chance:3841.39,color:"#ff44bb",effect:{luckBonus:0,secretLuckBonus:5,variantLuck:1,coinPenalty:2.5,speedPenalty:0}},{name:"insane 2",chance:28372.47,color:"#ff0088",effect:{luckBonus:7.5,secretLuckBonus:0,variantLuck:5,coinPenalty:5,speedPenalty:0}},{name:"lunatic",chance:2493749293.19,color:"#cc0066",effect:{luckBonus:275,secretLuckBonus:20,variantLuck:20,coinPenalty:100,speedPenalty:25}}],
   nuts:[
     {name:"walnut",chance:500000,color:"#cc8844",effect:{luckBonus:0.1,variantLuck:0.1,secretLuckBonus:0.1,nut:1}},
@@ -544,20 +566,25 @@ function getEnchantMultiRollBonus(){return getActiveEnchantEffects().reduce((s,e
 function getEnchantSpeedInfo(){const effs=getActiveEnchantEffects();return{flat:effs.reduce((s,e)=>s+(e.effect.speed||0),0),hasFlash:effs.some(e=>e.effect.flash)};}
 function getEnchantLuckBonusFromOrbs(){return getActiveEnchantEffects().reduce((s,e)=>s+(e.effect.enchantLuckBonus||0),0);}
 function getMultiRollBonus(){return getEnchantMultiRollBonus()+duperUpgradeLevel;}
-function getEffectiveLuck(){return (luck+getCraftLuckBonus())*(optimizerEnabled?1.75:1)*(coinflipEnabled?coinflipMult:1);}
+function getConsumableLuckBonus(){return activeConsumables.filter(c=>c.boost==="luck").reduce((s,c)=>s+c.value,0);}
+function getConsumableSecretLuckBonus(){return activeConsumables.filter(c=>c.boost==="secretLuck").reduce((s,c)=>s+c.value,0);}
+function getConsumableReelBonus(){return activeConsumables.filter(c=>c.boost==="reels"&&(c.expiresAt===null||Date.now()<c.expiresAt)).reduce((s,c)=>s+c.value,0);}
+function getConsumableMultiRollBonus(){return activeConsumables.filter(c=>c.boost==="multiRoll"&&(c.expiresAt===null||Date.now()<c.expiresAt)).reduce((s,c)=>s+c.value,0);}
+function getEffectiveLuck(){return (luck+getCraftLuckBonus()+getConsumableLuckBonus())*(optimizerEnabled?1.75:1)*(coinflipEnabled?coinflipMult:1);}
+function isUltraOrbActive(){return activeConsumables.some(c=>c.boost==="luck"&&c.value===10000000);}
 function getSpinMs(){
   const pen=Math.round(getEnchantSpeedPenalty()*1000);
-  if(ultraFastRollEnabled)return Math.max(16,Math.floor(1000/detectedFPS))+pen;
+  if(ultraFastRollEnabled)return Math.max(Math.floor(3000/detectedFPS),50)+pen;
   if(quickRollEnabled)return 200+pen;
   const{flat,hasFlash}=getEnchantSpeedInfo();
   let ms=Math.max(400,1750-rollSpeedLevel*100-Math.round(flat*1000));
   if(hasFlash)ms=Math.max(200,Math.floor(ms*0.5));
   return ms+pen;
 }
-function getStaggerMs(){return ultraFastRollEnabled?Math.max(16,Math.floor(1000/detectedFPS)):22.5;}
-function getAutoRollDelay(){return ultraFastRollEnabled?Math.max(16,Math.floor(1000/detectedFPS)):200;}
+function getStaggerMs(){return ultraFastRollEnabled?Math.max(Math.floor(3000/detectedFPS),50):22.5;}
+function getAutoRollDelay(){return ultraFastRollEnabled?Math.max(Math.floor(3000/detectedFPS),50):200;}
 function getVariantLuckBonus(){return variantLuckLevel*0.125+getEnchantVariantAdd()+getCraftVariantLuckBonus();}
-function getSecretLuckBonus(){return secretLuckLevel*0.05+getEnchantSecretLuckBonus()+getCraftSecretLuckBonus();}
+function getSecretLuckBonus(){return secretLuckLevel*0.05+getEnchantSecretLuckBonus()+getCraftSecretLuckBonus()+getConsumableSecretLuckBonus();}
 function getCoinGainMult(){const b=1+coinGainLevel*0.1+getCraftCoinGainBonus();const ao=optimizerEnabled?Math.max(0.01,b-3.25):b;return Math.max(0.001,ao-getEnchantCoinPenalty());}
 function getEnchantLuckMult(){return(1+enchantLuckLevel*0.05)*(1+getEnchantLuckBonusFromOrbs());}
 function hasSingularity(){return inventory.some(i=>i.superSecretIdx===SS_SINGULARITY)||pendingResults.some(i=>i.superSecretIdx===SS_SINGULARITY);}
@@ -581,6 +608,8 @@ function getDisplayColor(r){
   if(r.superSecretIdx===SS_NAN)return"#ffaa88";
   if(r.superSecretIdx===SS_CENSORED)return"#cc0000";
   if(r.superSecretIdx===SS_EWWHAT)return"#6b8c00";
+  if(r.superSecretIdx===SS_YJHGF)return"#ff88ff";
+  if(r.superSecretIdx===SS_OBLIVION)return"#880044";
   if(isEon(r))return EON_SOLID;
   if(isVoidtouched(r))return VOIDTOUCHED_SOLID;
   if(isOmniversal(r))return OMNIVERSAL_SOLID;
@@ -626,6 +655,8 @@ function superSecretNameHTML(r,n){
   if(r.superSecretIdx===SS_SINGULARITY)return`<span style="background:linear-gradient(90deg,#aaffff,#ffffff,#44ffff,#aaffff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 6px #aaffff88)">${n}</span>`;
   if(r.superSecretIdx===SS_SUPERCHARGED)return`<span style="background:linear-gradient(90deg,#ffff44,#ffffaa,#ffff00,#ffff44);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 8px #ffff44cc)">${n}</span>`;
   if(r.superSecretIdx===SS_NAN)return`<span style="background:radial-gradient(circle at 30% 40%, #ffaa88, #ff8844, #ffaa44);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:funniPulse 0.8s infinite">${n}</span>`;
+  if(r.superSecretIdx===SS_YJHGF)return`<span style="background:linear-gradient(90deg,#ff88ff,#ffffff,#cc66ff,#ff88ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 6px #ff88ffaa)">${n}</span>`;
+  if(r.superSecretIdx===SS_OBLIVION)return`<span style="color:#880044;text-shadow:0 0 12px #ff0066aa;animation:evilTextPulse 0.6s infinite">${n}</span>`;
   return n;
 }
 let colorScheme="default";
@@ -663,7 +694,7 @@ function setNumFmt(fmt){numberFormat=fmt;['normal','eng','sci'].forEach(f=>docum
 function computeCoins(val){if(!isFinite(val)||val<=0)return 0;return Math.floor(Math.pow(val,0.5)*(1+Math.log10(val))*getCoinGainMult());}
 function getRank(v){for(let i=RANKS.length-1;i>=0;i--)if(v>=RANKS[i].min)return i;return 0;}
 function saveData(toastMsg){
-  const d={coins,luck,bulkLevel,luckLevel,luckCost,bulkCost,craftSpeedLevel,craftSpeedCost,crateLuckLevel,crateLuckCost,craftQueue,craftedItems,equippedCraftItems,rollSpeedLevel,rollSpeedCost,variantLuckLevel,variantLuckCost,secretLuckLevel,secretLuckCost,coinGainLevel,coinGainCost,enchantLuckLevel,enchantLuckCost,quickRollUnlocked,quickRollEnabled,quickRollCost,ultraFastRollUnlocked,ultraFastRollEnabled,ultraFastRollCost,optimizerUnlocked,optimizerEnabled,optimizerCost,duperUpgradeLevel,duperUpgradeCost,coinflipUnlocked,coinflipEnabled,coinflipMult,coinflipCost,totalRolls,bestRankIdx,inventory,boosterInventory,equippedOrbs,enchantInventory,autoAcceptThreshold,autoDeleteMinRank,autoDeleteSecret,nextItemId,numberFormat,colorScheme,sillyCursorEnabled,discoveredSecrets:[...discoveredSecrets],discoveredSuperSecrets:[...discoveredSuperSecrets],discoveredPerfectRng:[...discoveredPerfectRng],blackHoleRng,autoDeclineTierMap,orbAutoDeleteThreshold,rankAutoOverride,secretAutoOverride,superSecretAutoOverride,perfectRngAutoOverride,enchantAutoOverride};
+  const d={coins,luck,bulkLevel,luckLevel,luckCost,bulkCost,craftSpeedLevel,craftSpeedCost,crateLuckLevel,crateLuckCost,craftQueue,craftedItems,equippedCraftItems,rollSpeedLevel,rollSpeedCost,variantLuckLevel,variantLuckCost,secretLuckLevel,secretLuckCost,coinGainLevel,coinGainCost,enchantLuckLevel,enchantLuckCost,quickRollUnlocked,quickRollEnabled,quickRollCost,ultraFastRollUnlocked,ultraFastRollEnabled,ultraFastRollCost,optimizerUnlocked,optimizerEnabled,optimizerCost,duperUpgradeLevel,duperUpgradeCost,coinflipUnlocked,coinflipEnabled,coinflipMult,coinflipCost,totalRolls,bestRankIdx,inventory,boosterInventory,equippedOrbs,enchantInventory,autoAcceptThreshold,autoDeleteMinRank,autoDeleteSecret,nextItemId,numberFormat,colorScheme,sillyCursorEnabled,discoveredSecrets:[...discoveredSecrets],discoveredSuperSecrets:[...discoveredSuperSecrets],discoveredPerfectRng:[...discoveredPerfectRng],blackHoleRng,autoDeclineTierMap,orbAutoDeleteThreshold,rankAutoOverride,secretAutoOverride,superSecretAutoOverride,perfectRngAutoOverride,enchantAutoOverride,consumableInventory,activeConsumables};
   localStorage.setItem("sillys_rng_save",JSON.stringify(d));
   const ind=document.getElementById("save-indicator");
   ind.textContent=toastMsg||"\ud83d\udcbe Saved";
@@ -686,6 +717,8 @@ function loadData(){
     boosterInventory=boosterInventory.map(b=>({val:0,isMulti:false,isPower:false,powerVal:null,isEvil:false,variantIdx:-1,shape:"circle",active:false,...b}));
     inventory=inventory.map(item=>({superSecretIdx:-1,perfectRngIdx:-1,totallyMaxDisplayVal:null,...item,rankIdx:getRank(item.val)}));
     rankAutoOverride=d.rankAutoOverride||{};secretAutoOverride=d.secretAutoOverride||{};superSecretAutoOverride=d.superSecretAutoOverride||{};perfectRngAutoOverride=d.perfectRngAutoOverride||{};enchantAutoOverride=d.enchantAutoOverride||{};
+    consumableInventory=d.consumableInventory||[];
+    activeConsumables=(d.activeConsumables||[]).filter(c=>c.expiresAt===null||(c.expiresAt&&Date.now()<c.expiresAt));
     discoveredPerfectRng=new Set(d.discoveredPerfectRng??[]);
     inventory=inventory.map(item=>{
       if(item.perfectRngIdx===undefined){
@@ -706,7 +739,7 @@ function wipeSave(){localStorage.removeItem("sillys_rng_save");location.reload()
 function fullReloadUI(){
   buildAutoDeleteSelects();const ai=document.getElementById("auto-accept-input");if(autoAcceptThreshold!==null)ai.value=autoAcceptThreshold;else ai.value="";
   applyColorScheme(colorScheme);setNumFmt(numberFormat);applySillyCursor();
-  updateUI();renderInventory();renderEnchantInventory();renderBoosterInventory();renderEquippedOrbs();updateNavBadges();updateBoxerTimer();startCrateTimer();
+  updateUI();renderInventory();renderEnchantInventory();renderBoosterInventory();renderEquippedOrbs();updateNavBadges();updateBoxerTimer();startCrateTimer();renderConsumableInventory();
   document.getElementById("quickroll-btn").classList.toggle("qr-active",quickRollEnabled);
   document.getElementById("ultra-fast-roll-btn").classList.toggle("ufr-active",ultraFastRollEnabled);
   document.getElementById("optimizer-btn").classList.toggle("opt-active",optimizerEnabled);
@@ -736,6 +769,8 @@ function getDisplayValue(r,forReel=false){
   if(r.superSecretIdx===SS_NAN)return "NaN";
   if(r.superSecretIdx===SS_CENSORED)return "[CENSORED]";
   if(r.superSecretIdx===SS_EWWHAT)return "ew...";
+  if(r.superSecretIdx===SS_YJHGF)return"ERROR";
+  if(r.superSecretIdx===SS_OBLIVION){const vals=["0","nil","undefined","...","-503"];return vals[Math.floor(Date.now()/120)%vals.length];}
   if(r.secretIdx>=0&&SECRET_RANKS[r.secretIdx].displayrng!==false)return String(SECRET_RANKS[r.secretIdx].displayrng);
   return formatValue(r.val);
 }
@@ -809,7 +844,7 @@ function computeRoll(luckOverride,forcedVariantIdx,boosterAttrs){
   }
   if(perfectRngIdx<0&&superSecretIdx<0){
     if(Math.random()<sBonus/10000000){superSecretIdx=SS_ABYSSAL;secretIdx=-1;}
-    else if(Math.random()<1/69420){superSecretIdx=SS_TOTALLYMAX;secretIdx=-1;totallyMaxDisplayVal=Math.round(1e18*Math.pow(Math.random(),-1.5)*100)/100;val=Math.max(1e18,Math.min(val,1e29));}
+    else if(Math.random()<1/69420){superSecretIdx=SS_TOTALLYMAX;secretIdx=-1;totallyMaxDisplayVal=Math.round(1e18*Math.pow(Math.random(),-1.5)*100)/100;/* val stays as real rolled val - display is fake, coins are not */}
     else if(hasSingularity()&&Math.random()<1/blackHoleRng){superSecretIdx=SS_BLACKHOLE;secretIdx=-1;blackHoleRolledRng=blackHoleRng;blackHoleRng=BH_BASE_RNG;}
     else if(Math.random() < (1/39000000) * (1 + getSecretLuckBonus())) {
     superSecretIdx = SS_SINGULARITY;
@@ -818,6 +853,14 @@ function computeRoll(luckOverride,forcedVariantIdx,boosterAttrs){
     else if(val>=1e250&&Math.random()<1/6.66){superSecretIdx=SS_EEON;secretIdx=-1;val=Math.round(val*666666*100)/100;}
     else if(secretIdx>=0&&SECRET_RANKS[secretIdx]&&SECRET_RANKS[secretIdx].name==="WEIRD"&&Math.random()<1/222222222*sBonus){superSecretIdx=SS_EWWHAT;secretIdx=-1;}
     else if(Math.random()<1/750000){superSecretIdx=SS_CENSORED;secretIdx=-1;}
+    else {
+      // YJHGF: 1/0 normally, but 1/69000 if any stat has 69420 in it
+      const statsToCheck=[coins,luck,totalRolls,luckLevel,secretLuckLevel,variantLuckLevel];
+      const has69420=statsToCheck.some(s=>String(Math.floor(s)).includes("69420")||Math.floor(s)===69420);
+      if(has69420&&Math.random()<1/69000){superSecretIdx=SS_YJHGF;secretIdx=-1;}
+      // Oblivion: 1/6666 from ultra orb
+      else if(isUltraOrbActive()&&Math.random()<1/6666){superSecretIdx=SS_OBLIVION;secretIdx=-1;}
+    }
   }
   // Catch NaN/Infinity and convert to NaN secret
   if(!isFinite(val)||isNaN(val)){
@@ -865,15 +908,25 @@ const CRAFT_RECIPES=[
 ];
 const BOOSTER_SHAPES=["circle","square","triangle","hexagon","star"];
 const BOOSTER_TIERS=[
-  {name:"normal",   min:5,     max:50,       chance:1,     size:1},
-  {name:"bigger",   min:50,    max:100,      chance:30,    size:2},
-  {name:"giant",    min:100,   max:250,      chance:75,    size:3},
-  {name:"massive",  min:250,   max:500,      chance:175,   size:4},
-  {name:"gigantic", min:500,   max:1000,     chance:333,   size:5},
-  {name:"oversized",min:1000,  max:10000,    chance:1000,  size:6},
-  {name:"titan",    min:10000, max:Infinity, chance:10000, size:7},
+  {name:"normal",   min:5,     max:50,       chance:1,      size:1},
+  {name:"bigger",   min:50,    max:100,      chance:30,     size:2},
+  {name:"giant",    min:100,   max:250,      chance:75,     size:3},
+  {name:"massive",  min:250,   max:500,      chance:175,    size:4},
+  {name:"gigantic", min:500,   max:1000,     chance:333,    size:5},
+  {name:"oversized",min:1000,  max:10000,    chance:1000,   size:6},
+  {name:"titan",    min:10000, max:Infinity, chance:10000,  size:7},
+  {name:"omega",    min:1000000,max:Infinity,chance:333333, size:8},
 ];
-const BOOSTER_TIER_COLORS=["#aaaaff","#88ccff","#66ffbb","#ffdd55","#ff9944","#ff55cc","#ff4455"];
+const BOOSTER_TIER_COLORS=["#aaaaff","#88ccff","#66ffbb","#ffdd55","#ff9944","#ff55cc","#ff4455","#ff00ff"];
+const CONSUMABLES=[
+  {name:"clover",      emoji:"🍀", boost:"luck",       value:77.7,  time:null, lastsnumrolls:77,  chancefromCrate:77,   desc:"+77.7× luck for 77 rolls"},
+  {name:"brain food",  emoji:"🧠", boost:"secretLuck", value:50,    time:null, lastsnumrolls:5,   chancefromCrate:100,  desc:"+50× secret luck for 5 rolls"},
+  {name:"replication machine", emoji:"🖨️", boost:"reels",   value:2, time:300000, lastsnumrolls:null, chancefromCrate:35, desc:"+2 reels for 5 minutes"},
+  {name:"generator",   emoji:"⚡", boost:"multiRoll",  value:3,     time:180000, lastsnumrolls:null, chancefromCrate:200,  desc:"+3 multi rolls for 3 minutes"},
+  {name:"ultra orb",   emoji:"🔮", boost:"luck",       value:10000000,time:null,lastsnumrolls:1,  chancefromCrate:5000, desc:"+10 million luck for one roll"},
+];
+let consumableInventory=[];
+let activeConsumables=[];// {type, expiresAt, rollsLeft}
 function getCraftBuffSum(type){return equippedCraftItems.reduce((s,c)=>s+CRAFT_RECIPES[c.recipeIdx].buffs.filter(b=>b.type===type).reduce((a,b)=>a+b.value,0),0);}
 function getCraftLuckBonus(){return getCraftBuffSum('luck');}
 function getCraftCoinGainBonus(){return getCraftBuffSum('coinGain');}
@@ -990,7 +1043,7 @@ function renderCrafting(){
 function startCraftTimer(){clearInterval(craftTimer);craftTimer=setInterval(()=>{if(craftQueue.some(c=>c.endTime<=Date.now()+1500))renderCrafting();else if(craftQueue.length)renderCrafting();},1000);}
 function rollBoosterTier(){
   const boost=1+getCrateLuckBonus();
-  const checks=[6,5,4,3,2,1];
+  const checks=[7,6,5,4,3,2,1];
   for(const i of checks){if(Math.random()<Math.min(1,boost/BOOSTER_TIERS[i].chance))return i;}
   return 0;
 }
@@ -1008,6 +1061,35 @@ function computeBooster(tierIdx){
   if(isPower)powerVal=parseFloat(Math.min(2,1+val/100).toFixed(2));
   let variantIdx=-1;if(!isEvil){const vb=1+getVariantLuckBonus();for(let i=VARIANTS.length-1;i>=0;i--){if(Math.random()<vb/(VARIANTS[i].chance*2.5)){variantIdx=i;break;}}}
   return{val,isMulti,isPower,powerVal,isEvil,variantIdx,shape,active:false,tierIdx:ti,tierName:BOOSTER_TIERS[ti].name,isRounded:Math.random()<1/15,isRandom:Math.random()<1/50,isGamma:Math.random()<1/250};
+}
+function giveConsumable(name){consumableInventory.push({name,id:newId()});renderConsumableInventory();updateNavBadges();saveData();}
+function useConsumable(id){
+  const idx=consumableInventory.findIndex(c=>c.id===id);if(idx<0)return;
+  const ci=consumableInventory[idx];const def=CONSUMABLES.find(c=>c.name===ci.name);if(!def)return;
+  consumableInventory.splice(idx,1);
+  activeConsumables.push({
+    name:def.name,boost:def.boost,value:def.value,
+    rollsLeft:def.lastsnumrolls??null,
+    expiresAt:def.time?Date.now()+def.time:null
+  });
+  renderConsumableInventory();saveData();
+}
+function renderConsumableInventory(){
+  const list=document.getElementById("consumable-list");if(!list)return;
+  const badge=document.getElementById("consumable-badge");if(badge){badge.textContent=consumableInventory.length;badge.style.display=consumableInventory.length>0?"":"none";}
+  // Active
+  const actHtml=activeConsumables.length?activeConsumables.map(c=>{
+    const def=CONSUMABLES.find(d=>d.name===c.name)||{emoji:"?",desc:c.name};
+    let timeStr="";
+    if(c.rollsLeft!==null&&c.rollsLeft!==undefined)timeStr=`${c.rollsLeft} rolls left`;
+    else if(c.expiresAt)timeStr=`${Math.max(0,Math.ceil((c.expiresAt-Date.now())/1000))}s left`;
+    return`<div class="consumable-item active-consumable"><span>${def.emoji} <b style="color:var(--accent2)">${c.name}</b> <span style="color:var(--muted);font-size:.65rem">${def.desc}</span></span><span style="color:#6bffb8;font-size:.7rem">${timeStr}</span></div>`;
+  }).join(""):"";
+  if(!consumableInventory.length){list.innerHTML=actHtml+'<div class="inv-empty">No consumables yet! Get them from crates.</div>';return;}
+  list.innerHTML=actHtml+consumableInventory.map(ci=>{
+    const def=CONSUMABLES.find(d=>d.name===ci.name)||{emoji:"❓",desc:"??",chancefromCrate:"?"};
+    return`<div class="consumable-item"><span>${def.emoji} <b>${ci.name}</b> <span class="consumable-count">${def.desc}</span></span><button class="consumable-use-btn" onclick="useConsumable(${ci.id})">▶ Use</button></div>`;
+  }).join("");
 }
 function deleteBooster(idx){boosterInventory.splice(idx,1);renderBoosterInventory();saveData();}
 function renderBoosterInventory(){
@@ -1070,7 +1152,7 @@ function toggleMergeMode(){mergeMode=!mergeMode;mergeSelected=[];renderMergeUI()
 function toggleMergeSelect(orbId){if(mergeSelected.includes(orbId))mergeSelected=mergeSelected.filter(x=>x!==orbId);else if(mergeSelected.length<2)mergeSelected.push(orbId);renderMergeUI();renderEnchantInventory();}
 function renderMergeUI(){const btn=document.getElementById("merge-toggle-btn"),panel=document.getElementById("merge-panel"),costEl=document.getElementById("merge-cost-display");if(btn)btn.textContent=mergeMode?"\u2715 Cancel Merge":"\u2697\ufe0f Merge Orbs (100M coins)";if(panel)panel.style.display=mergeMode?"flex":"none";if(costEl)costEl.textContent=`Selected: ${mergeSelected.length}/2 orbs`;const db=document.getElementById("merge-do-btn");if(db){const ca=coins>=MERGE_COST,rdy=mergeSelected.length===2&&ca;db.disabled=!rdy;}}
 function doMergeOrbs(){if(mergeSelected.length!==2||coins<MERGE_COST)return;const [a,b]=mergeSelected.map(id=>enchantInventory.find(o=>o.id===id));if(!a||!b)return;coins-=MERGE_COST;const allE=[...(a.enchants||[]),...(b.enchants||[])];const vc=allE.filter(e=>e.name==="volley").length;let locked=vc>50;if(!locked){const nl=new Set(allE.filter(e=>e.effect.nut).map(e=>e.effect.nut));locked=!(nl.has(1)||(nl.size===1&&nl.has(4)));} const merged={id:newId(),enchants:allE,fromVal:Math.max(a.fromVal||0,b.fromVal||0),fromRankIdx:Math.max(a.fromRankIdx??0,b.fromRankIdx??0),locked,nutUnlocked:!locked&&vc<=50};enchantInventory=enchantInventory.filter(o=>!mergeSelected.includes(o.id));if(equippedOrbs.some(o=>mergeSelected.includes(o.orbId)))equippedOrbs=[];enchantInventory.unshift(merged);mergeMode=false;mergeSelected=[];updateBoxerTimer();renderMergeUI();renderEquippedOrbs();renderEnchantInventory();updateNavBadges();updateUI();saveData();}
-function updateNavBadges(){const ib=document.getElementById("inv-badge");if(ib){ib.textContent=inventory.length>99?"99+":inventory.length;ib.style.display=inventory.length>0?"":"none";}const eb=document.getElementById("ench-badge");if(eb){eb.textContent=enchantInventory.length>99?"99+":enchantInventory.length;eb.style.display=enchantInventory.length>0?"":"none";}}
+function updateNavBadges(){const ib=document.getElementById("inv-badge");if(ib){ib.textContent=inventory.length>99?"99+":inventory.length;ib.style.display=inventory.length>0?"":"none";}const eb=document.getElementById("ench-badge");if(eb){eb.textContent=enchantInventory.length>99?"99+":enchantInventory.length;eb.style.display=enchantInventory.length>0?"":"none";}const cb=document.getElementById("consumable-badge");if(cb){cb.textContent=consumableInventory.length>99?"99+":consumableInventory.length;cb.style.display=consumableInventory.length>0?"":"none";}}
 function renderEquippedOrbs(){
   const slot0=document.getElementById("equip-slot-0"),orb=equippedOrbs[0];
   if(!orb){slot0.className="equip-slot";slot0.innerHTML="Empty";}
@@ -1097,6 +1179,10 @@ function spawnCrate(){
   const cl=setTimeout(()=>crate.remove(),dur+300);
   crate.addEventListener("click",()=>{
     clearTimeout(cl);const b=computeBooster(ti);boosterInventory.push(b);
+    // Chance to also give a consumable
+    for(const c of CONSUMABLES){if(Math.random()<1/c.chancefromCrate){giveConsumable(c.name);break;}}
+    // Screen shake for tiers 5+
+    if(ti>=4){const shakes=["","","","","shakeSmall","shakeMedium","shakeGiant","shakeCrazy"];const anim=shakes[ti];if(anim){const dur=[0,0,0,0,400,600,900,1500][ti];document.body.style.animation=`${anim} ${dur}ms ease`;setTimeout(()=>{document.body.style.animation="";},dur+100);}}
     const rect=crate.getBoundingClientRect();const n=document.createElement("div");n.className="crate-notif";
     const VC=VARIANTS.map(v=>v.color);let ts;
     if(b.isEvil)ts=`<span style="color:#ff4444">EVIL</span>`;
@@ -1111,12 +1197,12 @@ function spawnCrate(){
   });
 }
 function startCrateTimer(){clearInterval(crateTimer);crateTimer=setInterval(()=>{if(Math.random()<1/5)spawnCrate();},5000);}
-const ALL_TABS=["rolling","upgrades","inventory","enchants","indexes","boosters","crafting","extras"];
+const ALL_TABS=["rolling","upgrades","inventory","enchants","indexes","boosters","crafting","consumables","extras"];
 function switchTab(name){ALL_TABS.forEach(t=>{document.getElementById("tab-"+t).classList.toggle("active",t===name);document.getElementById("nav-"+t).classList.toggle("active",t===name);});}
 function doRoll(){
   if(isRolling)return;isRolling=true;clearTimeout(autoRollTimer);
   const btn=document.getElementById("roll-btn");btn.disabled=true;
-  const spinMs=getSpinMs(),staggerMs=getStaggerMs(),numReels=1+bulkLevel,multiBonus=getMultiRollBonus(),rpr=1+multiBonus;
+  const spinMs=getSpinMs(),staggerMs=getStaggerMs(),numReels=1+bulkLevel+getConsumableReelBonus(),multiBonus=getMultiRollBonus()+getConsumableMultiRollBonus(),rpr=1+multiBonus;
   const{effectiveLuck,forcedVariantIdx,boosterAttrs}=applyAndConsumeBooster();renderBoosterInventory();
   const allResults=[];
   for(let i=0;i<numReels;i++){
@@ -1134,6 +1220,16 @@ function doRoll(){
   let totalCoins=0;allResults.forEach(r=>{if(r.superSecretIdx!==SS_ERR)totalCoins+=computeCoins(r.val);});
   coins+=totalCoins;
   totalRolls+=allResults.length;
+  // Tick roll-based consumables
+  activeConsumables=activeConsumables.map(c=>{
+    if(c.rollsLeft!==null&&c.rollsLeft!==undefined){c={...c,rollsLeft:c.rollsLeft-1};}
+    return c;
+  }).filter(c=>{
+    if(c.expiresAt!==null&&c.expiresAt!==undefined&&Date.now()>c.expiresAt)return false;
+    if(c.rollsLeft!==null&&c.rollsLeft!==undefined&&c.rollsLeft<=0)return false;
+    return true;
+  });
+  renderConsumableInventory();
   if(best.rankIdx>bestRankIdx&&best.superSecretIdx!==SS_ERR){bestRankIdx=best.rankIdx;const bEl=document.getElementById("best-rank");bEl.textContent=RANKS[bestRankIdx].name.toUpperCase();bEl.style.color=RANK_COLORS[bestRankIdx];}
   document.getElementById("result-coins").classList.remove("show");document.getElementById("result-coins").textContent="";
   let accepted=[],pending=[];
@@ -1272,7 +1368,7 @@ function buildIndex(){
     const borderColor=isGrad?(entry.color.match(/#[0-9a-fA-F]{3,6}/)||["#888"])[0]:entry.color;
     return`<div class="index-row" style="border-left-color:${borderColor}"><span class="index-name"><span style="${nameStyle}">${entry.name}</span>${mark}</span><span class="index-range">exact ${Number.isInteger(entry.perfectrng)?entry.perfectrng.toLocaleString():entry.perfectrng.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</span></div>`;
   }).join("");
-  document.getElementById("booster-type-index").innerHTML=[{label:"+ ADD",desc:"Additive luck boost",color:"#aaaaff",chance:"common"},{label:"\u00d7 MULTI",desc:"Multiplicative luck (blue)",color:"#6baaff",chance:"1/25"},{label:"^ PWR",desc:"Exponent luck, ^2 max, stackable",color:"#cc55ff",chance:"1/5000"},{label:"\ud83d\udd35 rounded",desc:"Rounds rng val to nearest integer",color:"#88aaff",chance:"1/15 attr"},{label:"\ud83d\udfe1 random",desc:"Variant luck boost",color:"#ffdd44",chance:"1/50 attr"},{label:"\ud83d\udfe3 gamma",desc:"Secret luck +min(100,1+luck/100)\u00d7",color:"#cc88ff",chance:"1/250 attr"},].map(b=>`<div class="index-row" style="border-left-color:${b.color}"><span class="index-name" style="color:${b.color}">${b.label} <span style="font-size:.5rem;color:var(--muted)">${b.chance}</span></span><span class="index-range">${b.desc}</span></div>`).join("");
+  document.getElementById("booster-type-index").innerHTML=[{label:"+ ADD",desc:"Additive luck boost",color:"#aaaaff",chance:"common"},{label:"\u00d7 MULTI",desc:"Multiplicative luck (blue)",color:"#6baaff",chance:"1/25"},{label:"^ PWR",desc:"Exponent luck, ^2 max, stackable",color:"#cc55ff",chance:"1/5000"},{label:"\ud83d\udd35 rounded",desc:"Rounds rng val to nearest integer",color:"#88aaff",chance:"1/15 attr"},{label:"\ud83d\udfe1 random",desc:"Variant luck boost",color:"#ffdd44",chance:"1/50 attr"},{label:"\ud83d\udfe3 gamma",desc:"Secret luck +min(100,1+luck/100)\u00d7",color:"#cc88ff",chance:"1/250 attr"},{label:"\u03a9 OMEGA tier",desc:"1/333,333 from crate. Min 1,000,000.",color:"#ff00ff",chance:"1/333,333"},].map(b=>`<div class="index-row" style="border-left-color:${b.color}"><span class="index-name" style="color:${b.color}">${b.label} <span style="font-size:.5rem;color:var(--muted)">${b.chance}</span></span><span class="index-range">${b.desc}</span></div>`).join("");
 }
 function updateUI(){
   document.getElementById("coins").textContent=formatValue(coins);document.getElementById("luck-display").textContent=luck.toFixed(1)+"x";document.getElementById("bulk-display").textContent=(1+bulkLevel)+" roll"+(1+bulkLevel>1?"s":"");document.getElementById("total-rolls").textContent=totalRolls;
@@ -1322,6 +1418,18 @@ function setEnchantOverride(key,val){enchantAutoOverride[key]=val;renderEnchantA
 document.addEventListener("keydown",e=>{if((e.code==="Space"||e.code==="Enter")&&!isRolling&&!autoRollEnabled){const btn=document.getElementById("roll-btn");if(!btn.disabled)doRoll();}});
 loadData();
 fullReloadUI();
+// Oblivion flicker + consumable timer expiry
+setInterval(()=>{
+  // Update oblivion display values in pending/inventory
+  let needsUpdate=false;
+  if(pendingResults.some(r=>r.superSecretIdx===SS_OBLIVION))needsUpdate=true;
+  if(inventory.some(r=>r.superSecretIdx===SS_OBLIVION))needsUpdate=true;
+  if(needsUpdate){renderPending();renderInventory();}
+  // Expire time-based consumables
+  const before=activeConsumables.length;
+  activeConsumables=activeConsumables.filter(c=>c.expiresAt===null||c.expiresAt===undefined||Date.now()<c.expiresAt);
+  if(activeConsumables.length!==before)renderConsumableInventory();
+},120);
 </script>
 </body>
 </html>
