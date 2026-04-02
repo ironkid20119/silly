@@ -370,8 +370,13 @@ const SECRET_RANKS=[
   {name:"attainable",rng:2500,displayrng:0.2,display:true},{name:"WEIRD",rng:5000,displayrng:-0.85,display:true},
   {name:"c",rng:7777,displayrng:0.33,display:true},{name:"a RARE secret ???",rng:10000,displayrng:0.25,display:true},
   {name:"no",rng:11111,displayrng:0,display:true},{name:"clover",rng:15000,displayrng:-777777.777,display:true},
-  {name:"supreme",rng:100000,displayrng:1,display:false},{name:"ultimate",rng:500000,displayrng:1,display:false},
-  {name:"neverending...",rng:1e9,displayrng:1,display:false},{name:"use this to autodecline clover lmao",rng:1e999,displayrng:1,display:false},
+{name: "charged", rng: 22222, displayrng: -2.22, display:true},
+{name: "🍔🍔🍔🍔🍔", rng: 25000, display:true, displayrng:"big burger CHEESE"},
+{name: "reversion", rng: 27500, display:true, displayrng: "-45"},
+{name: "h", rng: 33333, display:true, displayrng: "h"},
+{name: "nothing", rng: 50000, display:true, displayrng: " "},
+  {name:"supreme",rng:100000,displayrng:false,display:false},{name:"ultimate",rng:500000,displayrng:false,display:false},
+{name: "kinetic", rng: 750000, displayrng: false, display:false},{name:"neverending...",rng:1e9,displayrng:1,display:false},{name:"use this to autodecline clover lmao",rng:1e999,displayrng:1,display:false},
 ];
 const SECRET_RANK_COLOR="#ff9999";
 const SS_ABYSSAL=0,SS_EEON=1,SS_TOTALLYMAX=2,SS_VERYEVIL=3,SS_BLACKHOLE=4,SS_FUNNI=5,SS_SINGULARITY=6,SS_SUPERCHARGED=7,SS_ERR=8,SS_NAN=9,SS_CENSORED=10,SS_EWWHAT=11,SS_YJHGF=12,SS_OBLIVION=13,SS_YIH=14,SS_ULTRIPOD=15;
@@ -432,7 +437,8 @@ const PERFECT_RNG_INDEX=[
   {name:"e", perfectrng: 271828, color:"linear-gradient(45deg, #425af5,#ffffff)"},
   {name:"imperfect", perfectrng: 999.99, color:"radial-gradient(circle, #5dba82,#809a9c)"},
   {name:"BURGER PATTY",    perfectrng:1895,     color:"linear-gradient(175deg,#8B5A2B,#8F5E2B,#93622B,#97662B,#9B6A2B,#976A2F,#936A33,#8F6A37,#8B6A3B,#876E3F)"},
-  {name:"goinky",          perfectrng:2763,     color:"linear-gradient(90deg,#9B59B6,#76D72F,#F1C40F,#1B4F72,#ECF0F1,#95A5A6,#E67E22)"}
+  {name:"goinky",          perfectrng:2763,     color:"linear-gradient(90deg,#9B59B6,#76D72F,#F1C40F,#1B4F72,#ECF0F1,#95A5A6,#E67E22)"},
+{name: "UGLY GRADIENT",  perfectrng: 100, color: "radial-gradient(circle, #495e1d, #47363d, #7c4b16)"}
 ];
 const RANK_LORE=[
   {forRankName:"ordinary",lore:"The humblest of outcomes. Nothing special here. Move on.",ideaBy:"silly"},
@@ -1033,24 +1039,37 @@ const CRAFT_RECIPES=[
     inSeconds: 480},
   {
   name: "coin ring",
-  desc: "shiny gilded coin ring, MONEY !!!",
+  desc: "gilded coin ring (shiny edition), MONEY !!!",
   color: "#ffaa33",
-  buffs: [{ type: "coinGain", value: 1.75 }],
+  buffs: [{ type: "coinGain", value: 0.75 }],
   ranksNeeded: [
-    { rankName: "gilded", count: 25, variantName: "shiny" }
+    { rankName: "gilded", count: 175 }
   ],
-  boostersNeeded: [],
+  boostersNeeded: [{ tierName: "normal", count: 5, variantName: "shiny" }],
   inSeconds: 240
 },
   {
   name: "all in 1",
   desc: "a clover bit fused into a coin ring AND a booster booster, ultimate luck, secret luck, boosters AND money!!!",
   color: "#aaff44",
-  buffs: [{ type: "luck", value: 4.44 }, { type: "coinGain", value: 1.2 }, {type:"crateChance",value:0.1}, {type:"secretLuck",value:2.5}],
+  buffs: [{ type: "luck", value: 4.44 }, { type: "coinGain", value: 0.5 }, {type:"crateChance",value:0.1}, {type:"secretLuck",value:2.5}],
   ranksNeeded: [],
   craftedNeeded: [{ recipeName: "clover bit", count: 1 }, { recipeName: "coin ring", count: 1 }, { recipeName: "booster booster", count: 1}, {recipeName: "eyeball orb", count: 1}, ],
   boostersNeeded: [],
   inSeconds: 1800
+},
+  {
+  name: "inconceivable ring",
+  desc: "a ring beyond all comprehension. what even is this.",
+  color: "#ff88ff",
+  buffs: [{ type: "luck", value: 12.5 }, { type: "coinGain", value: 2.5 }, { type: "secretLuck", value: 7.5 }],
+  ranksNeeded: [
+    { rankName: "inimitable", count: 5 },
+    { rankName: "amber", count: 5 }
+  ],
+  craftedNeeded: [{ recipeName: "all in 1", count: 1 }],
+  boostersNeeded: [],
+  inSeconds: 7200
 }
 ];
 const BOOSTER_SHAPES=["circle","square","triangle","hexagon","star"];
@@ -1094,7 +1113,7 @@ function getCraftIngredients(recipe){
     const variantIdx=req.variantName?VARIANTS.findIndex(v=>v.name===req.variantName):-1;
     let matches;
     if(rankIdx>=0){
-      matches=inventory.filter(item=>item.rankIdx===rankIdx&&item.secretIdx<0&&item.superSecretIdx<0&&item.perfectRngIdx<0&&(variantIdx<0||item.variantIdx===variantIdx));
+      matches=inventory.filter(item=>(item.baseRankIdx!==undefined?item.baseRankIdx:item.rankIdx)===rankIdx&&item.secretIdx<0&&item.superSecretIdx<0&&item.perfectRngIdx<0&&(variantIdx<0||item.variantIdx===variantIdx));
     } else {
       matches=inventory.filter(item=>item.secretIdx===secretIdx&&item.superSecretIdx<0&&item.perfectRngIdx<0&&(variantIdx<0||item.variantIdx===variantIdx));
     }
@@ -1103,7 +1122,7 @@ function getCraftIngredients(recipe){
   }
   for(const req of(recipe.boostersNeeded||[])){
     const tierIdx=BOOSTER_TIERS.findIndex(t=>t.name===req.tierName);
-    const matches=boosterInventory.filter(b=>(b.tierIdx??0)===tierIdx&&!b.isEvil);
+    const bvi=req.variantName?VARIANTS.findIndex(v=>v.name===req.variantName):-1;const matches=boosterInventory.filter(b=>(b.tierIdx??0)===tierIdx&&!b.isEvil&&(bvi<0||b.variantIdx===bvi));
     boosterMatches.push({req,matches,tierIdx});
     if(matches.length<req.count)canCraft=false;
   }
@@ -1463,7 +1482,7 @@ function doRoll(){
     return true;
   });
   renderConsumableInventory();
-  if(best.rankIdx>bestRankIdx&&best.superSecretIdx!==SS_ERR){bestRankIdx=best.rankIdx;const bEl=document.getElementById("best-rank");bEl.textContent=RANKS[bestRankIdx].name.toUpperCase();bEl.style.color=RANK_COLORS[bestRankIdx];}
+  const _bestBase=best.baseRankIdx!==undefined?best.baseRankIdx:best.rankIdx;if(_bestBase>bestRankIdx&&best.superSecretIdx!==SS_ERR){bestRankIdx=_bestBase;const bEl=document.getElementById("best-rank");bEl.textContent=RANKS[bestRankIdx].name.toUpperCase();bEl.style.color=RANK_COLORS[bestRankIdx];}
   document.getElementById("result-coins").classList.remove("show");document.getElementById("result-coins").textContent="";
   let accepted=[],pending=[];
   allResults.forEach(r=>{
